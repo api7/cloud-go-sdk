@@ -16,6 +16,7 @@ package cloud
 
 import (
 	"context"
+	"fmt"
 	"net/http"
 )
 
@@ -32,5 +33,19 @@ func (auth *auth) CreateAccessToken(ctx context.Context, token *AccessToken) (*A
 }
 
 func (auth *auth) DeleteAccessToken(ctx context.Context, token *AccessToken) error {
+	uri := fmt.Sprintf("/api/v1/user/access_tokens/%s", token.ID)
+	req, err := http.NewRequest("DELETE", uri, nil)
+	req.Header.Set("Authorization", fmt.Sprintf("Bearer %s", token.Token))
+	if err != nil {
+		return err
+	}
+	resp, err := auth.client.Do(req)
+	if err != nil {
+		return err
+	}
+	if resp.StatusCode != http.StatusOK {
+		return DeleteAccessTokenError
+	}
+
 	return nil
 }

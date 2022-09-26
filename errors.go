@@ -18,5 +18,6 @@ import "errors"
 
 var (
 	// ErrEmptyToken indicates the access token value is empty.
-	ErrEmptyToken = errors.New("empty access token")
+	ErrEmptyToken          = errors.New("empty access token")
+	DeleteAccessTokenError = errors.New("failed to delete access token")
 )
