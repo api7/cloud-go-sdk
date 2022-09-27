@@ -42,11 +42,11 @@ type Auth interface {
 
 // AccessToken is the token used by API7 Cloud to authenticate clients.
 type AccessToken struct {
-	ID     string    `json:"id"`
-	Notes  string    `json:"notes"`
-	Expire time.Time `json:"expire"`
+	ID     string    `json:"id,omitempty"`
+	Notes  string    `json:"notes,omitempty"`
+	Expire time.Time `json:"expire,omitempty"`
 	// Token field will only be shown when you create an access token.
-	Token string `json:"token"`
+	Token string `json:"token,omitempty"`
 }
 
 type client struct {
@@ -55,9 +55,23 @@ type client struct {
 	token *AccessToken
 }
 
+var (
+	globalAccessToken string
+	globalAPIBaseUrl  string = "https://api.test.api7.cloud/api/v1"
+)
+
+type transport struct {
+	underlyingTransport http.RoundTripper
+}
+
+func (t *transport) RoundTrip(req *http.Request) (*http.Response, error) {
+	req.Header.Add("Authorization", globalAccessToken)
+	return t.underlyingTransport.RoundTrip(req)
+}
+
 // NewInterface creates an Interface object.
 func NewInterface() Interface {
-	httpCli := http.DefaultClient
+	httpCli := &http.Client{Transport: &transport{underlyingTransport: http.DefaultTransport}}
 
 	return &client{
 		Auth: newAuth(httpCli),
@@ -87,5 +101,6 @@ func (client *client) ConfigureTokenFromFile(tokenPath string) error {
 	client.token = &AccessToken{
 		Token: content.User.AccessToken,
 	}
+	globalAccessToken = content.User.AccessToken
 	return nil
 }

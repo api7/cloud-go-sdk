@@ -15,7 +15,11 @@
 package cloud
 
 import (
+	"bytes"
 	"context"
+	"encoding/json"
+	"fmt"
+	"io/ioutil"
 	"net/http"
 )
 
@@ -23,12 +27,60 @@ type auth struct {
 	client *http.Client
 }
 
+type accessTokenPayload struct {
+	Expire int64  `json:"expire"`
+	Notes  string `json:"notes"`
+}
+
+type response struct {
+	Payload struct {
+		ID          string `json:"id"`
+		AccessToken string `json:"access_token"`
+		Notes       string `json:"notes"`
+	} `json:"payload"`
+}
+
 func newAuth(client *http.Client) Auth {
-	return nil
+
+	return &auth{
+		client: client,
+	}
 }
 
 func (auth *auth) CreateAccessToken(ctx context.Context, token *AccessToken) (*AccessToken, error) {
-	return nil, nil
+
+	requestPayload := accessTokenPayload{
+		Expire: token.Expire.Unix(),
+		Notes:  token.Notes,
+	}
+
+	json_data, err := json.Marshal(requestPayload)
+	fmt.Println(bytes.NewBuffer(json_data))
+	resp, err := auth.client.Post(globalAPIBaseUrl+"/user/access_tokens", "application/json", bytes.NewBuffer(json_data))
+
+	if err != nil {
+		fmt.Printf("Error %s", err)
+		return nil, err
+	}
+
+	defer resp.Body.Close()
+	body, err := ioutil.ReadAll(resp.Body)
+
+	if err != nil {
+		fmt.Printf("Error %s", err)
+		return nil, err
+	}
+
+	var result response
+	fmt.Println("result", &result)
+	json.Unmarshal(body, &result)
+
+	var returnData = &AccessToken{
+		ID:    result.Payload.ID,
+		Token: result.Payload.AccessToken,
+		Notes: result.Payload.Notes,
+	}
+	return returnData, nil
 }
 
 func (auth *auth) DeleteAccessToken(ctx context.Context, token *AccessToken) error {
