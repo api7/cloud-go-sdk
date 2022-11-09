@@ -66,7 +66,7 @@ func (o *Options) merge(o2 *Options) {
 	if o.DialTimeout == 0 {
 		o.DialTimeout = o2.DialTimeout
 	}
-	if o.InsecureSkipTLSVerify == false {
+	if !o.InsecureSkipTLSVerify {
 		o.InsecureSkipTLSVerify = o2.InsecureSkipTLSVerify
 	}
 	if o.ServerNameIndication == "" {

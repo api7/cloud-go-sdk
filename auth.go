@@ -18,8 +18,8 @@ import (
 	"context"
 )
 
-// Auth is the interface for the authentication process with API7 Cloud.
-type Auth interface {
+// AuthInterface is the interface for the authentication process with API7 Cloud.
+type AuthInterface interface {
 	// CreateAccessToken creates a new access token. It returns a new AccessToken object which
 	// fills the Token field.
 	CreateAccessToken(ctx context.Context, token *AccessToken) (*AccessToken, error)
@@ -31,7 +31,7 @@ type auth struct {
 	client httpClient
 }
 
-func newAuth(client httpClient) Auth {
+func newAuth(client httpClient) AuthInterface {
 	return nil
 }
 
