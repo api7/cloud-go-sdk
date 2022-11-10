@@ -82,7 +82,7 @@ type httpClientImpl struct {
 }
 
 func constructHTTPClient(opts *Options, token *AccessToken) (httpClient, error) {
-	u, err := url.Parse(opts.ServerAddr)
+	url, err := url.Parse(opts.ServerAddr)
 	if err != nil {
 		return nil, errors.Wrap(err, "construct http client")
 	}
@@ -102,7 +102,7 @@ func constructHTTPClient(opts *Options, token *AccessToken) (httpClient, error) 
 	}
 
 	return &httpClientImpl{
-		url: u,
+		url: url,
 		client: &http.Client{
 			Transport: tr,
 		},
@@ -111,11 +111,11 @@ func constructHTTPClient(opts *Options, token *AccessToken) (httpClient, error) 
 }
 
 func (impl *httpClientImpl) sendGetRequest(path, query string, payloadDecodeFunc payloadDecodeFunc) error {
-	u := *impl.url
-	u.Path = path
-	u.RawQuery = query
+	url := *impl.url
+	url.Path = path
+	url.RawQuery = query
 
-	req, err := http.NewRequest(http.MethodGet, u.String(), nil)
+	req, err := http.NewRequest(http.MethodGet, url.String(), nil)
 	if err != nil {
 		return errors.Wrap(err, "construct http request")
 	}
@@ -123,16 +123,16 @@ func (impl *httpClientImpl) sendGetRequest(path, query string, payloadDecodeFunc
 }
 
 func (impl *httpClientImpl) sendPostRequest(path, query string, body interface{}, payloadDecodeFunc payloadDecodeFunc) error {
-	u := *impl.url
-	u.Path = path
-	u.RawQuery = query
+	url := *impl.url
+	url.Path = path
+	url.RawQuery = query
 
 	data, err := json.Marshal(body)
 	if err != nil {
 		return errors.Wrap(err, "encode http request body")
 	}
 
-	req, err := http.NewRequest(http.MethodPost, u.String(), bytes.NewReader(data))
+	req, err := http.NewRequest(http.MethodPost, url.String(), bytes.NewReader(data))
 	if err != nil {
 		return errors.Wrap(err, "construct http request")
 	}
@@ -142,16 +142,16 @@ func (impl *httpClientImpl) sendPostRequest(path, query string, body interface{}
 }
 
 func (impl *httpClientImpl) sendPutRequest(path, query string, body interface{}, payloadDecodeFunc payloadDecodeFunc) error {
-	u := *impl.url
-	u.Path = path
-	u.RawQuery = query
+	url := *impl.url
+	url.Path = path
+	url.RawQuery = query
 
 	data, err := json.Marshal(body)
 	if err != nil {
 		return errors.Wrap(err, "encode http request body")
 	}
 
-	req, err := http.NewRequest(http.MethodPut, u.String(), bytes.NewReader(data))
+	req, err := http.NewRequest(http.MethodPut, url.String(), bytes.NewReader(data))
 	if err != nil {
 		return errors.Wrap(err, "construct http request")
 	}
@@ -161,11 +161,11 @@ func (impl *httpClientImpl) sendPutRequest(path, query string, body interface{},
 }
 
 func (impl *httpClientImpl) sendDeleteRequest(path, query string, payloadDecodeFunc payloadDecodeFunc) error {
-	u := *impl.url
-	u.Path = path
-	u.RawQuery = query
+	url := *impl.url
+	url.Path = path
+	url.RawQuery = query
 
-	req, err := http.NewRequest(http.MethodDelete, u.String(), nil)
+	req, err := http.NewRequest(http.MethodDelete, url.String(), nil)
 	if err != nil {
 		return errors.Wrap(err, "construct http request")
 	}
