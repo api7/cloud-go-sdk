@@ -27,5 +27,9 @@ gofmt: ## Format the source code
 	@find . -type f -name "*.go" | xargs gofmt -w -s
 
 .PHONY: test
-test: ## Run the unit tests
-	go test ./...
+test: mockgen ## Run the unit tests
+	@go test ./...
+
+.PHONY: mockgen
+mockgen: ## Generate Go mock codes
+	@./scripts/mockgen.sh

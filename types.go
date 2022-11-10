@@ -15,29 +15,14 @@
 package cloud
 
 import (
-	"context"
-	"net/http"
-	"os"
-	"time"
-
 	"github.com/pkg/errors"
-	"gopkg.in/yaml.v2"
+	"time"
 )
 
+// Interface is the entrypoint of the Cloud Go SDK.
 type Interface interface {
-	Auth
-
-	// ConfigureTokenFromFile configures an access token from the filesystem.
-	ConfigureTokenFromFile(tokenPath string) error
-}
-
-// Auth is the interface for the authentication process with API7 Cloud.
-type Auth interface {
-	// CreateAccessToken creates a new access token. It returns a new AccessToken object which
-	// fills the Token field.
-	CreateAccessToken(ctx context.Context, token *AccessToken) (*AccessToken, error)
-	// DeleteAccessToken deletes an access token.
-	DeleteAccessToken(ctx context.Context, token *AccessToken) error
+	UserInterface
+	AuthInterface
 }
 
 // AccessToken is the token used by API7 Cloud to authenticate clients.
@@ -49,43 +34,43 @@ type AccessToken struct {
 	Token string `json:"token"`
 }
 
-type client struct {
-	Auth
-
-	token *AccessToken
+type impl struct {
+	UserInterface
+	AuthInterface
 }
+
+var (
+	_apiPathPrefix = "/api/v1"
+)
 
 // NewInterface creates an Interface object.
-func NewInterface() Interface {
-	httpCli := http.DefaultClient
+func NewInterface(opts *Options) (Interface, error) {
+	var (
+		token *AccessToken
+		err   error
+	)
 
-	return &client{
-		Auth: newAuth(httpCli),
+	opts.merge(DefaultOptions)
+
+	if opts.Token != "" {
+		token = &AccessToken{
+			Token: opts.Token,
+		}
+	} else {
+		token, err = configureTokenFromFile(opts.TokenPath)
 	}
-}
 
-func (client *client) ConfigureTokenFromFile(tokenPath string) error {
-	var content struct {
-		User struct {
-			AccessToken string `yaml:"access_token"`
-		} `yaml:"user"`
-	}
-
-	data, err := os.ReadFile(tokenPath)
 	if err != nil {
-		return err
+		return nil, errors.Wrap(err, "new interface")
 	}
 
-	if err = yaml.Unmarshal(data, &content); err != nil {
-		return errors.Wrap(err, "invalid token file")
+	cli, err := constructHTTPClient(opts, token)
+	if err != nil {
+		return nil, errors.Wrap(err, "new interface")
 	}
 
-	if content.User.AccessToken == "" {
-		return ErrEmptyToken
-	}
-
-	client.token = &AccessToken{
-		Token: content.User.AccessToken,
-	}
-	return nil
+	return &impl{
+		UserInterface: newUser(cli),
+		AuthInterface: newAuth(cli),
+	}, err
 }
