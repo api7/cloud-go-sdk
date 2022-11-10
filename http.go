@@ -20,11 +20,12 @@ import (
 	"crypto/tls"
 	"encoding/json"
 	"fmt"
-	"github.com/pkg/errors"
 	"io"
 	"net"
 	"net/http"
 	"net/url"
+
+	"github.com/pkg/errors"
 )
 
 type payloadDecodeFunc func(data json.RawMessage) error
