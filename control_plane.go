@@ -67,6 +67,15 @@ const (
 	HideVersionToken = "Hide Version Token"
 )
 
+const (
+	// RealIPPositionHeader indicates the real ip is in an HTTP header.
+	RealIPPositionHeader = "header"
+	// RealIPPositionQuery indicates the real ip is in a query string.
+	RealIPPositionQuery = "query"
+	// RealIPPositionCookie indicates the real ip is in cookie.
+	RealIPPositionCookie = "cookie"
+)
+
 // ControlPlane contains the control plane specification and management fields.
 type ControlPlane struct {
 	ControlPlaneSpec
@@ -167,9 +176,9 @@ type ClientRealIPConfig struct {
 type ClientIPReplaceFrom struct {
 	// Position is the position that the client ip should be got from
 	// Optional values are:
-	// * header, indicates the real ip is in an HTTP header, and the header name is specified by `Name` field.
-	// * query, indicates the real ip is in the query string, and the query name is specified by `Name` field.
-	// * cookie, indicates the real ip is in the Cookie, and the field name is specified by `Name` field.
+	// * RealIPPositionHeader, indicates the real ip is in an HTTP header, and the header name is specified by `Name` field.
+	// * RealIPPositionQuery, indicates the real ip is in the query string, and the query name is specified by `Name` field.
+	// * RealIPPositionCookie, indicates the real ip is in the Cookie, and the field name is specified by `Name` field.
 	Position string `json:"position,omitempty"`
 	// Name is the name of the variable that the client ip should be got from
 	Name string `json:"name,omitempty"`
