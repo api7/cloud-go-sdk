@@ -1,4 +1,4 @@
-module cloud
+module github.com/api7/cloud-go-sdk
 
 go 1.19
 
