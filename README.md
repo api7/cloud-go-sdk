@@ -4,7 +4,7 @@ The Go SDK for accessing [API7 Cloud API](https://api7.cloud/api)
 
 # Installation
 
-Make sure you're using Go Modules to manage your Go Project, and your Go version is larger than or equal to `1.19`.
+Make sure you're using Go Modules to manage your Go Project, and your Go version needs to be `1.19` or later.
 
 ```shell
 go mod init
