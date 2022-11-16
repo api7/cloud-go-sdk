@@ -62,6 +62,22 @@ const (
 	Deleted = EntityStatus(100)
 )
 
+const (
+	// ProtocolHTTP indicates the HTTP protocol.
+	ProtocolHTTP = "HTTP"
+	// ProtocolHTTPS indicates the HTTPS protocol.
+	ProtocolHTTPS = "HTTPS"
+)
+
+const (
+	// ActiveStatus indicates an object is active, and this object
+	// will be seen by gateway instances.
+	ActiveStatus = iota
+	// InactiveStatus indicates an object is inactive, and this object
+	// won't be seen by gateway instances.
+	InactiveStatus
+)
+
 // EntityStatus is common status definition for any kind of entity:
 // * Uninitialized represents the entity has been saved to the db, but the associated resource has not yet been ready.
 // * Normal indicates that the entity and associated resources are ready.

@@ -15,6 +15,8 @@
 package cloud
 
 import (
+	"context"
+	"path"
 	"time"
 )
 
@@ -53,12 +55,50 @@ type ApplicationSpec struct {
 	PathPrefix string `json:"path_prefix"`
 	// Hosts contains all the hosts that this Application uses.
 	Hosts []string `json:"hosts"`
-	// Policy settings on Application level
-	Policies Policies `json:"policies,omitempty"`
+	// Plugins settings on Application level
+	Plugins Plugins `json:"plugins,omitempty"`
 	// Upstream settings for the Application
 	Upstreams []UpstreamAndVersion `json:"upstreams"`
 	// DefaultUpstreamVersion settings for the upstream that should be used
 	DefaultUpstreamVersion string `json:"default_upstream_version,omitempty"`
 	// Active is status of application
 	Active int `json:"active"`
+}
+
+// ApplicationInterface is the interface for manu
+type ApplicationInterface interface {
+	// CreateApplication creates an API7 Cloud Application in the specified control plane.
+	// The given `app` parameter should specify the desired Application specification.
+	// The returned Application will contain the same Application specification plus some
+	// management fields and default values.
+	CreateApplication(ctx context.Context, app *Application, opts *ApplicationCreateOptions) (*Application, error)
+}
+
+// ApplicationCreateOptions contains some options for creating an API7 Cloud Application.
+type ApplicationCreateOptions struct {
+	// ControlPlane indicates where the Application where be created.
+	// The only field that users must specify is ControlPlane.ID field.
+	ControlPlane *ControlPlane
+}
+
+type applicationImpl struct {
+	client httpClient
+}
+
+func newApplication(cli httpClient) ApplicationInterface {
+	return &applicationImpl{
+		client: cli,
+	}
+}
+
+func (impl *applicationImpl) CreateApplication(ctx context.Context, app *Application, opts *ApplicationCreateOptions) (*Application, error) {
+	var createdApp Application
+
+	cpID := opts.ControlPlane.ID
+	uri := path.Join(_apiPathPrefix, "controlplanes", cpID.String(), "apps")
+	err := impl.client.sendPostRequest(ctx, uri, "", app, jsonPayloadDecodeFactory(&createdApp))
+	if err != nil {
+		return nil, err
+	}
+	return &createdApp, nil
 }
