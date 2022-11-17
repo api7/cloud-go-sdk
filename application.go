@@ -62,6 +62,9 @@ type ApplicationSpec struct {
 	// DefaultUpstreamVersion settings for the upstream that should be used
 	DefaultUpstreamVersion string `json:"default_upstream_version,omitempty"`
 	// Active is status of application
+	// Optional values can be:
+	// * ActiveStatus: the object is active.
+	// * InactiveStatus: the object is inactive.
 	Active int `json:"active"`
 }
 
@@ -69,16 +72,36 @@ type ApplicationSpec struct {
 type ApplicationInterface interface {
 	// CreateApplication creates an API7 Cloud Application in the specified control plane.
 	// The given `app` parameter should specify the desired Application specification.
+	// Users need to specify the ControlPlane in the `opts`.
 	// The returned Application will contain the same Application specification plus some
 	// management fields and default values.
-	CreateApplication(ctx context.Context, app *Application, opts *ApplicationCreateOptions) (*Application, error)
-}
-
-// ApplicationCreateOptions contains some options for creating an API7 Cloud Application.
-type ApplicationCreateOptions struct {
-	// ControlPlane indicates where the Application where be created.
-	// The only field that users must specify is ControlPlane.ID field.
-	ControlPlane *ControlPlane
+	CreateApplication(ctx context.Context, app *Application, opts *ResourceCreateOptions) (*Application, error)
+	// UpdateApplication updates an existing API7 Cloud Application in the specified control plane.
+	// The given `app` parameter should specify the desired Application specification.
+	// Users need to specify the ControlPlane in the `opts`.
+	// The returned Application will contain the same Application specification plus some
+	// management fields and default values.
+	UpdateApplication(ctx context.Context, app *Application, opts *ResourceUpdateOptions) (*Application, error)
+	// DeleteApplication deletes an existing API7 Cloud Application in the specified control plane.
+	// The given `appID` parameter should specify the Application that you want to delete.
+	// Users need to specify the ControlPlane in the `opts`.
+	DeleteApplication(ctx context.Context, appID ID, opts *ResourceDeleteOptions) error
+	// GetApplication gets an existing API7 Cloud Application in the specified control plane.
+	// The given `appID` parameter should specify the Application that you want to get.
+	// Users need to specify the ControlPlane in the `opts`.
+	GetApplication(ctx context.Context, appID ID, opts *ResourceGetOptions) (*Application, error)
+	// PublishApplication publishes the Application in the specified control plane (which is
+	// a shortcut of UpdateApplication and set ApplicationSpec.active to ActiveStatus).
+	// The given `appID` parameter should specify the Application that you want to operate.
+	// Users need to specify the ControlPlane in the `opts`.
+	// The updated Application will be returned and the ApplicationSpec.Active field should be ActiveStatus.
+	PublishApplication(ctx context.Context, appID ID, opts *ResourceUpdateOptions) (*Application, error)
+	// UnpublishApplication publishes the Application in the specified control plane (which is
+	// a shortcut of UpdateApplication and set ApplicationSpec.active to InactiveStatus).
+	// The given `appID` parameter should specify the Application that you want to operate.
+	// Users need to specify the ControlPlane in the `opts`.
+	// The updated Application will be returned and the ApplicationSpec.Active field should be InactiveStatus.
+	UnpublishApplication(ctx context.Context, appID ID, opts *ResourceUpdateOptions) (*Application, error)
 }
 
 type applicationImpl struct {
@@ -91,7 +114,7 @@ func newApplication(cli httpClient) ApplicationInterface {
 	}
 }
 
-func (impl *applicationImpl) CreateApplication(ctx context.Context, app *Application, opts *ApplicationCreateOptions) (*Application, error) {
+func (impl *applicationImpl) CreateApplication(ctx context.Context, app *Application, opts *ResourceCreateOptions) (*Application, error) {
 	var createdApp Application
 
 	cpID := opts.ControlPlane.ID
@@ -101,4 +124,60 @@ func (impl *applicationImpl) CreateApplication(ctx context.Context, app *Applica
 		return nil, err
 	}
 	return &createdApp, nil
+}
+
+func (impl *applicationImpl) UpdateApplication(ctx context.Context, app *Application, opts *ResourceUpdateOptions) (*Application, error) {
+	var updatedApp Application
+
+	cpID := opts.ControlPlane.ID
+	uri := path.Join(_apiPathPrefix, "controlplanes", cpID.String(), "apps", app.ID.String())
+	err := impl.client.sendPutRequest(ctx, uri, "", app, jsonPayloadDecodeFactory(&updatedApp))
+	if err != nil {
+		return nil, err
+	}
+	return &updatedApp, nil
+}
+
+func (impl *applicationImpl) DeleteApplication(ctx context.Context, appID ID, opts *ResourceDeleteOptions) error {
+	cpID := opts.ControlPlane.ID
+	uri := path.Join(_apiPathPrefix, "controlplanes", cpID.String(), "apps", appID.String())
+	return impl.client.sendDeleteRequest(ctx, uri, "", nil)
+}
+
+func (impl *applicationImpl) GetApplication(ctx context.Context, appID ID, opts *ResourceGetOptions) (*Application, error) {
+	var app Application
+
+	cpID := opts.ControlPlane.ID
+	uri := path.Join(_apiPathPrefix, "controlplanes", cpID.String(), "apps", appID.String())
+	err := impl.client.sendGetRequest(ctx, uri, "", jsonPayloadDecodeFactory(&app))
+	if err != nil {
+		return nil, err
+	}
+	return &app, nil
+}
+
+func (impl *applicationImpl) PublishApplication(ctx context.Context, appID ID, opts *ResourceUpdateOptions) (*Application, error) {
+	var app Application
+
+	cpID := opts.ControlPlane.ID
+	uri := path.Join(_apiPathPrefix, "controlplanes", cpID.String(), "apps", appID.String())
+	body := []byte(`{"active":0}`)
+	err := impl.client.sendPatchRequest(ctx, uri, "", body, jsonPayloadDecodeFactory(&app))
+	if err != nil {
+		return nil, err
+	}
+	return &app, nil
+}
+
+func (impl *applicationImpl) UnpublishApplication(ctx context.Context, appID ID, opts *ResourceUpdateOptions) (*Application, error) {
+	var app Application
+
+	cpID := opts.ControlPlane.ID
+	uri := path.Join(_apiPathPrefix, "controlplanes", cpID.String(), "apps", appID.String())
+	body := []byte(`{"active":1}`)
+	err := impl.client.sendPatchRequest(ctx, uri, "", body, jsonPayloadDecodeFactory(&app))
+	if err != nil {
+		return nil, err
+	}
+	return &app, nil
 }

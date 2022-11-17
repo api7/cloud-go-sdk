@@ -50,7 +50,7 @@ func (mr *MockInterfaceMockRecorder) CreateAccessToken(ctx, token interface{}) *
 }
 
 // CreateApplication mocks base method.
-func (m *MockInterface) CreateApplication(ctx context.Context, app *Application, opts *ApplicationCreateOptions) (*Application, error) {
+func (m *MockInterface) CreateApplication(ctx context.Context, app *Application, opts *ResourceCreateOptions) (*Application, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "CreateApplication", ctx, app, opts)
 	ret0, _ := ret[0].(*Application)
@@ -78,6 +78,35 @@ func (mr *MockInterfaceMockRecorder) DeleteAccessToken(ctx, token interface{}) *
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteAccessToken", reflect.TypeOf((*MockInterface)(nil).DeleteAccessToken), ctx, token)
 }
 
+// DeleteApplication mocks base method.
+func (m *MockInterface) DeleteApplication(ctx context.Context, appID ID, opts *ResourceDeleteOptions) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "DeleteApplication", ctx, appID, opts)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// DeleteApplication indicates an expected call of DeleteApplication.
+func (mr *MockInterfaceMockRecorder) DeleteApplication(ctx, appID, opts interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteApplication", reflect.TypeOf((*MockInterface)(nil).DeleteApplication), ctx, appID, opts)
+}
+
+// GetApplication mocks base method.
+func (m *MockInterface) GetApplication(ctx context.Context, appID ID, opts *ResourceGetOptions) (*Application, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetApplication", ctx, appID, opts)
+	ret0, _ := ret[0].(*Application)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetApplication indicates an expected call of GetApplication.
+func (mr *MockInterfaceMockRecorder) GetApplication(ctx, appID, opts interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetApplication", reflect.TypeOf((*MockInterface)(nil).GetApplication), ctx, appID, opts)
+}
+
 // Me mocks base method.
 func (m *MockInterface) Me(ctx context.Context) (*User, error) {
 	m.ctrl.T.Helper()
@@ -93,6 +122,21 @@ func (mr *MockInterfaceMockRecorder) Me(ctx interface{}) *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Me", reflect.TypeOf((*MockInterface)(nil).Me), ctx)
 }
 
+// PublishApplication mocks base method.
+func (m *MockInterface) PublishApplication(ctx context.Context, appID ID, opts *ResourceUpdateOptions) (*Application, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "PublishApplication", ctx, appID, opts)
+	ret0, _ := ret[0].(*Application)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// PublishApplication indicates an expected call of PublishApplication.
+func (mr *MockInterfaceMockRecorder) PublishApplication(ctx, appID, opts interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "PublishApplication", reflect.TypeOf((*MockInterface)(nil).PublishApplication), ctx, appID, opts)
+}
+
 // TraceChan mocks base method.
 func (m *MockInterface) TraceChan() <-chan *TraceSeries {
 	m.ctrl.T.Helper()
@@ -105,6 +149,36 @@ func (m *MockInterface) TraceChan() <-chan *TraceSeries {
 func (mr *MockInterfaceMockRecorder) TraceChan() *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "TraceChan", reflect.TypeOf((*MockInterface)(nil).TraceChan))
+}
+
+// UnpublishApplication mocks base method.
+func (m *MockInterface) UnpublishApplication(ctx context.Context, appID ID, opts *ResourceUpdateOptions) (*Application, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "UnpublishApplication", ctx, appID, opts)
+	ret0, _ := ret[0].(*Application)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// UnpublishApplication indicates an expected call of UnpublishApplication.
+func (mr *MockInterfaceMockRecorder) UnpublishApplication(ctx, appID, opts interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UnpublishApplication", reflect.TypeOf((*MockInterface)(nil).UnpublishApplication), ctx, appID, opts)
+}
+
+// UpdateApplication mocks base method.
+func (m *MockInterface) UpdateApplication(ctx context.Context, app *Application, opts *ResourceUpdateOptions) (*Application, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "UpdateApplication", ctx, app, opts)
+	ret0, _ := ret[0].(*Application)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// UpdateApplication indicates an expected call of UpdateApplication.
+func (mr *MockInterfaceMockRecorder) UpdateApplication(ctx, app, opts interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateApplication", reflect.TypeOf((*MockInterface)(nil).UpdateApplication), ctx, app, opts)
 }
 
 // sendSeries mocks base method.
