@@ -22,6 +22,8 @@ import (
 
 // TraceSeries contains a series of events (ordered by their happening time).
 type TraceSeries struct {
+	// ID indicates this series.
+	ID ID
 	// Request is the outgoing request that will send to API7 Cloud.
 	// It's the context of the trace series.
 	// NOTE: This request object is cloned from the original one, so

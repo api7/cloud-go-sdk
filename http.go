@@ -78,30 +78,40 @@ type httpClient interface {
 }
 
 type httpClientImpl struct {
-	url    *url.URL
-	token  *AccessToken
-	client *http.Client
-	tracer TraceInterface
+	url             *url.URL
+	token           *AccessToken
+	client          *http.Client
+	tracer          TraceInterface
+	idGenerator     IDGenerator
+	genIDForCalls   bool
+	enableHTTPTrace bool
 }
 
-func constructHTTPClient(opts *Options, token *AccessToken, tracer TraceInterface) (httpClient, error) {
-	url, err := url.Parse(opts.ServerAddr)
+type httpClientConstructOptions struct {
+	configOptions *Options
+	token         *AccessToken
+	tracer        TraceInterface
+	idGenerator   IDGenerator
+}
+
+func constructHTTPClient(opts *httpClientConstructOptions) (httpClient, error) {
+	url, err := url.Parse(opts.configOptions.ServerAddr)
 	if err != nil {
 		return nil, errors.Wrap(err, "construct http client")
 	}
 
 	tr := &http.Transport{
 		DialContext: func(ctx context.Context, network string, addr string) (net.Conn, error) {
-			return net.DialTimeout(network, addr, opts.DialTimeout)
+			return net.DialTimeout(network, addr, opts.configOptions.DialTimeout)
 		},
 
 		TLSClientConfig: &tls.Config{
-			ServerName:         opts.ServerNameIndication,
-			InsecureSkipVerify: opts.InsecureSkipTLSVerify,
+			ServerName:         opts.configOptions.ServerNameIndication,
+			InsecureSkipVerify: opts.configOptions.InsecureSkipTLSVerify,
 			MinVersion:         tls.VersionTLS11,
 			MaxVersion:         tls.VersionTLS13,
 		},
-		TLSHandshakeTimeout: opts.TLSHandshakeTimeout,
+		TLSHandshakeTimeout: opts.configOptions.TLSHandshakeTimeout,
 	}
 
 	return &httpClientImpl{
@@ -109,8 +119,11 @@ func constructHTTPClient(opts *Options, token *AccessToken, tracer TraceInterfac
 		client: &http.Client{
 			Transport: tr,
 		},
-		token:  token,
-		tracer: tracer,
+		token:           opts.token,
+		tracer:          opts.tracer,
+		idGenerator:     opts.idGenerator,
+		genIDForCalls:   opts.configOptions.GenIDForCalls,
+		enableHTTPTrace: opts.configOptions.EnableHTTPTrace,
 	}, nil
 }
 
@@ -153,8 +166,9 @@ func (impl *httpClientImpl) sendGetRequest(ctx context.Context, path, query stri
 		return errors.Wrap(err, "construct http request")
 	}
 
-	if impl.tracer != nil {
+	if impl.enableHTTPTrace {
 		series := &TraceSeries{
+			ID:      impl.idGenerator.NextID(),
 			Request: req.Clone(context.TODO()),
 		}
 		req = req.WithContext(httptrace.WithClientTrace(req.Context(), newClientTrace(series)))
@@ -181,8 +195,9 @@ func (impl *httpClientImpl) sendPostRequest(ctx context.Context, path, query str
 		return errors.Wrap(err, "construct http request")
 	}
 
-	if impl.tracer != nil {
+	if impl.enableHTTPTrace {
 		series := &TraceSeries{
+			ID:          impl.idGenerator.NextID(),
 			Request:     req.Clone(context.TODO()),
 			RequestBody: data,
 		}
@@ -211,8 +226,9 @@ func (impl *httpClientImpl) sendPutRequest(ctx context.Context, path, query stri
 		return errors.Wrap(err, "construct http request")
 	}
 
-	if impl.tracer != nil {
+	if impl.enableHTTPTrace {
 		series := &TraceSeries{
+			ID:          impl.idGenerator.NextID(),
 			Request:     req.Clone(context.TODO()),
 			RequestBody: data,
 		}
@@ -236,8 +252,9 @@ func (impl *httpClientImpl) sendDeleteRequest(ctx context.Context, path, query s
 		return errors.Wrap(err, "construct http request")
 	}
 
-	if impl.tracer != nil {
+	if impl.enableHTTPTrace {
 		series := &TraceSeries{
+			ID:      impl.idGenerator.NextID(),
 			Request: req.Clone(context.TODO()),
 		}
 		req = req.WithContext(httptrace.WithClientTrace(req.Context(), newClientTrace(series)))
@@ -256,6 +273,10 @@ func (impl *httpClientImpl) sendRequest(req *http.Request, payloadDecodeFunc pay
 
 	token := "Bearer " + impl.token.Token
 	req.Header.Set("Authorization", token)
+
+	if impl.genIDForCalls {
+		req.Header.Set("X-Request-ID", impl.idGenerator.NextID().String())
+	}
 
 	resp, err := impl.client.Do(req)
 	if err != nil {

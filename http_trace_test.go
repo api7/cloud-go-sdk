@@ -18,6 +18,7 @@ import (
 	"context"
 	"net/http"
 	"testing"
+	"time"
 
 	"github.com/stretchr/testify/assert"
 
@@ -36,6 +37,16 @@ func TestHTTPTrace(t *testing.T) {
 		{
 			name:        "enable http trace",
 			enableTrace: true,
+			createFakeAPI7Cloud: func(t *testing.T) *fake.API7Cloud {
+				api7, err := fake.NewAPI7Cloud()
+				assert.Nil(t, err, "check create fake api7 cloud error")
+				return api7
+			},
+			expectedError: "",
+		},
+		{
+			name:        "disable http trace",
+			enableTrace: false,
 			createFakeAPI7Cloud: func(t *testing.T) *fake.API7Cloud {
 				api7, err := fake.NewAPI7Cloud()
 				assert.Nil(t, err, "check create fake api7 cloud error")
@@ -100,15 +111,23 @@ func TestHTTPTrace(t *testing.T) {
 				},
 			})
 			assert.Nil(t, err, "check application create result")
-
-			<-received
-
-			assert.Len(t, seriel.Events, 3, "check events number")
-			assert.Contains(t, seriel.Events[0].Message, "plan to connect to 127.0.0.1:", "check first event")
-			assert.Contains(t, seriel.Events[1].Message, "connected to 127.0.0.1:", "check second event")
-			assert.Contains(t, seriel.Events[2].Message, "request sent", "check third event")
-			assert.Equal(t, http.MethodPost, seriel.Request.Method, "check request method")
-			assert.Equal(t, "/api/v1/controlplanes/123/apps", seriel.Request.URL.Path, "check request URI path")
+			select {
+			case <-received:
+				if !tc.enableTrace {
+					assert.Fail(t, "received trace series when enable http trace is disabled")
+				}
+				assert.Len(t, seriel.Events, 3, "check events number")
+				assert.NotEqual(t, int(seriel.ID), 0, "check if the ID is not zero")
+				assert.Contains(t, seriel.Events[0].Message, "plan to connect to 127.0.0.1:", "check first event")
+				assert.Contains(t, seriel.Events[1].Message, "connected to 127.0.0.1:", "check second event")
+				assert.Contains(t, seriel.Events[2].Message, "request sent", "check third event")
+				assert.Equal(t, http.MethodPost, seriel.Request.Method, "check request method")
+				assert.Equal(t, "/api/v1/controlplanes/123/apps", seriel.Request.URL.Path, "check request URI path")
+			case <-time.After(time.Second):
+				if tc.enableTrace {
+					assert.Fail(t, "didn't receive trace series when enable http trace is enabled")
+				}
+			}
 		})
 	}
 }

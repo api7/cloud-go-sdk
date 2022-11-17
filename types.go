@@ -68,8 +68,18 @@ func NewInterface(opts *Options) (Interface, error) {
 		return nil, errors.Wrap(err, "new interface")
 	}
 
+	idGenerator, err := NewIDGenerator()
+	if err != nil {
+		return nil, errors.Wrap(err, "new interface")
+	}
+
 	trace := newTracer()
-	cli, err := constructHTTPClient(opts, token, trace)
+	cli, err := constructHTTPClient(&httpClientConstructOptions{
+		configOptions: opts,
+		token:         token,
+		tracer:        trace,
+		idGenerator:   idGenerator,
+	})
 	if err != nil {
 		return nil, errors.Wrap(err, "new interface")
 	}
