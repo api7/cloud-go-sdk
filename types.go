@@ -21,8 +21,10 @@ import (
 
 // Interface is the entrypoint of the Cloud Go SDK.
 type Interface interface {
+	TraceInterface
 	UserInterface
 	AuthInterface
+	ApplicationInterface
 }
 
 // AccessToken is the token used by API7 Cloud to authenticate clients.
@@ -35,8 +37,10 @@ type AccessToken struct {
 }
 
 type impl struct {
+	TraceInterface
 	UserInterface
 	AuthInterface
+	ApplicationInterface
 }
 
 var (
@@ -64,13 +68,26 @@ func NewInterface(opts *Options) (Interface, error) {
 		return nil, errors.Wrap(err, "new interface")
 	}
 
-	cli, err := constructHTTPClient(opts, token)
+	idGenerator, err := NewIDGenerator()
+	if err != nil {
+		return nil, errors.Wrap(err, "new interface")
+	}
+
+	trace := newTracer()
+	cli, err := constructHTTPClient(&httpClientConstructOptions{
+		configOptions: opts,
+		token:         token,
+		tracer:        trace,
+		idGenerator:   idGenerator,
+	})
 	if err != nil {
 		return nil, errors.Wrap(err, "new interface")
 	}
 
 	return &impl{
-		UserInterface: newUser(cli),
-		AuthInterface: newAuth(cli),
+		TraceInterface:       trace,
+		UserInterface:        newUser(cli),
+		AuthInterface:        newAuth(cli),
+		ApplicationInterface: newApplication(cli),
 	}, err
 }

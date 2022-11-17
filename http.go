@@ -23,6 +23,7 @@ import (
 	"io"
 	"net"
 	"net/http"
+	"net/http/httptrace"
 	"net/url"
 
 	"github.com/pkg/errors"
@@ -69,37 +70,48 @@ func jsonPayloadDecodeFactory(container interface{}) payloadDecodeFunc {
 // httpClient is an interface which abstracts behaviors that the Cloud Go SDK
 // will perform.
 type httpClient interface {
-	sendGetRequest(path, query string, payloadDecodeFunc payloadDecodeFunc) error
-	sendPostRequest(path, query string, body interface{}, payloadDecodeFunc payloadDecodeFunc) error
-	sendPutRequest(path, query string, body interface{}, payloadDecodeFunc payloadDecodeFunc) error
-	sendDeleteRequest(path, query string, payloadDecodeFunc payloadDecodeFunc) error
+	sendGetRequest(ctx context.Context, path, query string, payloadDecodeFunc payloadDecodeFunc) error
+	sendPostRequest(ctx context.Context, path, query string, body interface{}, payloadDecodeFunc payloadDecodeFunc) error
+	sendPutRequest(ctx context.Context, path, query string, body interface{}, payloadDecodeFunc payloadDecodeFunc) error
+	sendDeleteRequest(ctx context.Context, path, query string, payloadDecodeFunc payloadDecodeFunc) error
 	sendRequest(req *http.Request, payloadDecodeFunc payloadDecodeFunc) error
 }
 
 type httpClientImpl struct {
-	url    *url.URL
-	token  *AccessToken
-	client *http.Client
+	url             *url.URL
+	token           *AccessToken
+	client          *http.Client
+	tracer          TraceInterface
+	idGenerator     IDGenerator
+	genIDForCalls   bool
+	enableHTTPTrace bool
 }
 
-func constructHTTPClient(opts *Options, token *AccessToken) (httpClient, error) {
-	url, err := url.Parse(opts.ServerAddr)
+type httpClientConstructOptions struct {
+	configOptions *Options
+	token         *AccessToken
+	tracer        TraceInterface
+	idGenerator   IDGenerator
+}
+
+func constructHTTPClient(opts *httpClientConstructOptions) (httpClient, error) {
+	url, err := url.Parse(opts.configOptions.ServerAddr)
 	if err != nil {
 		return nil, errors.Wrap(err, "construct http client")
 	}
 
 	tr := &http.Transport{
 		DialContext: func(ctx context.Context, network string, addr string) (net.Conn, error) {
-			return net.DialTimeout(network, addr, opts.DialTimeout)
+			return net.DialTimeout(network, addr, opts.configOptions.DialTimeout)
 		},
 
 		TLSClientConfig: &tls.Config{
-			ServerName:         opts.ServerNameIndication,
-			InsecureSkipVerify: opts.InsecureSkipTLSVerify,
+			ServerName:         opts.configOptions.ServerNameIndication,
+			InsecureSkipVerify: opts.configOptions.InsecureSkipTLSVerify,
 			MinVersion:         tls.VersionTLS11,
 			MaxVersion:         tls.VersionTLS13,
 		},
-		TLSHandshakeTimeout: opts.TLSHandshakeTimeout,
+		TLSHandshakeTimeout: opts.configOptions.TLSHandshakeTimeout,
 	}
 
 	return &httpClientImpl{
@@ -107,23 +119,68 @@ func constructHTTPClient(opts *Options, token *AccessToken) (httpClient, error) 
 		client: &http.Client{
 			Transport: tr,
 		},
-		token: token,
+		token:           opts.token,
+		tracer:          opts.tracer,
+		idGenerator:     opts.idGenerator,
+		genIDForCalls:   opts.configOptions.GenIDForCalls,
+		enableHTTPTrace: opts.configOptions.EnableHTTPTrace,
 	}, nil
 }
 
-func (impl *httpClientImpl) sendGetRequest(path, query string, payloadDecodeFunc payloadDecodeFunc) error {
+func newClientTrace(series *TraceSeries) *httptrace.ClientTrace {
+	return &httptrace.ClientTrace{
+		GetConn: func(hostPort string) {
+			ev := generateEvent("plan to connect to %s", hostPort)
+			series.appendEvent(ev)
+		},
+		GotConn: func(info httptrace.GotConnInfo) {
+			ev := generateEvent("connected to %s", info.Conn.RemoteAddr())
+			series.appendEvent(ev)
+		},
+		DNSStart: func(info httptrace.DNSStartInfo) {
+			ev := generateEvent("plan to resolve domain %s", info.Host)
+			series.appendEvent(ev)
+		},
+		DNSDone: func(info httptrace.DNSDoneInfo) {
+			ev := generateEvent("resolved domain, ip addrs: %v, error: %v", info.Addrs, info.Err)
+			series.appendEvent(ev)
+		},
+		TLSHandshakeDone: func(state tls.ConnectionState, err error) {
+			ev := generateEvent("TLS handshake done, sni: %s, success: %v", state.ServerName, state.HandshakeComplete)
+			series.appendEvent(ev)
+		},
+		WroteRequest: func(info httptrace.WroteRequestInfo) {
+			ev := generateEvent("request sent, error: %v", info.Err)
+			series.appendEvent(ev)
+		},
+	}
+}
+
+func (impl *httpClientImpl) sendGetRequest(ctx context.Context, path, query string, payloadDecodeFunc payloadDecodeFunc) error {
 	url := *impl.url
 	url.Path = path
 	url.RawQuery = query
 
-	req, err := http.NewRequest(http.MethodGet, url.String(), nil)
+	req, err := http.NewRequestWithContext(ctx, http.MethodGet, url.String(), nil)
 	if err != nil {
 		return errors.Wrap(err, "construct http request")
 	}
+
+	if impl.enableHTTPTrace {
+		series := &TraceSeries{
+			ID:      impl.idGenerator.NextID(),
+			Request: req.Clone(context.TODO()),
+		}
+		req = req.WithContext(httptrace.WithClientTrace(req.Context(), newClientTrace(series)))
+		defer func() {
+			impl.tracer.sendSeries(series)
+		}()
+	}
+
 	return impl.sendRequest(req, payloadDecodeFunc)
 }
 
-func (impl *httpClientImpl) sendPostRequest(path, query string, body interface{}, payloadDecodeFunc payloadDecodeFunc) error {
+func (impl *httpClientImpl) sendPostRequest(ctx context.Context, path, query string, body interface{}, payloadDecodeFunc payloadDecodeFunc) error {
 	url := *impl.url
 	url.Path = path
 	url.RawQuery = query
@@ -133,16 +190,28 @@ func (impl *httpClientImpl) sendPostRequest(path, query string, body interface{}
 		return errors.Wrap(err, "encode http request body")
 	}
 
-	req, err := http.NewRequest(http.MethodPost, url.String(), bytes.NewReader(data))
+	req, err := http.NewRequestWithContext(ctx, http.MethodPost, url.String(), bytes.NewReader(data))
 	if err != nil {
 		return errors.Wrap(err, "construct http request")
+	}
+
+	if impl.enableHTTPTrace {
+		series := &TraceSeries{
+			ID:          impl.idGenerator.NextID(),
+			Request:     req.Clone(context.TODO()),
+			RequestBody: data,
+		}
+		req = req.WithContext(httptrace.WithClientTrace(req.Context(), newClientTrace(series)))
+		defer func() {
+			impl.tracer.sendSeries(series)
+		}()
 	}
 
 	req.Header.Set("Content-Type", "application/json")
 	return impl.sendRequest(req, payloadDecodeFunc)
 }
 
-func (impl *httpClientImpl) sendPutRequest(path, query string, body interface{}, payloadDecodeFunc payloadDecodeFunc) error {
+func (impl *httpClientImpl) sendPutRequest(ctx context.Context, path, query string, body interface{}, payloadDecodeFunc payloadDecodeFunc) error {
 	url := *impl.url
 	url.Path = path
 	url.RawQuery = query
@@ -152,23 +221,46 @@ func (impl *httpClientImpl) sendPutRequest(path, query string, body interface{},
 		return errors.Wrap(err, "encode http request body")
 	}
 
-	req, err := http.NewRequest(http.MethodPut, url.String(), bytes.NewReader(data))
+	req, err := http.NewRequestWithContext(ctx, http.MethodPut, url.String(), bytes.NewReader(data))
 	if err != nil {
 		return errors.Wrap(err, "construct http request")
+	}
+
+	if impl.enableHTTPTrace {
+		series := &TraceSeries{
+			ID:          impl.idGenerator.NextID(),
+			Request:     req.Clone(context.TODO()),
+			RequestBody: data,
+		}
+		req = req.WithContext(httptrace.WithClientTrace(req.Context(), newClientTrace(series)))
+		defer func() {
+			impl.tracer.sendSeries(series)
+		}()
 	}
 
 	req.Header.Set("Content-Type", "application/json")
 	return impl.sendRequest(req, payloadDecodeFunc)
 }
 
-func (impl *httpClientImpl) sendDeleteRequest(path, query string, payloadDecodeFunc payloadDecodeFunc) error {
+func (impl *httpClientImpl) sendDeleteRequest(ctx context.Context, path, query string, payloadDecodeFunc payloadDecodeFunc) error {
 	url := *impl.url
 	url.Path = path
 	url.RawQuery = query
 
-	req, err := http.NewRequest(http.MethodDelete, url.String(), nil)
+	req, err := http.NewRequestWithContext(ctx, http.MethodDelete, url.String(), nil)
 	if err != nil {
 		return errors.Wrap(err, "construct http request")
+	}
+
+	if impl.enableHTTPTrace {
+		series := &TraceSeries{
+			ID:      impl.idGenerator.NextID(),
+			Request: req.Clone(context.TODO()),
+		}
+		req = req.WithContext(httptrace.WithClientTrace(req.Context(), newClientTrace(series)))
+		defer func() {
+			impl.tracer.sendSeries(series)
+		}()
 	}
 
 	return impl.sendRequest(req, payloadDecodeFunc)
@@ -181,6 +273,10 @@ func (impl *httpClientImpl) sendRequest(req *http.Request, payloadDecodeFunc pay
 
 	token := "Bearer " + impl.token.Token
 	req.Header.Set("Authorization", token)
+
+	if impl.genIDForCalls {
+		req.Header.Set("X-Request-ID", impl.idGenerator.NextID().String())
+	}
 
 	resp, err := impl.client.Do(req)
 	if err != nil {

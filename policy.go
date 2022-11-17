@@ -1,4 +1,4 @@
 package cloud
 
-// Policies contains a collect of polices like CORS, Rate Limiting, Authentication and so on.
-type Policies map[string]interface{}
+// Plugins contains a collect of plugins like CORS, Rate Limiting, Authentication and so on.
+type Plugins map[string]interface{}

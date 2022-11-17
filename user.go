@@ -59,7 +59,7 @@ func (impl *userImpl) Me(ctx context.Context) (*User, error) {
 	var user User
 
 	apiPath := path.Join(_apiPathPrefix, "/user/me")
-	if err := impl.client.sendGetRequest(apiPath, "", jsonPayloadDecodeFactory(&user)); err != nil {
+	if err := impl.client.sendGetRequest(ctx, apiPath, "", jsonPayloadDecodeFactory(&user)); err != nil {
 		return nil, errors.Wrap(err, apiPath)
 	}
 	return &user, nil

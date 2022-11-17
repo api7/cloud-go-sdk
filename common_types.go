@@ -16,7 +16,10 @@ package cloud
 
 import (
 	"encoding/json"
+	"errors"
 	"strconv"
+
+	"github.com/sony/sonyflake"
 )
 
 // ID is the type of the id field used for any entities
@@ -51,6 +54,39 @@ func (id *ID) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
+// IDGenerator is an interface for generating IDs.
+type IDGenerator interface {
+	// NextID generates an ID.
+	NextID() ID
+}
+
+type snowflake sonyflake.Sonyflake
+
+func (s *snowflake) NextID() ID {
+	uid, err := (*sonyflake.Sonyflake)(s).NextID()
+	if err != nil {
+		panic("get sony flake uid failed:" + err.Error())
+	}
+	return ID(uid)
+}
+
+// NewIDGenerator returns an IDGenerator object.
+func NewIDGenerator() (IDGenerator, error) {
+	ips, err := getLocalIPs()
+	if err != nil {
+		panic(err)
+	}
+	sf := (*snowflake)(sonyflake.NewSonyflake(sonyflake.Settings{
+		MachineID: func() (u uint16, e error) {
+			return sumIPs(ips), nil
+		},
+	}))
+	if sf == nil {
+		return nil, errors.New("failed to new snoyflake object")
+	}
+	return sf, nil
+}
+
 const (
 	// Any means any status
 	Any = EntityStatus(-1)
@@ -60,6 +96,22 @@ const (
 	Normal = EntityStatus(50)
 	// Deleted indicates the entity has been deleted
 	Deleted = EntityStatus(100)
+)
+
+const (
+	// ProtocolHTTP indicates the HTTP protocol.
+	ProtocolHTTP = "HTTP"
+	// ProtocolHTTPS indicates the HTTPS protocol.
+	ProtocolHTTPS = "HTTPS"
+)
+
+const (
+	// ActiveStatus indicates an object is active, and this object
+	// will be seen by gateway instances.
+	ActiveStatus = iota
+	// InactiveStatus indicates an object is inactive, and this object
+	// won't be seen by gateway instances.
+	InactiveStatus
 )
 
 // EntityStatus is common status definition for any kind of entity:

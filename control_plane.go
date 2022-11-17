@@ -113,8 +113,8 @@ type ControlPlaneSpec struct {
 	ConfigPayload string `json:"-"`
 	// Settings is the settings for the control plane.
 	Settings ControlPlaneSettings `json:"settings"`
-	// Policy settings on Control Plane level
-	Policies Policies `json:"policies,omitempty"`
+	// Plugins settings on Control Plane level
+	Plugins Plugins `json:"policies,omitempty"`
 	// ConfigVersion is the version for the control plane.
 	ConfigVersion int `json:"config_version"`
 }

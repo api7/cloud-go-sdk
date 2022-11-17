@@ -5,6 +5,7 @@
 package cloud
 
 import (
+	context "context"
 	http "net/http"
 	reflect "reflect"
 
@@ -35,59 +36,59 @@ func (m *MockhttpClient) EXPECT() *MockhttpClientMockRecorder {
 }
 
 // sendDeleteRequest mocks base method.
-func (m *MockhttpClient) sendDeleteRequest(path, query string, payloadDecodeFunc payloadDecodeFunc) error {
+func (m *MockhttpClient) sendDeleteRequest(ctx context.Context, path, query string, payloadDecodeFunc payloadDecodeFunc) error {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "sendDeleteRequest", path, query, payloadDecodeFunc)
+	ret := m.ctrl.Call(m, "sendDeleteRequest", ctx, path, query, payloadDecodeFunc)
 	ret0, _ := ret[0].(error)
 	return ret0
 }
 
 // sendDeleteRequest indicates an expected call of sendDeleteRequest.
-func (mr *MockhttpClientMockRecorder) sendDeleteRequest(path, query, payloadDecodeFunc interface{}) *gomock.Call {
+func (mr *MockhttpClientMockRecorder) sendDeleteRequest(ctx, path, query, payloadDecodeFunc interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "sendDeleteRequest", reflect.TypeOf((*MockhttpClient)(nil).sendDeleteRequest), path, query, payloadDecodeFunc)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "sendDeleteRequest", reflect.TypeOf((*MockhttpClient)(nil).sendDeleteRequest), ctx, path, query, payloadDecodeFunc)
 }
 
 // sendGetRequest mocks base method.
-func (m *MockhttpClient) sendGetRequest(path, query string, payloadDecodeFunc payloadDecodeFunc) error {
+func (m *MockhttpClient) sendGetRequest(ctx context.Context, path, query string, payloadDecodeFunc payloadDecodeFunc) error {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "sendGetRequest", path, query, payloadDecodeFunc)
+	ret := m.ctrl.Call(m, "sendGetRequest", ctx, path, query, payloadDecodeFunc)
 	ret0, _ := ret[0].(error)
 	return ret0
 }
 
 // sendGetRequest indicates an expected call of sendGetRequest.
-func (mr *MockhttpClientMockRecorder) sendGetRequest(path, query, payloadDecodeFunc interface{}) *gomock.Call {
+func (mr *MockhttpClientMockRecorder) sendGetRequest(ctx, path, query, payloadDecodeFunc interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "sendGetRequest", reflect.TypeOf((*MockhttpClient)(nil).sendGetRequest), path, query, payloadDecodeFunc)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "sendGetRequest", reflect.TypeOf((*MockhttpClient)(nil).sendGetRequest), ctx, path, query, payloadDecodeFunc)
 }
 
 // sendPostRequest mocks base method.
-func (m *MockhttpClient) sendPostRequest(path, query string, body interface{}, payloadDecodeFunc payloadDecodeFunc) error {
+func (m *MockhttpClient) sendPostRequest(ctx context.Context, path, query string, body interface{}, payloadDecodeFunc payloadDecodeFunc) error {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "sendPostRequest", path, query, body, payloadDecodeFunc)
+	ret := m.ctrl.Call(m, "sendPostRequest", ctx, path, query, body, payloadDecodeFunc)
 	ret0, _ := ret[0].(error)
 	return ret0
 }
 
 // sendPostRequest indicates an expected call of sendPostRequest.
-func (mr *MockhttpClientMockRecorder) sendPostRequest(path, query, body, payloadDecodeFunc interface{}) *gomock.Call {
+func (mr *MockhttpClientMockRecorder) sendPostRequest(ctx, path, query, body, payloadDecodeFunc interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "sendPostRequest", reflect.TypeOf((*MockhttpClient)(nil).sendPostRequest), path, query, body, payloadDecodeFunc)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "sendPostRequest", reflect.TypeOf((*MockhttpClient)(nil).sendPostRequest), ctx, path, query, body, payloadDecodeFunc)
 }
 
 // sendPutRequest mocks base method.
-func (m *MockhttpClient) sendPutRequest(path, query string, body interface{}, payloadDecodeFunc payloadDecodeFunc) error {
+func (m *MockhttpClient) sendPutRequest(ctx context.Context, path, query string, body interface{}, payloadDecodeFunc payloadDecodeFunc) error {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "sendPutRequest", path, query, body, payloadDecodeFunc)
+	ret := m.ctrl.Call(m, "sendPutRequest", ctx, path, query, body, payloadDecodeFunc)
 	ret0, _ := ret[0].(error)
 	return ret0
 }
 
 // sendPutRequest indicates an expected call of sendPutRequest.
-func (mr *MockhttpClientMockRecorder) sendPutRequest(path, query, body, payloadDecodeFunc interface{}) *gomock.Call {
+func (mr *MockhttpClientMockRecorder) sendPutRequest(ctx, path, query, body, payloadDecodeFunc interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "sendPutRequest", reflect.TypeOf((*MockhttpClient)(nil).sendPutRequest), path, query, body, payloadDecodeFunc)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "sendPutRequest", reflect.TypeOf((*MockhttpClient)(nil).sendPutRequest), ctx, path, query, body, payloadDecodeFunc)
 }
 
 // sendRequest mocks base method.
