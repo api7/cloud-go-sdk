@@ -73,6 +73,7 @@ type httpClient interface {
 	sendGetRequest(ctx context.Context, path, query string, payloadDecodeFunc payloadDecodeFunc) error
 	sendPostRequest(ctx context.Context, path, query string, body interface{}, payloadDecodeFunc payloadDecodeFunc) error
 	sendPutRequest(ctx context.Context, path, query string, body interface{}, payloadDecodeFunc payloadDecodeFunc) error
+	sendPatchRequest(ctx context.Context, path, query string, body interface{}, payloadDecodeFunc payloadDecodeFunc) error
 	sendDeleteRequest(ctx context.Context, path, query string, payloadDecodeFunc payloadDecodeFunc) error
 	sendRequest(req *http.Request, payloadDecodeFunc payloadDecodeFunc) error
 }
@@ -222,6 +223,37 @@ func (impl *httpClientImpl) sendPutRequest(ctx context.Context, path, query stri
 	}
 
 	req, err := http.NewRequestWithContext(ctx, http.MethodPut, url.String(), bytes.NewReader(data))
+	if err != nil {
+		return errors.Wrap(err, "construct http request")
+	}
+
+	if impl.enableHTTPTrace {
+		series := &TraceSeries{
+			ID:          impl.idGenerator.NextID(),
+			Request:     req.Clone(context.TODO()),
+			RequestBody: data,
+		}
+		req = req.WithContext(httptrace.WithClientTrace(req.Context(), newClientTrace(series)))
+		defer func() {
+			impl.tracer.sendSeries(series)
+		}()
+	}
+
+	req.Header.Set("Content-Type", "application/json")
+	return impl.sendRequest(req, payloadDecodeFunc)
+}
+
+func (impl *httpClientImpl) sendPatchRequest(ctx context.Context, path, query string, body interface{}, payloadDecodeFunc payloadDecodeFunc) error {
+	url := *impl.url
+	url.Path = path
+	url.RawQuery = query
+
+	data, err := json.Marshal(body)
+	if err != nil {
+		return errors.Wrap(err, "encode http request body")
+	}
+
+	req, err := http.NewRequestWithContext(ctx, http.MethodPatch, url.String(), bytes.NewReader(data))
 	if err != nil {
 		return errors.Wrap(err, "construct http request")
 	}

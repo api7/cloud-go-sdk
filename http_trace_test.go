@@ -105,7 +105,7 @@ func TestHTTPTrace(t *testing.T) {
 					Protocols:  []string{ProtocolHTTP, ProtocolHTTPS},
 					PathPrefix: "/v1",
 				},
-			}, &ApplicationCreateOptions{
+			}, &ResourceCreateOptions{
 				ControlPlane: &ControlPlane{
 					ID: 123,
 				},

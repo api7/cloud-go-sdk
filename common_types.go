@@ -119,3 +119,39 @@ const (
 // * Normal indicates that the entity and associated resources are ready.
 // * Deleted indicates the entity has been deleted.
 type EntityStatus int
+
+// ResourceCreateOptions contains some options for creating an API7 Cloud resource.
+type ResourceCreateOptions struct {
+	// ControlPlane indicates where the resource belongs.
+	// This field should be specified when users want to create resources
+	// in the control plane. e.g., when creating Application, the
+	// ControlPlane.ID should be specified.
+	ControlPlane *ControlPlane
+}
+
+// ResourceUpdateOptions contains some options for updating an API7 Cloud resource.
+type ResourceUpdateOptions struct {
+	// ControlPlane indicates where the resource belongs.
+	// This field should be specified when users want to update resources
+	// in the control plane. e.g., when updating Application, the
+	// ControlPlane.ID should be specified.
+	ControlPlane *ControlPlane
+}
+
+// ResourceDeleteOptions contains some options for deleting an API7 Cloud resource.
+type ResourceDeleteOptions struct {
+	// ControlPlane indicates where the resource is.
+	// This field should be specified when users want to delete resources
+	// in the control plane. e.g., when deleting Application, the
+	// ControlPlane.ID should be specified.
+	ControlPlane *ControlPlane
+}
+
+// ResourceGetOptions contains some options for getting an API7 Cloud resource.
+type ResourceGetOptions struct {
+	// ControlPlane indicates where the resource is.
+	// This field should be specified when users want to get a resource.
+	// in the control plane. e.g., when getting Application, the
+	// ControlPlane.ID should be specified.
+	ControlPlane *ControlPlane
+}

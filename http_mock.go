@@ -63,6 +63,20 @@ func (mr *MockhttpClientMockRecorder) sendGetRequest(ctx, path, query, payloadDe
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "sendGetRequest", reflect.TypeOf((*MockhttpClient)(nil).sendGetRequest), ctx, path, query, payloadDecodeFunc)
 }
 
+// sendPatchRequest mocks base method.
+func (m *MockhttpClient) sendPatchRequest(ctx context.Context, path, query string, body interface{}, payloadDecodeFunc payloadDecodeFunc) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "sendPatchRequest", ctx, path, query, body, payloadDecodeFunc)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// sendPatchRequest indicates an expected call of sendPatchRequest.
+func (mr *MockhttpClientMockRecorder) sendPatchRequest(ctx, path, query, body, payloadDecodeFunc interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "sendPatchRequest", reflect.TypeOf((*MockhttpClient)(nil).sendPatchRequest), ctx, path, query, body, payloadDecodeFunc)
+}
+
 // sendPostRequest mocks base method.
 func (m *MockhttpClient) sendPostRequest(ctx context.Context, path, query string, body interface{}, payloadDecodeFunc payloadDecodeFunc) error {
 	m.ctrl.T.Helper()
