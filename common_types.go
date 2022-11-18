@@ -155,3 +155,12 @@ type ResourceGetOptions struct {
 	// ControlPlane.ID should be specified.
 	ControlPlane *ControlPlane
 }
+
+type ResourceListOptions struct {
+	// ControlPlane indicates where the resources are.
+	// This field should be specified when users want to list resources.
+	// in the control plane. e.g., when iterating Application, the
+	// ControlPlane.ID should be specified.
+	ControlPlane *ControlPlane
+	Pagination   *Pagination
+}
