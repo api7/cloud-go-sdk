@@ -115,7 +115,6 @@ type ApplicationListIterator interface {
 }
 
 type applicationImpl struct {
-	iter   listIterator
 	client httpClient
 }
 
@@ -224,10 +223,10 @@ func (impl *applicationImpl) ListApplications(ctx context.Context, opts *Resourc
 	}
 
 	iter := listIterator{
-		client:   impl.client,
-		resource: "application",
-		path:     path.Join(_apiPathPrefix, "controlplanes", opts.ControlPlane.ID.String(), "apps"),
 		ctx:      ctx,
+		resource: "application",
+		client:   impl.client,
+		path:     path.Join(_apiPathPrefix, "controlplanes", opts.ControlPlane.ID.String(), "apps"),
 		paging:   paging,
 	}
 

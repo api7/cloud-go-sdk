@@ -359,3 +359,49 @@ func TestUnpublishApplication(t *testing.T) {
 		})
 	}
 }
+
+func TestListApplications(t *testing.T) {
+	t.Parallel()
+
+	testCases := []struct {
+		name     string
+		iterator *applicationListIterator
+	}{
+		{
+			name: "create iterator successfully",
+			iterator: &applicationListIterator{
+				iter: listIterator{
+					resource: "application",
+					path:     "/api/v1/controlplanes/123/apps",
+					paging: Pagination{
+						Page:     14,
+						PageSize: 25,
+					},
+					eof: false,
+				},
+			},
+		},
+	}
+
+	for _, tc := range testCases {
+		tc := tc
+		t.Run(tc.name, func(t *testing.T) {
+			// ignore the application check since currently we don't mock it, and the app is always a zero value.
+			raw, err := newApplication(nil).ListApplications(context.Background(), &ResourceListOptions{
+				ControlPlane: &ControlPlane{
+					ID: 123,
+				},
+				Pagination: &Pagination{
+					Page:     14,
+					PageSize: 25,
+				},
+			})
+			assert.Nil(t, err, "check list application error")
+			iter := raw.(*applicationListIterator)
+			assert.Equal(t, tc.iterator.iter.resource, iter.iter.resource, "check resource")
+			assert.Equal(t, tc.iterator.iter.path, iter.iter.path, "check path")
+			assert.Equal(t, tc.iterator.iter.paging.Page, iter.iter.paging.Page, "check page")
+			assert.Equal(t, tc.iterator.iter.paging.PageSize, iter.iter.paging.PageSize, "check page size")
+		})
+	}
+}

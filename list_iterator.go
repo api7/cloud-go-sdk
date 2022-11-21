@@ -38,33 +38,6 @@ type Pagination struct {
 	PageSize int
 }
 
-// Filter contains a series of filter conditions.
-type Filter struct {
-	// Name indicates the match pattern of the object name.
-	// Note the match relationship is "Contains".
-	// e.g., The object name must contain "foo".
-	Name string
-	// Name indicates the match pattern of the object description.
-	// Note the match relationship is "Contains".
-	// e.g., The object description must contain "for proxying".
-	Description string
-	// Label indicates label that the objects should have.
-	Labels []string
-	// ApplicationFilter contains the Application-related filter.
-	// It's only useful when listing Applications.
-	ApplicationFilter *ApplicationFilter
-}
-
-// ApplicationFilter indicates the Application-related filter.
-type ApplicationFilter struct {
-	// PathPrefix indicates the match pattern of the Application Path Prefix.
-	// Note the match relationship is "Contains".
-	PathPrefix string
-	// Host indicates the match pattern of the Application Hosts.
-	// Note the match relationship is "Contains".
-	Host string
-}
-
 type listIterator struct {
 	ctx      context.Context
 	resource string
@@ -82,9 +55,9 @@ func (iter *listIterator) Next() (interface{}, error) {
 
 	if len(iter.items) == 0 {
 		var (
-			query url.Values
 			items []interface{}
 		)
+		query := make(url.Values)
 		query.Set("page", strconv.Itoa(iter.paging.Page))
 		query.Set("page_size", strconv.Itoa(iter.paging.PageSize))
 
