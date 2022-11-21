@@ -35,8 +35,8 @@ type CanaryRelease struct {
 	UpdatedAt time.Time `json:"updated_at"`
 }
 
-// Rule is the rule that used in canary release
-type Rule struct {
+// CanaryReleaseRule is the rule that used in canary release
+type CanaryReleaseRule struct {
 	// Position means where we should get the key.Can be "header", "query" etc.
 	Position string `json:"position"`
 	// Key means the name of the key
@@ -59,8 +59,8 @@ type CanaryReleaseSpec struct {
 	CanaryUpstreamVersion string `json:"canary_upstream_version"`
 	// Percent specifies the percent of request will be transferred to canary upstream. Can be 0-100
 	Percent int `json:"percent,omitempty"`
-	// Rules specify the matched rules of request that should be transferred to canary upstream
-	Rules []Rule `json:"rules,omitempty"`
+	// CanaryReleaseRule specify the matched rules of request that should be transferred to canary upstream
+	CanaryReleaseRule []CanaryReleaseRule `json:"rules,omitempty"`
 }
 
 // CanaryReleaseInterface is the interface for manu
