@@ -127,6 +127,7 @@ type ResourceCreateOptions struct {
 	// in the control plane. e.g., when creating Application, the
 	// ControlPlane.ID should be specified.
 	ControlPlane *ControlPlane
+	Application  *Application
 }
 
 // ResourceUpdateOptions contains some options for updating an API7 Cloud resource.
