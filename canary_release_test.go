@@ -37,7 +37,7 @@ func TestCreateCanaryRelease(t *testing.T) {
 			pendingCr: &CanaryRelease{
 				CanaryReleaseSpec: CanaryReleaseSpec{
 					Name:                  "test canary release",
-					State:                 "pause",
+					State:                 CanaryReleaseStatePause,
 					Type:                  "percent",
 					CanaryUpstreamVersion: "v1",
 					Percent:               50,
@@ -56,7 +56,7 @@ func TestCreateCanaryRelease(t *testing.T) {
 			pendingCr: &CanaryRelease{
 				CanaryReleaseSpec: CanaryReleaseSpec{
 					Name:                  "test canary release",
-					State:                 "pause",
+					State:                 CanaryReleaseStatePause,
 					Type:                  "percent",
 					CanaryUpstreamVersion: "v1",
 					Percent:               50,

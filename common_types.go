@@ -114,6 +114,15 @@ const (
 	InactiveStatus
 )
 
+const (
+	// CanaryReleaseStatePause indicates the pause state of CanaryRelease.
+	CanaryReleaseStatePause = "pause"
+	// CanaryReleaseStateInProgress indicates the in_progress state of CanaryRelease.
+	CanaryReleaseStateInProgress = "in_progress"
+	// CanaryReleaseStateFinish indicates the finish state of CanaryRelease.
+	CanaryReleaseStateFinish = "finish"
+)
+
 // EntityStatus is common status definition for any kind of entity:
 // * Uninitialized represents the entity has been saved to the db, but the associated resource has not yet been ready.
 // * Normal indicates that the entity and associated resources are ready.
@@ -127,7 +136,11 @@ type ResourceCreateOptions struct {
 	// in the control plane. e.g., when creating Application, the
 	// ControlPlane.ID should be specified.
 	ControlPlane *ControlPlane
-	Application  *Application
+	// Application indicates which Application should this resource belong.
+	// This field should be specified when users want to update sub-resources
+	// in the Application. e.g., when creating CanaryRelease, the
+	// Application.ID should be specified.
+	Application *Application
 }
 
 // ResourceUpdateOptions contains some options for updating an API7 Cloud resource.
