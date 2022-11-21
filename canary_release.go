@@ -66,7 +66,7 @@ type CanaryReleaseSpec struct {
 // CanaryReleaseInterface is the interface for manu
 type CanaryReleaseInterface interface {
 	// CreateCanaryRelease creates an API7 Cloud CanaryRelease in the specified Application.
-	// The given `cr` parameter should  specify the desired CanaryRelease specification.
+	// The given `cr` parameter should specify the desired CanaryRelease specification.
 	// Users need to specify the Application in the `opts`.
 	// The returned CanaryRelease will contain the same CanaryRelease specification plus some
 	// management fields and default values
