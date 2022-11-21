@@ -25,6 +25,7 @@ type Interface interface {
 	UserInterface
 	AuthInterface
 	ApplicationInterface
+	APIInterface
 }
 
 // AccessToken is the token used by API7 Cloud to authenticate clients.
@@ -41,6 +42,7 @@ type impl struct {
 	UserInterface
 	AuthInterface
 	ApplicationInterface
+	APIInterface
 }
 
 var (
@@ -89,5 +91,6 @@ func NewInterface(opts *Options) (Interface, error) {
 		UserInterface:        newUser(cli),
 		AuthInterface:        newAuth(cli),
 		ApplicationInterface: newApplication(cli),
+		APIInterface:         newAPI(cli),
 	}, err
 }

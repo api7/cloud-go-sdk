@@ -99,6 +99,18 @@ const (
 )
 
 const (
+	APITypeRest      = "Rest"
+	APITypeWebSocket = "WebSocket"
+)
+
+const (
+	// PathPrefixMatch means the requests' URL path leads with the API path will match this API;
+	PathPrefixMatch = "Prefix"
+	// PathExactMatch means the requests' URL path has to be same to the API path.
+	PathExactMatch = "Exact"
+)
+
+const (
 	// ProtocolHTTP indicates the HTTP protocol.
 	ProtocolHTTP = "HTTP"
 	// ProtocolHTTPS indicates the HTTPS protocol.
@@ -127,6 +139,11 @@ type ResourceCreateOptions struct {
 	// in the control plane. e.g., when creating Application, the
 	// ControlPlane.ID should be specified.
 	ControlPlane *ControlPlane
+	// Application indicates which Application should this resource belong.
+	// This field should be specified when users want to create sub-resources
+	// in the Application. e.g., when creating API, the
+	// Application.ID should be specified.
+	Application *Application
 }
 
 // ResourceUpdateOptions contains some options for updating an API7 Cloud resource.
@@ -136,6 +153,11 @@ type ResourceUpdateOptions struct {
 	// in the control plane. e.g., when updating Application, the
 	// ControlPlane.ID should be specified.
 	ControlPlane *ControlPlane
+	// Application indicates which Application should this resource belong.
+	// This field should be specified when users want to update sub-resources
+	// in the Application. e.g., when updating API, the
+	// Application.ID should be specified.
+	Application *Application
 }
 
 // ResourceDeleteOptions contains some options for deleting an API7 Cloud resource.
@@ -145,6 +167,11 @@ type ResourceDeleteOptions struct {
 	// in the control plane. e.g., when deleting Application, the
 	// ControlPlane.ID should be specified.
 	ControlPlane *ControlPlane
+	// Application indicates which Application should this resource belong.
+	// This field should be specified when users want to delete sub-resources
+	// in the Application. e.g., when deleting API, the
+	// Application.ID should be specified.
+	Application *Application
 }
 
 // ResourceGetOptions contains some options for getting an API7 Cloud resource.
@@ -154,4 +181,9 @@ type ResourceGetOptions struct {
 	// in the control plane. e.g., when getting Application, the
 	// ControlPlane.ID should be specified.
 	ControlPlane *ControlPlane
+	// Application indicates which Application should this resource belong.
+	// This field should be specified when users want to fetch sub-resources
+	// in the Application. e.g., when fetching API, the
+	// Application.ID should be specified.
+	Application *Application
 }
