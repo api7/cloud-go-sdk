@@ -155,3 +155,14 @@ type ResourceGetOptions struct {
 	// ControlPlane.ID should be specified.
 	ControlPlane *ControlPlane
 }
+
+// ResourceListOptions contains some options for listing the same kind of API7 Cloud resources.
+type ResourceListOptions struct {
+	// ControlPlane indicates where the resources are.
+	// This field should be specified when users want to list resources.
+	// in the control plane. e.g., when iterating Application, the
+	// ControlPlane.ID should be specified.
+	ControlPlane *ControlPlane
+	// Pagination indicates the start page and the page size for listing resources.
+	Pagination *Pagination
+}

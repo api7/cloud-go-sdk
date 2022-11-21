@@ -1,0 +1,86 @@
+# Copyright 2022 API7.ai, Inc
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+name: Lint Checkers
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+permissions: read-all
+jobs:
+  changes:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    outputs:
+      src: ${{ steps.filter.outputs.src }}
+      docs: ${{ steps.filter.outputs.docs }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - uses: dorny/paths-filter@v2
+        id: filter
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          filters: |
+            src:
+              - '*.go'
+              - '**/*.go'
+  gofmt:
+    needs: changes
+    if: |
+      (needs.changes.outputs.src == 'true')
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v3
+      - name: Setup Go Environment
+        uses: actions/setup-go@v3
+        with:
+          go-version: '1.19.2'
+      - name: Run gofmt Check
+        working-directory: ./
+        run: |
+          diffs=`gofmt -l .`
+          if [[ -n $diffs ]]; then
+              echo "Files are not formatted by gofmt:"
+              echo $diffs
+              exit 1
+          fi
+  golint:
+    needs: changes
+    if: |
+      (needs.changes.outputs.src == 'true')
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v3
+      - name: Setup Go Environment
+        uses: actions/setup-go@v3
+        with:
+          go-version: '1.19.2'
+      - name: Install jq
+        run: sudo apt install -y jq
+      - uses: actions/setup-node@v3
+        with:
+          node-version: '16'
+      - name: Download golangci-lint
+        run: curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b $(go env GOPATH)/bin v1.50.0
+      - name: Run Golang Linters
+        working-directory: ./
+        run: |
+          PATH=${PATH}:$(go env GOPATH)/bin make lint
