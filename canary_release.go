@@ -43,7 +43,7 @@ type Rule struct {
 	Key string `json:"key"`
 	// Operator means the operator that used between key and value
 	Operator string `json:"operator"`
-	// Value means the values that used in the eval
+	// Value means the values that used in the expression.
 	Value interface{} `json:"value,omitempty"`
 }
 
