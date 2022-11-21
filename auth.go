@@ -32,7 +32,7 @@ type auth struct {
 }
 
 func newAuth(client httpClient) AuthInterface {
-	return nil
+	return &auth{client: client}
 }
 
 func (auth *auth) CreateAccessToken(ctx context.Context, token *AccessToken) (*AccessToken, error) {

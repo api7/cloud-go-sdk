@@ -105,6 +105,7 @@ func TestListIterator(t *testing.T) {
 				item, err := iter.Next()
 				if tc.expectedError != "" {
 					assert.Contains(t, err.Error(), tc.expectedError, "check error for iterating next item")
+					return
 				} else {
 					assert.Nil(t, err, "check if error is nil")
 					if item == nil {
