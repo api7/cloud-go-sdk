@@ -51,7 +51,7 @@ type CanaryReleaseRule struct {
 type CanaryReleaseSpec struct {
 	// Name specify the name of canary release
 	Name string `json:"name"`
-	// State specify the state of the canary release.Can be "pause", "in_progress", "finish"
+	// State specify the state of the canary release.
 	// Optional values can be:
 	// * CanaryReleaseStatePause:  the object state is pause.
 	// * CanaryReleaseStateInProgress:  the object state is in_progress.
