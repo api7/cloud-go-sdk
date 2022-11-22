@@ -34,6 +34,21 @@ func (m *MockInterface) EXPECT() *MockInterfaceMockRecorder {
 	return m.recorder
 }
 
+// CreateAPI mocks base method.
+func (m *MockInterface) CreateAPI(ctx context.Context, api *API, opts *ResourceCreateOptions) (*API, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "CreateAPI", ctx, api, opts)
+	ret0, _ := ret[0].(*API)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// CreateAPI indicates an expected call of CreateAPI.
+func (mr *MockInterfaceMockRecorder) CreateAPI(ctx, api, opts interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateAPI", reflect.TypeOf((*MockInterface)(nil).CreateAPI), ctx, api, opts)
+}
+
 // CreateAccessToken mocks base method.
 func (m *MockInterface) CreateAccessToken(ctx context.Context, token *AccessToken) (*AccessToken, error) {
 	m.ctrl.T.Helper()
@@ -64,6 +79,20 @@ func (mr *MockInterfaceMockRecorder) CreateApplication(ctx, app, opts interface{
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateApplication", reflect.TypeOf((*MockInterface)(nil).CreateApplication), ctx, app, opts)
 }
 
+// DeleteAPI mocks base method.
+func (m *MockInterface) DeleteAPI(ctx context.Context, apiID ID, opts *ResourceDeleteOptions) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "DeleteAPI", ctx, apiID, opts)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// DeleteAPI indicates an expected call of DeleteAPI.
+func (mr *MockInterfaceMockRecorder) DeleteAPI(ctx, apiID, opts interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteAPI", reflect.TypeOf((*MockInterface)(nil).DeleteAPI), ctx, apiID, opts)
+}
+
 // DeleteAccessToken mocks base method.
 func (m *MockInterface) DeleteAccessToken(ctx context.Context, token *AccessToken) error {
 	m.ctrl.T.Helper()
@@ -90,6 +119,21 @@ func (m *MockInterface) DeleteApplication(ctx context.Context, appID ID, opts *R
 func (mr *MockInterfaceMockRecorder) DeleteApplication(ctx, appID, opts interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteApplication", reflect.TypeOf((*MockInterface)(nil).DeleteApplication), ctx, appID, opts)
+}
+
+// GetAPI mocks base method.
+func (m *MockInterface) GetAPI(ctx context.Context, apiID ID, opts *ResourceGetOptions) (*API, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetAPI", ctx, apiID, opts)
+	ret0, _ := ret[0].(*API)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetAPI indicates an expected call of GetAPI.
+func (mr *MockInterfaceMockRecorder) GetAPI(ctx, apiID, opts interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetAPI", reflect.TypeOf((*MockInterface)(nil).GetAPI), ctx, apiID, opts)
 }
 
 // GetApplication mocks base method.
@@ -137,6 +181,21 @@ func (mr *MockInterfaceMockRecorder) Me(ctx interface{}) *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Me", reflect.TypeOf((*MockInterface)(nil).Me), ctx)
 }
 
+// PublishAPI mocks base method.
+func (m *MockInterface) PublishAPI(ctx context.Context, apiID ID, opts *ResourceUpdateOptions) (*API, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "PublishAPI", ctx, apiID, opts)
+	ret0, _ := ret[0].(*API)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// PublishAPI indicates an expected call of PublishAPI.
+func (mr *MockInterfaceMockRecorder) PublishAPI(ctx, apiID, opts interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "PublishAPI", reflect.TypeOf((*MockInterface)(nil).PublishAPI), ctx, apiID, opts)
+}
+
 // PublishApplication mocks base method.
 func (m *MockInterface) PublishApplication(ctx context.Context, appID ID, opts *ResourceUpdateOptions) (*Application, error) {
 	m.ctrl.T.Helper()
@@ -166,6 +225,21 @@ func (mr *MockInterfaceMockRecorder) TraceChan() *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "TraceChan", reflect.TypeOf((*MockInterface)(nil).TraceChan))
 }
 
+// UnpublishAPI mocks base method.
+func (m *MockInterface) UnpublishAPI(ctx context.Context, apiID ID, opts *ResourceUpdateOptions) (*API, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "UnpublishAPI", ctx, apiID, opts)
+	ret0, _ := ret[0].(*API)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// UnpublishAPI indicates an expected call of UnpublishAPI.
+func (mr *MockInterfaceMockRecorder) UnpublishAPI(ctx, apiID, opts interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UnpublishAPI", reflect.TypeOf((*MockInterface)(nil).UnpublishAPI), ctx, apiID, opts)
+}
+
 // UnpublishApplication mocks base method.
 func (m *MockInterface) UnpublishApplication(ctx context.Context, appID ID, opts *ResourceUpdateOptions) (*Application, error) {
 	m.ctrl.T.Helper()
@@ -179,6 +253,21 @@ func (m *MockInterface) UnpublishApplication(ctx context.Context, appID ID, opts
 func (mr *MockInterfaceMockRecorder) UnpublishApplication(ctx, appID, opts interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UnpublishApplication", reflect.TypeOf((*MockInterface)(nil).UnpublishApplication), ctx, appID, opts)
+}
+
+// UpdateAPI mocks base method.
+func (m *MockInterface) UpdateAPI(ctx context.Context, api *API, opts *ResourceUpdateOptions) (*API, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "UpdateAPI", ctx, api, opts)
+	ret0, _ := ret[0].(*API)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// UpdateAPI indicates an expected call of UpdateAPI.
+func (mr *MockInterfaceMockRecorder) UpdateAPI(ctx, api, opts interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateAPI", reflect.TypeOf((*MockInterface)(nil).UpdateAPI), ctx, api, opts)
 }
 
 // UpdateApplication mocks base method.

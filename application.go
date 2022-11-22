@@ -55,7 +55,7 @@ type ApplicationSpec struct {
 	PathPrefix string `json:"path_prefix"`
 	// Hosts contains all the hosts that this Application uses.
 	Hosts []string `json:"hosts"`
-	// Plugins settings on Application level
+	// Plugins settings on Application level.
 	Plugins Plugins `json:"plugins,omitempty"`
 	// Upstream settings for the Application
 	Upstreams []UpstreamAndVersion `json:"upstreams"`
@@ -91,13 +91,13 @@ type ApplicationInterface interface {
 	// Users need to specify the ControlPlane in the `opts`.
 	GetApplication(ctx context.Context, appID ID, opts *ResourceGetOptions) (*Application, error)
 	// PublishApplication publishes the Application in the specified control plane (which is
-	// a shortcut of UpdateApplication and set ApplicationSpec.active to ActiveStatus).
+	// a shortcut of UpdateApplication and set ApplicationSpec.Active to ActiveStatus).
 	// The given `appID` parameter should specify the Application that you want to operate.
 	// Users need to specify the ControlPlane in the `opts`.
 	// The updated Application will be returned and the ApplicationSpec.Active field should be ActiveStatus.
 	PublishApplication(ctx context.Context, appID ID, opts *ResourceUpdateOptions) (*Application, error)
 	// UnpublishApplication publishes the Application in the specified control plane (which is
-	// a shortcut of UpdateApplication and set ApplicationSpec.active to InactiveStatus).
+	// a shortcut of UpdateApplication and set ApplicationSpec.Active to InactiveStatus).
 	// The given `appID` parameter should specify the Application that you want to operate.
 	// Users need to specify the ControlPlane in the `opts`.
 	// The updated Application will be returned and the ApplicationSpec.Active field should be InactiveStatus.
