@@ -127,12 +127,12 @@ const (
 )
 
 const (
-	// CanaryReleaseStatePause indicates the pause state of CanaryRelease.
-	CanaryReleaseStatePause = "pause"
+	// CanaryReleaseStatePaused indicates the pause state of CanaryRelease.
+	CanaryReleaseStatePaused = "pause"
 	// CanaryReleaseStateInProgress indicates the in_progress state of CanaryRelease.
 	CanaryReleaseStateInProgress = "in_progress"
-	// CanaryReleaseStateFinish indicates the finish state of CanaryRelease.
-	CanaryReleaseStateFinish = "finish"
+	// CanaryReleaseStateFinished indicates the finish state of CanaryRelease.
+	CanaryReleaseStateFinished = "finish"
 )
 
 // EntityStatus is common status definition for any kind of entity:
