@@ -68,7 +68,7 @@ type ApplicationSpec struct {
 	Active int `json:"active"`
 }
 
-// ApplicationInterface is the interface for manu
+// ApplicationInterface is the interface for manipulating Applications.
 type ApplicationInterface interface {
 	// CreateApplication creates an API7 Cloud Application in the specified control plane.
 	// The given `app` parameter should specify the desired Application specification.
