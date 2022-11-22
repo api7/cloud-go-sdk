@@ -15,8 +15,9 @@
 package cloud
 
 import (
-	"github.com/pkg/errors"
 	"time"
+
+	"github.com/pkg/errors"
 )
 
 // Interface is the entrypoint of the Cloud Go SDK.

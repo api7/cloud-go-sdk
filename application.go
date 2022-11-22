@@ -102,10 +102,35 @@ type ApplicationInterface interface {
 	// Users need to specify the ControlPlane in the `opts`.
 	// The updated Application will be returned and the ApplicationSpec.Active field should be InactiveStatus.
 	UnpublishApplication(ctx context.Context, appID ID, opts *ResourceUpdateOptions) (*Application, error)
+	// ListApplications returns an iterator for listing Application in the specified control plane with the
+	// given list conditions.
+	// Users need to specify the ControlPlane, Paging conditions and ApplicationFilter in the `opts`.
+	ListApplications(ctx context.Context, opts *ResourceListOptions) (ApplicationListIterator, error)
+}
+
+// ApplicationListIterator is an iterator for listing Applications.
+type ApplicationListIterator interface {
+	// Next returns the next Application according to the filter conditions.
+	Next() (*Application, error)
 }
 
 type applicationImpl struct {
 	client httpClient
+}
+
+type applicationListIterator struct {
+	iter listIterator
+}
+
+func (iter *applicationListIterator) Next() (*Application, error) {
+	app, err := iter.iter.Next()
+	if err != nil {
+		return nil, err
+	}
+	if app == nil {
+		return nil, nil
+	}
+	return app.(*Application), nil
 }
 
 func newApplication(cli httpClient) ApplicationInterface {
@@ -180,4 +205,30 @@ func (impl *applicationImpl) UnpublishApplication(ctx context.Context, appID ID,
 		return nil, err
 	}
 	return &app, nil
+}
+
+func (impl *applicationImpl) ListApplications(ctx context.Context, opts *ResourceListOptions) (ApplicationListIterator, error) {
+	var paging Pagination
+
+	if opts.Pagination != nil {
+		paging = *opts.Pagination
+		if paging.Page == 0 {
+			paging.Page = DefaultPagination.Page
+		}
+		if paging.PageSize == 0 {
+			paging.PageSize = DefaultPagination.PageSize
+		}
+	} else {
+		paging = DefaultPagination
+	}
+
+	iter := listIterator{
+		ctx:      ctx,
+		resource: "application",
+		client:   impl.client,
+		path:     path.Join(_apiPathPrefix, "controlplanes", opts.ControlPlane.ID.String(), "apps"),
+		paging:   paging,
+	}
+
+	return &applicationListIterator{iter: iter}, nil
 }

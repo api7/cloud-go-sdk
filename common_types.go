@@ -126,6 +126,15 @@ const (
 	InactiveStatus
 )
 
+const (
+	// CanaryReleaseStatePause indicates the pause state of CanaryRelease.
+	CanaryReleaseStatePause = "pause"
+	// CanaryReleaseStateInProgress indicates the in_progress state of CanaryRelease.
+	CanaryReleaseStateInProgress = "in_progress"
+	// CanaryReleaseStateFinish indicates the finish state of CanaryRelease.
+	CanaryReleaseStateFinish = "finish"
+)
+
 // EntityStatus is common status definition for any kind of entity:
 // * Uninitialized represents the entity has been saved to the db, but the associated resource has not yet been ready.
 // * Normal indicates that the entity and associated resources are ready.
@@ -140,8 +149,8 @@ type ResourceCreateOptions struct {
 	// ControlPlane.ID should be specified.
 	ControlPlane *ControlPlane
 	// Application indicates which Application should this resource belong.
-	// This field should be specified when users want to create sub-resources
-	// in the Application. e.g., when creating API, the
+	// This field should be specified when users want to update sub-resources
+	// in the Application. e.g., when creating API, CanaryRelease, the
 	// Application.ID should be specified.
 	Application *Application
 }
@@ -186,4 +195,15 @@ type ResourceGetOptions struct {
 	// in the Application. e.g., when fetching API, the
 	// Application.ID should be specified.
 	Application *Application
+}
+
+// ResourceListOptions contains some options for listing the same kind of API7 Cloud resources.
+type ResourceListOptions struct {
+	// ControlPlane indicates where the resources are.
+	// This field should be specified when users want to list resources.
+	// in the control plane. e.g., when iterating Application, the
+	// ControlPlane.ID should be specified.
+	ControlPlane *ControlPlane
+	// Pagination indicates the start page and the page size for listing resources.
+	Pagination *Pagination
 }
