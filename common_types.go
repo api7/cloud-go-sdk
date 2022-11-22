@@ -204,6 +204,11 @@ type ResourceListOptions struct {
 	// in the control plane. e.g., when iterating Application, the
 	// ControlPlane.ID should be specified.
 	ControlPlane *ControlPlane
+	// Application indicates which Application should this resource belong.
+	// This field should be specified when users want to list sub-resources
+	// in the Application. e.g., when listing API, the
+	// Application.ID should be specified.
+	Application *Application
 	// Pagination indicates the start page and the page size for listing resources.
 	Pagination *Pagination
 }
