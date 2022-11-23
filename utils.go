@@ -56,3 +56,17 @@ func sumIPs(ips []net.IP) uint16 {
 	}
 	return uint16(total)
 }
+
+func mergePagination(paging *Pagination) Pagination {
+	if paging != nil {
+		if paging.Page == 0 {
+			paging.Page = DefaultPagination.Page
+		}
+		if paging.PageSize == 0 {
+			paging.PageSize = DefaultPagination.PageSize
+		}
+		return *paging
+	} else {
+		return DefaultPagination
+	}
+}

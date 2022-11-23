@@ -72,7 +72,7 @@ type APIPath struct {
 	// Path is the URL path (after the Application path prefix) that the API will listen,
 	// when Path is empty, the whole path is equal to the Application path prefix.
 	Path string `json:"path"`
-	// PathType determines the match type, by default it's prefix match.
+	// PathType determines the match type, by default it is prefix match.
 	// Optional values can be:
 	// * PathPrefixMatch means the requests' URL path leads with the API path will match this API;
 	// * PathExactMatch means the requests' URL path has to be same to the API path.
@@ -113,10 +113,35 @@ type APIInterface interface {
 	// Users need to specify the Application in the `opts`.
 	// The updated APi will be returned and the APISpec.Active field should be InactiveStatus.
 	UnpublishAPI(ctx context.Context, apiID ID, opts *ResourceUpdateOptions) (*API, error)
+	// ListAPIs returns an iterator for listing APIs in the specified Application with the
+	// given list conditions.
+	// Users need to specify the Application, Paging conditions in the `opts`.
+	ListAPIs(ctx context.Context, opts *ResourceListOptions) (APIListIterator, error)
+}
+
+// APIListIterator is an iterator for listing APIs.
+type APIListIterator interface {
+	// Next returns the next API according to the filter conditions.
+	Next() (*API, error)
 }
 
 type apiImpl struct {
 	client httpClient
+}
+
+type apiListIterator struct {
+	iter listIterator
+}
+
+func (iter *apiListIterator) Next() (*API, error) {
+	api, err := iter.iter.Next()
+	if err != nil {
+		return nil, err
+	}
+	if api == nil {
+		return nil, nil
+	}
+	return api.(*API), nil
 }
 
 func newAPI(cli httpClient) APIInterface {
@@ -191,4 +216,16 @@ func (impl *apiImpl) UnpublishAPI(ctx context.Context, apiID ID, opts *ResourceU
 		return nil, err
 	}
 	return &api, nil
+}
+
+func (impl *apiImpl) ListAPIs(ctx context.Context, opts *ResourceListOptions) (APIListIterator, error) {
+	iter := listIterator{
+		ctx:      ctx,
+		resource: "api",
+		client:   impl.client,
+		path:     path.Join(_apiPathPrefix, "apps", opts.Application.ID.String(), "apis"),
+		paging:   mergePagination(opts.Pagination),
+	}
+
+	return &apiListIterator{iter: iter}, nil
 }

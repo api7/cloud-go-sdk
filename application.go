@@ -102,9 +102,9 @@ type ApplicationInterface interface {
 	// Users need to specify the ControlPlane in the `opts`.
 	// The updated Application will be returned and the ApplicationSpec.Active field should be InactiveStatus.
 	UnpublishApplication(ctx context.Context, appID ID, opts *ResourceUpdateOptions) (*Application, error)
-	// ListApplications returns an iterator for listing Application in the specified control plane with the
+	// ListApplications returns an iterator for listing Applications in the specified control plane with the
 	// given list conditions.
-	// Users need to specify the ControlPlane, Paging conditions and ApplicationFilter in the `opts`.
+	// Users need to specify the ControlPlane, Paging conditions in the `opts`.
 	ListApplications(ctx context.Context, opts *ResourceListOptions) (ApplicationListIterator, error)
 }
 
@@ -208,26 +208,12 @@ func (impl *applicationImpl) UnpublishApplication(ctx context.Context, appID ID,
 }
 
 func (impl *applicationImpl) ListApplications(ctx context.Context, opts *ResourceListOptions) (ApplicationListIterator, error) {
-	var paging Pagination
-
-	if opts.Pagination != nil {
-		paging = *opts.Pagination
-		if paging.Page == 0 {
-			paging.Page = DefaultPagination.Page
-		}
-		if paging.PageSize == 0 {
-			paging.PageSize = DefaultPagination.PageSize
-		}
-	} else {
-		paging = DefaultPagination
-	}
-
 	iter := listIterator{
 		ctx:      ctx,
 		resource: "application",
 		client:   impl.client,
 		path:     path.Join(_apiPathPrefix, "controlplanes", opts.ControlPlane.ID.String(), "apps"),
-		paging:   paging,
+		paging:   mergePagination(opts.Pagination),
 	}
 
 	return &applicationListIterator{iter: iter}, nil
