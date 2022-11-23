@@ -37,7 +37,7 @@ func TestCreateCanaryRelease(t *testing.T) {
 			pendingCr: &CanaryRelease{
 				CanaryReleaseSpec: CanaryReleaseSpec{
 					Name:                  "test canary release",
-					State:                 CanaryReleaseStatePause,
+					State:                 CanaryReleaseStatePaused,
 					Type:                  "percent",
 					CanaryUpstreamVersion: "v1",
 					Percent:               50,
@@ -56,7 +56,7 @@ func TestCreateCanaryRelease(t *testing.T) {
 			pendingCr: &CanaryRelease{
 				CanaryReleaseSpec: CanaryReleaseSpec{
 					Name:                  "test canary release",
-					State:                 CanaryReleaseStatePause,
+					State:                 CanaryReleaseStatePaused,
 					Type:                  "percent",
 					CanaryUpstreamVersion: "v1",
 					Percent:               50,
@@ -83,6 +83,156 @@ func TestCreateCanaryRelease(t *testing.T) {
 			})
 			if tc.expectedError == "" {
 				assert.Nil(t, err, "check canary release create error")
+			} else {
+				assert.Contains(t, err.Error(), tc.expectedError, "check the error details")
+			}
+		})
+	}
+}
+
+func TestStartCanaryRelease(t *testing.T) {
+	t.Parallel()
+
+	testCases := []struct {
+		name          string
+		expectedError string
+		mockFunc      func(t *testing.T) httpClient
+	}{
+		{
+			name: "successfully",
+			mockFunc: func(t *testing.T) httpClient {
+				ctrl := gomock.NewController(t)
+				cli := NewMockhttpClient(ctrl)
+				cli.EXPECT().sendPatchRequest(gomock.Any(), path.Join(_apiPathPrefix, "/apps/1/canary_releases/12"), "", []byte(`{"state":"in_progress"}`), gomock.Any()).Return(nil)
+				return cli
+
+			},
+			expectedError: "",
+		},
+		{
+			name: "mock error",
+			mockFunc: func(t *testing.T) httpClient {
+				ctrl := gomock.NewController(t)
+				cli := NewMockhttpClient(ctrl)
+				cli.EXPECT().sendPatchRequest(gomock.Any(), path.Join(_apiPathPrefix, "/apps/1/canary_releases/12"), "", []byte(`{"state":"in_progress"}`), gomock.Any()).Return(errors.New("mock error"))
+				return cli
+			},
+			expectedError: "mock error",
+		},
+	}
+
+	for _, tc := range testCases {
+		tc := tc
+		t.Run(tc.name, func(t *testing.T) {
+			cli := tc.mockFunc(t)
+			// ignore the canary release check since currently we don't mock it, and the app is always a zero value.
+			_, err := newCanaryRelease(cli).StartCanaryRelease(context.Background(), 12, &ResourceUpdateOptions{
+				Application: &Application{
+					ID: 1,
+				},
+			})
+			if tc.expectedError == "" {
+				assert.Nil(t, err, "check start canary release error")
+			} else {
+				assert.Contains(t, err.Error(), tc.expectedError, "check the error details")
+			}
+		})
+	}
+}
+
+func TestPauseCanaryRelease(t *testing.T) {
+	t.Parallel()
+
+	testCases := []struct {
+		name          string
+		expectedError string
+		mockFunc      func(t *testing.T) httpClient
+	}{
+		{
+			name: "successfully",
+			mockFunc: func(t *testing.T) httpClient {
+				ctrl := gomock.NewController(t)
+				cli := NewMockhttpClient(ctrl)
+				cli.EXPECT().sendPatchRequest(gomock.Any(), path.Join(_apiPathPrefix, "/apps/1/canary_releases/12"), "", []byte(`{"state":"pause"}`), gomock.Any()).Return(nil)
+				return cli
+
+			},
+			expectedError: "",
+		},
+		{
+			name: "mock error",
+			mockFunc: func(t *testing.T) httpClient {
+				ctrl := gomock.NewController(t)
+				cli := NewMockhttpClient(ctrl)
+				cli.EXPECT().sendPatchRequest(gomock.Any(), path.Join(_apiPathPrefix, "/apps/1/canary_releases/12"), "", []byte(`{"state":"pause"}`), gomock.Any()).Return(errors.New("mock error"))
+				return cli
+			},
+			expectedError: "mock error",
+		},
+	}
+
+	for _, tc := range testCases {
+		tc := tc
+		t.Run(tc.name, func(t *testing.T) {
+			cli := tc.mockFunc(t)
+			// ignore the canary release check since currently we don't mock it, and the app is always a zero value.
+			_, err := newCanaryRelease(cli).PauseCanaryRelease(context.Background(), 12, &ResourceUpdateOptions{
+				Application: &Application{
+					ID: 1,
+				},
+			})
+			if tc.expectedError == "" {
+				assert.Nil(t, err, "check pause canary release error")
+			} else {
+				assert.Contains(t, err.Error(), tc.expectedError, "check the error details")
+			}
+		})
+	}
+}
+
+func TestFinishCanaryRelease(t *testing.T) {
+	t.Parallel()
+
+	testCases := []struct {
+		name          string
+		expectedError string
+		mockFunc      func(t *testing.T) httpClient
+	}{
+		{
+			name: "successfully",
+			mockFunc: func(t *testing.T) httpClient {
+				ctrl := gomock.NewController(t)
+				cli := NewMockhttpClient(ctrl)
+				cli.EXPECT().sendPatchRequest(gomock.Any(), path.Join(_apiPathPrefix, "/apps/1/canary_releases/12"), "", []byte(`{"state":"finish"}`), gomock.Any()).Return(nil)
+				return cli
+
+			},
+			expectedError: "",
+		},
+		{
+			name: "mock error",
+			mockFunc: func(t *testing.T) httpClient {
+				ctrl := gomock.NewController(t)
+				cli := NewMockhttpClient(ctrl)
+				cli.EXPECT().sendPatchRequest(gomock.Any(), path.Join(_apiPathPrefix, "/apps/1/canary_releases/12"), "", []byte(`{"state":"finish"}`), gomock.Any()).Return(errors.New("mock error"))
+				return cli
+			},
+			expectedError: "mock error",
+		},
+	}
+
+	for _, tc := range testCases {
+		tc := tc
+		t.Run(tc.name, func(t *testing.T) {
+			cli := tc.mockFunc(t)
+			// ignore the canary release check since currently we don't mock it, and the app is always a zero value.
+			_, err := newCanaryRelease(cli).FinishCanaryRelease(context.Background(), 12, &ResourceUpdateOptions{
+				Application: &Application{
+					ID: 1,
+				},
+			})
+			if tc.expectedError == "" {
+				assert.Nil(t, err, "check finish canary release error")
 			} else {
 				assert.Contains(t, err.Error(), tc.expectedError, "check the error details")
 			}

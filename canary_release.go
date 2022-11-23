@@ -16,6 +16,7 @@ package cloud
 
 import (
 	"context"
+	"fmt"
 	"path"
 	"time"
 )
@@ -69,12 +70,34 @@ type CanaryReleaseSpec struct {
 
 // CanaryReleaseInterface is the interface for manu
 type CanaryReleaseInterface interface {
-	// CreateCanaryRelease creates an API7 Cloud CanaryRelease in the specified Application.
-	// The given `cr` parameter should specify the desired CanaryRelease specification.
+	// CreateCanaryRelease creates an API7 Cloud Canary Release in the specified Application.
+	// The given `cr` parameter should specify the desired Canary Release specification.
 	// Users need to specify the Application in the `opts`.
 	// The returned CanaryRelease will contain the same CanaryRelease specification plus some
 	// management fields and default values
 	CreateCanaryRelease(ctx context.Context, cr *CanaryRelease, opts *ResourceCreateOptions) (*CanaryRelease, error)
+
+	// StartCanaryRelease makes the Canary Release in progress in the specified Application
+	// (a shortcut of UpdateCanaryRelease and set CanaryReleaseSpec.State to CanaryReleaseStateInProgress).
+	// The given `crID` parameter should specify the desired Canary Release ID.
+	// Users need to specify the Application in the `opts`.
+	// The updated Canary Release will be returned and the CanaryReleaseSpec.State field should be
+	// CanaryReleaseStateInProgress.
+	StartCanaryRelease(ctx context.Context, crID ID, opts *ResourceUpdateOptions) (*CanaryRelease, error)
+	// PauseCanaryRelease makes the Canary Release paused in the specified Application
+	// (a shortcut of UpdateCanaryRelease and set CanaryReleaseSpec.State to CanaryReleaseStatePaused).
+	// The given `crID` parameter should specify the desired Canary Release ID.
+	// Users need to specify the Application in the `opts`.
+	// The updated Canary Release will be returned and the CanaryReleaseSpec.State field should be
+	// CanaryReleaseStatePaused.
+	PauseCanaryRelease(ctx context.Context, crID ID, opts *ResourceUpdateOptions) (*CanaryRelease, error)
+	// FinishCanaryRelease makes the Canary Release finished in the specified Application
+	// (a shortcut of UpdateCanaryRelease and set CanaryReleaseSpec.State to CanaryReleaseStateFinished).
+	// The given `crID` parameter should specify the desired Canary Release ID.
+	// Users need to specify the Application in the `opts`.
+	// The updated Canary Release will be returned and the CanaryReleaseSpec.State field should be
+	// CanaryReleaseStateFinished.
+	FinishCanaryRelease(ctx context.Context, crID ID, opts *ResourceUpdateOptions) (*CanaryRelease, error)
 }
 
 type canaryReleaseImpl struct {
@@ -97,4 +120,43 @@ func (impl *canaryReleaseImpl) CreateCanaryRelease(ctx context.Context, cr *Cana
 		return nil, err
 	}
 	return &createCr, nil
+}
+
+func (impl *canaryReleaseImpl) StartCanaryRelease(ctx context.Context, crID ID, opts *ResourceUpdateOptions) (*CanaryRelease, error) {
+	var cr CanaryRelease
+
+	appID := opts.Application.ID
+	uri := path.Join(_apiPathPrefix, "apps", appID.String(), "canary_releases", crID.String())
+	body := []byte(fmt.Sprintf(`{"state":"%s"}`, CanaryReleaseStateInProgress))
+	err := impl.client.sendPatchRequest(ctx, uri, "", body, jsonPayloadDecodeFactory(&cr))
+	if err != nil {
+		return nil, err
+	}
+	return &cr, nil
+}
+
+func (impl *canaryReleaseImpl) PauseCanaryRelease(ctx context.Context, crID ID, opts *ResourceUpdateOptions) (*CanaryRelease, error) {
+	var cr CanaryRelease
+
+	appID := opts.Application.ID
+	uri := path.Join(_apiPathPrefix, "apps", appID.String(), "canary_releases", crID.String())
+	body := []byte(fmt.Sprintf(`{"state":"%s"}`, CanaryReleaseStatePaused))
+	err := impl.client.sendPatchRequest(ctx, uri, "", body, jsonPayloadDecodeFactory(&cr))
+	if err != nil {
+		return nil, err
+	}
+	return &cr, nil
+}
+
+func (impl *canaryReleaseImpl) FinishCanaryRelease(ctx context.Context, crID ID, opts *ResourceUpdateOptions) (*CanaryRelease, error) {
+	var cr CanaryRelease
+
+	appID := opts.Application.ID
+	uri := path.Join(_apiPathPrefix, "apps", appID.String(), "canary_releases", crID.String())
+	body := []byte(fmt.Sprintf(`{"state":"%s"}`, CanaryReleaseStateFinished))
+	err := impl.client.sendPatchRequest(ctx, uri, "", body, jsonPayloadDecodeFactory(&cr))
+	if err != nil {
+		return nil, err
+	}
+	return &cr, nil
 }
