@@ -199,7 +199,7 @@ func TestFinishCanaryRelease(t *testing.T) {
 		mockFunc      func(t *testing.T) httpClient
 	}{
 		{
-			name: " successfully",
+			name: "successfully",
 			mockFunc: func(t *testing.T) httpClient {
 				ctrl := gomock.NewController(t)
 				cli := NewMockhttpClient(ctrl)
