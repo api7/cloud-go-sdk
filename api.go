@@ -219,26 +219,12 @@ func (impl *apiImpl) UnpublishAPI(ctx context.Context, apiID ID, opts *ResourceU
 }
 
 func (impl *apiImpl) ListAPIs(ctx context.Context, opts *ResourceListOptions) (APIListIterator, error) {
-	var paging Pagination
-
-	if opts.Pagination != nil {
-		paging = *opts.Pagination
-		if paging.Page == 0 {
-			paging.Page = DefaultPagination.Page
-		}
-		if paging.PageSize == 0 {
-			paging.PageSize = DefaultPagination.PageSize
-		}
-	} else {
-		paging = DefaultPagination
-	}
-
 	iter := listIterator{
 		ctx:      ctx,
 		resource: "api",
 		client:   impl.client,
 		path:     path.Join(_apiPathPrefix, "apps", opts.Application.ID.String(), "apis"),
-		paging:   paging,
+		paging:   mergePagination(opts.Pagination),
 	}
 
 	return &apiListIterator{iter: iter}, nil

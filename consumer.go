@@ -136,26 +136,12 @@ func (impl *consumerImpl) GetConsumer(ctx context.Context, consumerID ID, opts *
 }
 
 func (impl *consumerImpl) ListConsumers(ctx context.Context, opts *ResourceListOptions) (ConsumerListIterator, error) {
-	var paging Pagination
-
-	if opts.Pagination != nil {
-		paging = *opts.Pagination
-		if paging.Page == 0 {
-			paging.Page = DefaultPagination.Page
-		}
-		if paging.PageSize == 0 {
-			paging.PageSize = DefaultPagination.PageSize
-		}
-	} else {
-		paging = DefaultPagination
-	}
-
 	iter := listIterator{
 		ctx:      ctx,
 		resource: "consumer",
 		client:   impl.client,
 		path:     path.Join(_apiPathPrefix, "controlplanes", opts.ControlPlane.ID.String(), "consumers"),
-		paging:   paging,
+		paging:   mergePagination(opts.Pagination),
 	}
 
 	return &consumerListIterator{iter: iter}, nil

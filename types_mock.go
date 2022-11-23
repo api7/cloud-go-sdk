@@ -151,6 +151,21 @@ func (mr *MockInterfaceMockRecorder) GetApplication(ctx, appID, opts interface{}
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetApplication", reflect.TypeOf((*MockInterface)(nil).GetApplication), ctx, appID, opts)
 }
 
+// ListAPIs mocks base method.
+func (m *MockInterface) ListAPIs(ctx context.Context, opts *ResourceListOptions) (APIListIterator, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "ListAPIs", ctx, opts)
+	ret0, _ := ret[0].(APIListIterator)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// ListAPIs indicates an expected call of ListAPIs.
+func (mr *MockInterfaceMockRecorder) ListAPIs(ctx, opts interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListAPIs", reflect.TypeOf((*MockInterface)(nil).ListAPIs), ctx, opts)
+}
+
 // ListApplications mocks base method.
 func (m *MockInterface) ListApplications(ctx context.Context, opts *ResourceListOptions) (ApplicationListIterator, error) {
 	m.ctrl.T.Helper()
