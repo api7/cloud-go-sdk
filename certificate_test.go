@@ -50,7 +50,7 @@ func TestCreateCertificate(t *testing.T) {
 					Certificate: string(cert),
 					PrivateKey:  string(key),
 					Labels:      nil,
-					Type:        "Client",
+					Type:        ClientCertificate,
 				},
 			},
 			mockFunc: func(t *testing.T) httpClient {
@@ -67,9 +67,9 @@ func TestCreateCertificate(t *testing.T) {
 			pendingCert: &Certificate{
 				CertificateSpec: CertificateSpec{
 					Certificate: "invalid cert",
-					PrivateKey:  "invalid  key",
+					PrivateKey:  "invalid key",
 					Labels:      nil,
-					Type:        "Client",
+					Type:        ClientCertificate,
 				},
 			},
 			mockFunc: func(t *testing.T) httpClient {
@@ -103,7 +103,16 @@ func TestCreateCertificate(t *testing.T) {
 
 func TestUpdateCertificate(t *testing.T) {
 	t.Parallel()
-
+	key, err := os.ReadFile("./testdata/test.key")
+	if err != nil {
+		assert.Nil(t, err, "read test key error")
+		return
+	}
+	cert, err := os.ReadFile("./testdata/test.pem")
+	if err != nil {
+		assert.Nil(t, err, "read test cert error")
+		return
+	}
 	testCases := []struct {
 		name          string
 		pendingCert   *Certificate
@@ -114,10 +123,10 @@ func TestUpdateCertificate(t *testing.T) {
 			name: "update successfully",
 			pendingCert: &Certificate{
 				CertificateSpec: CertificateSpec{
-					Certificate: "invalid cert",
-					PrivateKey:  "invalid  key",
+					Certificate: string(cert),
+					PrivateKey:  string(key),
 					Labels:      nil,
-					Type:        "Client",
+					Type:        ClientCertificate,
 				},
 				ID: 12,
 			},
@@ -137,7 +146,7 @@ func TestUpdateCertificate(t *testing.T) {
 					Certificate: "invalid cert",
 					PrivateKey:  "invalid  key",
 					Labels:      nil,
-					Type:        "Client",
+					Type:        ClientCertificate,
 				},
 				ID: 12,
 			},

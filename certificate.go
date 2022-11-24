@@ -37,6 +37,16 @@ type Certificate struct {
 	UpdatedAt time.Time `json:"updated_at"`
 }
 
+// CertificateType is the type of log collection
+type CertificateType string
+
+const (
+	// ServerCertificate means server certificate
+	ServerCertificate CertificateType = "server"
+	// ClientCertificate means client certificate
+	ClientCertificate CertificateType = "client"
+)
+
 // CertificateSpec is the specification of the Certificate
 type CertificateSpec struct {
 	// The certificate in PEM format.
@@ -48,7 +58,7 @@ type CertificateSpec struct {
 	// Labels are used for resource classification and indexing.
 	Labels []string `json:"labels,omitempty"`
 	// Type is the certificate type, it can be "server" or "client", the default is "server".
-	Type string `json:"type,omitempty"`
+	Type CertificateType `json:"type,omitempty"`
 }
 
 // CertificateInterface is the interface for manipulating Certificates.
