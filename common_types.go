@@ -153,6 +153,9 @@ type ResourceCreateOptions struct {
 	// in the Application. e.g., when creating API, CanaryRelease, the
 	// Application.ID should be specified.
 	Application *Application
+	// Certificate indicates which Certificate should this resource belong.
+	// This field should be specified when users want to update sub-resources
+	Certificate *Certificate
 }
 
 // ResourceUpdateOptions contains some options for updating an API7 Cloud resource.
@@ -167,6 +170,9 @@ type ResourceUpdateOptions struct {
 	// in the Application. e.g., when updating API, the
 	// Application.ID should be specified.
 	Application *Application
+	// Certificate indicates which Certificate should this resource belong.
+	// This field should be specified when users want to update sub-resources
+	Certificate *Certificate
 }
 
 // ResourceDeleteOptions contains some options for deleting an API7 Cloud resource.
@@ -181,6 +187,9 @@ type ResourceDeleteOptions struct {
 	// in the Application. e.g., when deleting API, the
 	// Application.ID should be specified.
 	Application *Application
+	// Certificate indicates which Certificate should this resource belong.
+	// This field should be specified when users want to update sub-resources
+	Certificate *Certificate
 }
 
 // ResourceGetOptions contains some options for getting an API7 Cloud resource.
@@ -195,6 +204,9 @@ type ResourceGetOptions struct {
 	// in the Application. e.g., when fetching API, the
 	// Application.ID should be specified.
 	Application *Application
+	// Certificate indicates which Certificate should this resource belong.
+	// This field should be specified when users want to update sub-resources
+	Certificate *Certificate
 }
 
 // ResourceListOptions contains some options for listing the same kind of API7 Cloud resources.
