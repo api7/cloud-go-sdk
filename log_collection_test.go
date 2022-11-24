@@ -203,7 +203,7 @@ func TestListLogCollection(t *testing.T) {
 	for _, tc := range testCases {
 		tc := tc
 		t.Run(tc.name, func(t *testing.T) {
-			raw, err := newLogCollection(nil).ListLogCollection(context.Background(), &ResourceListOptions{
+			raw, err := newLogCollection(nil).ListLogCollections(context.Background(), &ResourceListOptions{
 				ControlPlane: &ControlPlane{
 					ID: 1,
 				},
@@ -222,7 +222,7 @@ func TestListLogCollection(t *testing.T) {
 	}
 }
 
-func TestPutLogCollection(t *testing.T) {
+func TestUpdateLogCollection(t *testing.T) {
 	t.Parallel()
 
 	testCase := []struct {

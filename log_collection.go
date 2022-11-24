@@ -65,13 +65,15 @@ type LogCollectionInterface interface {
 	// The given `lcID` parameter should specify the LogCollection that you want to get.
 	// Users need to specify the ControlPlane in the `opts`.
 	GetLogCollection(ctx context.Context, lcID ID, opts *ResourceGetOptions) (*LogCollection, error)
-	// ListLogCollection returns an iterator for listing LogCollection in the specified control plane with the
+	// ListLogCollections returns an iterator for listing Log Collections in the specified control plane with the
 	// given list conditions.
 	// Users need to specify the ControlPlane, Paging conditions in the `opts`.
-	ListLogCollection(ctx context.Context, opts *ResourceListOptions) (LogCollectionIterator, error)
+	ListLogCollections(ctx context.Context, opts *ResourceListOptions) (LogCollectionIterator, error)
 }
 
+// LogCollectionIterator is an iterator for listing Log Collections.
 type LogCollectionIterator interface {
+	// Next returns the next Log Collection according to the filter conditions.
 	Next() (*LogCollection, error)
 }
 
@@ -142,7 +144,7 @@ func (impl *logCollectionImpl) GetLogCollection(ctx context.Context, lcID ID, op
 	return &logcollection, nil
 }
 
-func (impl *logCollectionImpl) ListLogCollection(ctx context.Context, opts *ResourceListOptions) (LogCollectionIterator, error) {
+func (impl *logCollectionImpl) ListLogCollections(ctx context.Context, opts *ResourceListOptions) (LogCollectionIterator, error) {
 	iter := listIterator{
 		ctx:      ctx,
 		resource: "logcollection",
