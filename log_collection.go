@@ -45,10 +45,29 @@ type LogCollection struct {
 
 // LogCollectionInterface is the interface of the LogCollection
 type LogCollectionInterface interface {
+	// CreateLogCollection creates an API7 Cloud Log Collection in the specified control plane.
+	// The given `lc` parameter should specify the desired LogCollection specification.
+	// Users need to specify the ControlPlane in the `opts`.
+	// The returned LogCollection will contain the same LogCollection specification plus some
+	// management fields and default values.
 	CreateLogCollection(ctx context.Context, lc *LogCollection, opts *ResourceCreateOptions) (*LogCollection, error)
+	// UpdateLogCollection updates an existing API7 Cloud Log Collection in the specified control plane.
+	// The given `lc` parameter should specify the desired LogCollection specification.
+	// Users need to specify the ControlPlane in the `opts`.
+	// The returned LogCollection will contain the same LogCollection specification plus some
+	// management fields and default values.
 	UpdateLogCollection(ctx context.Context, lc *LogCollection, opts *ResourceUpdateOptions) (*LogCollection, error)
+	// DeleteLogCollection deletes an existing API7 Cloud Log Collection in the specified control plane.
+	// The given `lcID` parameter should specify the LogCollection that you want to delete.
+	// Users need to specify the ControlPlane in the `opts`.
 	DeleteLogCollection(ctx context.Context, lcID ID, opts *ResourceDeleteOptions) error
+	// GetLogCollection gets an existing API7 Cloud Log Collection in the specified control plane.
+	// The given `lcID` parameter should specify the LogCollection that you want to get.
+	// Users need to specify the ControlPlane in the `opts`.
 	GetLogCollection(ctx context.Context, lcID ID, opts *ResourceGetOptions) (*LogCollection, error)
+	// ListLogCollection returns an iterator for listing LogCollection in the specified control plane with the
+	// given list conditions.
+	// Users need to specify the ControlPlane, Paging conditions in the `opts`.
 	ListLogCollection(ctx context.Context, opts *ResourceListOptions) (LogCollectionIterator, error)
 }
 
