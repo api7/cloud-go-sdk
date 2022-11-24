@@ -20,7 +20,7 @@ import (
 	"time"
 )
 
-// Certificate is the definition of API7 Cloud Certificate.
+// Certificate is the definition of API7 Cloud Certificate, which also contains
 // some management fields.
 type Certificate struct {
 	CertificateSpec `json:",inline"`
@@ -45,9 +45,10 @@ type CertificateSpec struct {
 	PrivateKey string `json:"private_key"`
 	// CACertificate is the client ca certificate in PEM format used to verify client certificate.
 	CACertificate string `json:"ca_certificate,omitempty"`
-	// Labels are used for resource classification and indexing
+	// Labels are used for resource classification and indexing.
 	Labels []string `json:"labels,omitempty"`
-	Type   string   `json:"type,omitempty"`
+	// Type is the certificate type, it can be "server" or "client", the default is "server".
+	Type string `json:"type,omitempty"`
 }
 
 // CertificateInterface is the interface for manipulating Certificates.
@@ -57,16 +58,19 @@ type CertificateInterface interface {
 	// Users need to specify the ControlPlane in the `opts`.
 	// The returned Certificate will contain the same Certificate specification plus some
 	// management fields and default values.
+	// The `PrivateKey` field will be empty in the returned object.
 	CreateCertificate(ctx context.Context, cert *Certificate, opts *ResourceCreateOptions) (*Certificate, error)
 	// UpdateCertificate updates an existing API7 Cloud Certificate in the specified control plane.
 	// The given `cert` parameter should specify the desired Certificate specification.
 	// Users need to specify the ControlPlane in the `opts`.
 	// The returned Certificate will contain the same Certificate specification plus some
 	// management fields and default values.
+	// The `PrivateKey` field will be empty in the returned object.
 	UpdateCertificate(ctx context.Context, cert *Certificate, opts *ResourceUpdateOptions) (*Certificate, error)
 	// DeleteCertificate deletes an existing API7 Cloud Certificate in the specified control plane.
 	// The given `certID` parameter should specify the Certificate that you want to delete.
 	// Users need to specify the ControlPlane in the `opts`.
+	// The `PrivateKey` field will be empty in the returned object.
 	DeleteCertificate(ctx context.Context, certID ID, opts *ResourceDeleteOptions) error
 	// GetCertificate gets an existing API7 Cloud Certificate in the specified control plane.
 	// The given `certID` parameter should specify the Certificate that you want to get.
@@ -75,6 +79,7 @@ type CertificateInterface interface {
 	// ListCertificates returns an iterator for listing Certificates in the specified control plane with the
 	// given list conditions.
 	// Users need to specify the ControlPlane, Paging conditions in the `opts`.
+	// The `PrivateKey` field will be empty in the returned object.
 	ListCertificates(ctx context.Context, opts *ResourceListOptions) (CertificateListIterator, error)
 }
 
