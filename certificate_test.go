@@ -17,7 +17,7 @@ package cloud
 import (
 	"context"
 	"errors"
-	"io/ioutil"
+	"os"
 	"path"
 	"testing"
 
@@ -27,12 +27,12 @@ import (
 
 func TestCreateCertificate(t *testing.T) {
 	t.Parallel()
-	key, err := ioutil.ReadFile("./testdata/test.key")
+	key, err := os.ReadFile("./testdata/test.key")
 	if err != nil {
 		assert.Nil(t, err, "read test key error")
 		return
 	}
-	cert, err := ioutil.ReadFile("./testdata/test.pem")
+	cert, err := os.ReadFile("./testdata/test.pem")
 	if err != nil {
 		assert.Nil(t, err, "read test cert error")
 		return
