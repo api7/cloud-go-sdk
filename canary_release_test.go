@@ -239,3 +239,145 @@ func TestFinishCanaryRelease(t *testing.T) {
 		})
 	}
 }
+
+func TestDeleteCanaryRelease(t *testing.T) {
+	t.Parallel()
+
+	testCases := []struct {
+		name          string
+		expectedError string
+		mockFunc      func(t *testing.T) httpClient
+	}{
+		{
+			name: "delete successfully",
+			mockFunc: func(t *testing.T) httpClient {
+				ctrl := gomock.NewController(t)
+				cli := NewMockhttpClient(ctrl)
+				cli.EXPECT().sendDeleteRequest(gomock.Any(), path.Join(_apiPathPrefix, "/apps/1/canary_releases/1"), "", nil).Return(nil)
+				return cli
+			},
+			expectedError: "",
+		},
+		{
+			name: "mock error",
+			mockFunc: func(t *testing.T) httpClient {
+				ctrl := gomock.NewController(t)
+				cli := NewMockhttpClient(ctrl)
+				cli.EXPECT().sendDeleteRequest(gomock.Any(), path.Join(_apiPathPrefix, "/apps/1/canary_releases/1"), "", nil).Return(errors.New("mock error"))
+				return cli
+
+			},
+			expectedError: "mock error",
+		},
+	}
+	for _, tc := range testCases {
+		tc := tc
+		t.Run(tc.name, func(t *testing.T) {
+			cli := tc.mockFunc(t)
+			err := newCanaryRelease(cli).DeleteCanaryRelease(context.Background(), 1, &ResourceDeleteOptions{
+				Application: &Application{
+					ID: 1,
+				},
+			})
+			if tc.expectedError == "" {
+				assert.Nil(t, err, "check canary release create error")
+			} else {
+				assert.Contains(t, err.Error(), tc.expectedError, "check the error details")
+			}
+		})
+	}
+}
+
+func TestGetCanaryRelease(t *testing.T) {
+	t.Parallel()
+
+	testCases := []struct {
+		name          string
+		expectedError string
+		mockFunc      func(t *testing.T) httpClient
+	}{
+		{
+			name: "get successfully",
+			mockFunc: func(t *testing.T) httpClient {
+				ctrl := gomock.NewController(t)
+				cli := NewMockhttpClient(ctrl)
+				cli.EXPECT().sendGetRequest(gomock.Any(), path.Join(_apiPathPrefix, "/apps/1/canary_releases/1"), "", gomock.Any()).Return(nil)
+				return cli
+
+			},
+			expectedError: "",
+		},
+		{
+			name: "mock error",
+			mockFunc: func(t *testing.T) httpClient {
+				ctrl := gomock.NewController(t)
+				cli := NewMockhttpClient(ctrl)
+				cli.EXPECT().sendGetRequest(gomock.Any(), path.Join(_apiPathPrefix, "/apps/1/canary_releases/1"), "", gomock.Any()).Return(errors.New("mock error"))
+				return cli
+			},
+			expectedError: "mock error",
+		},
+	}
+
+	for _, tc := range testCases {
+		tc := tc
+		t.Run(tc.name, func(t *testing.T) {
+			cli := tc.mockFunc(t)
+			_, err := newCanaryRelease(cli).GetCanaryRelease(context.Background(), 1, &ResourceGetOptions{
+				Application: &Application{
+					ID: 1,
+				},
+			})
+			if tc.expectedError == "" {
+				assert.Nil(t, err, "check canary release get error")
+			} else {
+				assert.Contains(t, err.Error(), tc.expectedError, "check the error details")
+			}
+		})
+	}
+}
+
+func TestListCanaryReleases(t *testing.T) {
+	t.Parallel()
+
+	testCases := []struct {
+		name     string
+		iterator *canaryReleaseListIterator
+	}{
+		{
+			name: "create iterator successfully",
+			iterator: &canaryReleaseListIterator{
+				iter: listIterator{
+					resource: "canary_releases",
+					path:     "/api/v1/apps/1/canary_releases",
+					paging: Pagination{
+						Page:     14,
+						PageSize: 25,
+					},
+					eof: false,
+				},
+			},
+		},
+	}
+
+	for _, tc := range testCases {
+		tc := tc
+		t.Run(tc.name, func(t *testing.T) {
+			raw, err := newCanaryRelease(nil).ListCanaryReleases(context.Background(), &ResourceListOptions{
+				Application: &Application{
+					ID: 1,
+				},
+				Pagination: &Pagination{
+					Page:     14,
+					PageSize: 25,
+				},
+			})
+			assert.Nil(t, err, "check list canary release error")
+			iter := raw.(*canaryReleaseListIterator)
+			assert.Equal(t, tc.iterator.iter.resource, iter.iter.resource, "check resource")
+			assert.Equal(t, tc.iterator.iter.path, iter.iter.path, "check path")
+			assert.Equal(t, tc.iterator.iter.paging.Page, iter.iter.paging.Page, "check page")
+			assert.Equal(t, tc.iterator.iter.paging.PageSize, iter.iter.paging.PageSize, "check page size")
+		})
+	}
+}

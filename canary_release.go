@@ -98,6 +98,28 @@ type CanaryReleaseInterface interface {
 	// The updated Canary Release will be returned and the CanaryReleaseSpec.State field should be
 	// CanaryReleaseStateFinished.
 	FinishCanaryRelease(ctx context.Context, crID ID, opts *ResourceUpdateOptions) (*CanaryRelease, error)
+	// DeleteCanaryRelease deletes an existing API7 Cloud Canary Release in the specified Application.
+	// The Given `crID` parameter should specify the Canary Release that you want to delete.
+	// Users need to specify the Application in the `opts`.
+	DeleteCanaryRelease(ctx context.Context, crID ID, opts *ResourceDeleteOptions) error
+	// GetCanaryRelease gets an existing API7 Cloud Canary Release in the specified Application.
+	// The given `crID` parameter should specify the CanaryRelease that you want to get.
+	// Users need to specify the Application in the `opts`.
+	GetCanaryRelease(ctx context.Context, crID ID, opts *ResourceGetOptions) (*CanaryRelease, error)
+	// ListCanaryReleases returns an iterator for listing CanaryReleases in the specified Application with the
+	// given list conditions.
+	// Users need to specify the Application, Paging conditions in the `opts`.
+	ListCanaryReleases(ctx context.Context, opts *ResourceListOptions) (CanaryReleaseListIterator, error)
+}
+
+// CanaryReleaseListIterator is an iterator for listening CanaryReleases.
+type CanaryReleaseListIterator interface {
+	// Next returns the next CanaryRelease according ro the dilter conditions.
+	Next() (*CanaryRelease, error)
+}
+
+type canaryReleaseListIterator struct {
+	iter listIterator
 }
 
 type canaryReleaseImpl struct {
@@ -108,6 +130,16 @@ func newCanaryRelease(cli httpClient) CanaryReleaseInterface {
 	return &canaryReleaseImpl{
 		client: cli,
 	}
+}
+func (iter *canaryReleaseListIterator) Next() (*CanaryRelease, error) {
+	cr, err := iter.iter.Next()
+	if err != nil {
+		return nil, err
+	}
+	if cr == nil {
+		return nil, nil
+	}
+	return cr.(*CanaryRelease), nil
 }
 
 func (impl *canaryReleaseImpl) CreateCanaryRelease(ctx context.Context, cr *CanaryRelease, opts *ResourceCreateOptions) (*CanaryRelease, error) {
@@ -159,4 +191,34 @@ func (impl *canaryReleaseImpl) FinishCanaryRelease(ctx context.Context, crID ID,
 		return nil, err
 	}
 	return &cr, nil
+}
+
+func (impl *canaryReleaseImpl) DeleteCanaryRelease(ctx context.Context, crID ID, opts *ResourceDeleteOptions) error {
+	appID := opts.Application.ID
+	uri := path.Join(_apiPathPrefix, "apps", appID.String(), "canary_releases", crID.String())
+	return impl.client.sendDeleteRequest(ctx, uri, "", nil)
+}
+
+func (impl *canaryReleaseImpl) GetCanaryRelease(ctx context.Context, crID ID, opts *ResourceGetOptions) (*CanaryRelease, error) {
+	var cr CanaryRelease
+
+	appID := opts.Application.ID
+	uri := path.Join(_apiPathPrefix, "apps", appID.String(), "canary_releases", crID.String())
+	err := impl.client.sendGetRequest(ctx, uri, "", jsonPayloadDecodeFactory(&cr))
+	if err != nil {
+		return nil, err
+	}
+	return &cr, nil
+}
+
+func (impl *canaryReleaseImpl) ListCanaryReleases(ctx context.Context, opts *ResourceListOptions) (CanaryReleaseListIterator, error) {
+	iter := listIterator{
+		ctx:      ctx,
+		resource: "canary_releases",
+		client:   impl.client,
+		path:     path.Join(_apiPathPrefix, "apps", opts.Application.ID.String(), "canary_releases"),
+		paging:   mergePagination(opts.Pagination),
+	}
+
+	return &canaryReleaseListIterator{iter: iter}, nil
 }
