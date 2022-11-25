@@ -336,3 +336,48 @@ func TestGetCanaryRelease(t *testing.T) {
 		})
 	}
 }
+
+func TestListCanaryReleases(t *testing.T) {
+	t.Parallel()
+
+	testCases := []struct {
+		name     string
+		iterator *canaryReleaseListIterator
+	}{
+		{
+			name: "create iterator successfully",
+			iterator: &canaryReleaseListIterator{
+				iter: listIterator{
+					resource: "canary_releases",
+					path:     "/api/v1/apps/1/canary_releases",
+					paging: Pagination{
+						Page:     14,
+						PageSize: 25,
+					},
+					eof: false,
+				},
+			},
+		},
+	}
+
+	for _, tc := range testCases {
+		tc := tc
+		t.Run(tc.name, func(t *testing.T) {
+			raw, err := newCanaryRelease(nil).ListCanaryReleases(context.Background(), &ResourceListOptions{
+				Application: &Application{
+					ID: 1,
+				},
+				Pagination: &Pagination{
+					Page:     14,
+					PageSize: 25,
+				},
+			})
+			assert.Nil(t, err, "check list canary release error")
+			iter := raw.(*canaryReleaseListIterator)
+			assert.Equal(t, tc.iterator.iter.resource, iter.iter.resource, "check resource")
+			assert.Equal(t, tc.iterator.iter.path, iter.iter.path, "check path")
+			assert.Equal(t, tc.iterator.iter.paging.Page, iter.iter.paging.Page, "check page")
+			assert.Equal(t, tc.iterator.iter.paging.PageSize, iter.iter.paging.PageSize, "check page size")
+		})
+	}
+}
