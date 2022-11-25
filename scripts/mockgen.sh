@@ -17,8 +17,9 @@ set -o errexit
 set -o nounset
 set -o pipefail
 
-mockgen -source=./http.go -package=cloud > ./http_mock.go
-mockgen -source=./types.go \
+mockgen -write_package_comment=false -source=./http.go -package=cloud > ./http_mock.go
+mockgen -write_package_comment=false \
+  -source=./types.go \
   -aux_files github.com/api7/cloud-go-sdk=user.go,github.com/api7/cloud-go-sdk=http_trace.go,github.com/api7/cloud-go-sdk=auth.go,github.com/api7/cloud-go-sdk=application.go,github.com/api7/cloud-go-sdk=api.go \
   -package=cloud \
   -self_package=github.com/api7/cloud-go-sdk \
