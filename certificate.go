@@ -41,9 +41,9 @@ type Certificate struct {
 type CertificateType string
 
 const (
-	// ServerCertificate means server certificate
+	// ServerCertificate means server-type certificate
 	ServerCertificate CertificateType = "server"
-	// ClientCertificate means client certificate
+	// ClientCertificate means client-type certificate
 	ClientCertificate CertificateType = "client"
 )
 
@@ -57,7 +57,9 @@ type CertificateSpec struct {
 	CACertificate string `json:"ca_certificate,omitempty"`
 	// Labels are used for resource classification and indexing.
 	Labels []string `json:"labels,omitempty"`
-	// Type is the certificate type, it can be "server" or "client", the default is "server".
+	// Type is the certificate type, optional values can be:
+	//   * ServerCertificate, server-type certificate.
+	//   * ClientCertificate, client-type certificate.
 	Type CertificateType `json:"type,omitempty"`
 }
 
