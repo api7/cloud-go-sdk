@@ -102,6 +102,10 @@ type CanaryReleaseInterface interface {
 	// The Given `crID` parameter should specify the Canary Release that you want to delete.
 	// Users need to specify the Application in the `opts`.
 	DeleteCanaryRelease(ctx context.Context, crID ID, opts *ResourceDeleteOptions) error
+	// GetCanaryRelease gets an existing API7 Cloud Canary Release in the specified Application.
+	// The given `crID` parameter should specify the CanaryRelease that you want to get.
+	// Users need to specify the Application in the `opts`.
+	GetCanaryRelease(ctx context.Context, crID ID, opts *ResourceGetOptions) (*CanaryRelease, error)
 }
 
 type canaryReleaseImpl struct {
@@ -169,4 +173,16 @@ func (impl *canaryReleaseImpl) DeleteCanaryRelease(ctx context.Context, crID ID,
 	appID := opts.Application.ID
 	uri := path.Join(_apiPathPrefix, "apps", appID.String(), "canary_releases", crID.String())
 	return impl.client.sendDeleteRequest(ctx, uri, "", nil)
+}
+
+func (impl *canaryReleaseImpl) GetCanaryRelease(ctx context.Context, crID ID, opts *ResourceGetOptions) (*CanaryRelease, error) {
+	var cr CanaryRelease
+
+	appID := opts.Application.ID
+	uri := path.Join(_apiPathPrefix, "apps", appID.String(), "canary_releases", crID.String())
+	err := impl.client.sendGetRequest(ctx, uri, "", jsonPayloadDecodeFactory(&cr))
+	if err != nil {
+		return nil, err
+	}
+	return &cr, nil
 }
