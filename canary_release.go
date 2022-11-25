@@ -98,6 +98,10 @@ type CanaryReleaseInterface interface {
 	// The updated Canary Release will be returned and the CanaryReleaseSpec.State field should be
 	// CanaryReleaseStateFinished.
 	FinishCanaryRelease(ctx context.Context, crID ID, opts *ResourceUpdateOptions) (*CanaryRelease, error)
+	// DeleteCanaryRelease deletes an existing API7 Cloud Canary Release in the specified Application.
+	// The Given `crID` parameter should specify the Canary Release that you want to delete.
+	// Users need to specify the Application in the `opts`.
+	DeleteCanaryRelease(ctx context.Context, crID ID, opts *ResourceDeleteOptions) error
 }
 
 type canaryReleaseImpl struct {
@@ -159,4 +163,10 @@ func (impl *canaryReleaseImpl) FinishCanaryRelease(ctx context.Context, crID ID,
 		return nil, err
 	}
 	return &cr, nil
+}
+
+func (impl *canaryReleaseImpl) DeleteCanaryRelease(ctx context.Context, crID ID, opts *ResourceDeleteOptions) error {
+	appID := opts.Application.ID
+	uri := path.Join(_apiPathPrefix, "apps", appID.String(), "canary_releases", crID.String())
+	return impl.client.sendDeleteRequest(ctx, uri, "", nil)
 }
