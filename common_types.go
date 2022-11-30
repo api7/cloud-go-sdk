@@ -199,6 +199,11 @@ type ResourceGetOptions struct {
 
 // ResourceListOptions contains some options for listing the same kind of API7 Cloud resources.
 type ResourceListOptions struct {
+	// Organization indicates where the resources are.
+	// This field should be specified when users want to list resources.
+	// in the organization. e.g., when iterating ControlPlane, the
+	// Organization.ID should be specified.
+	Organization *Organization
 	// ControlPlane indicates where the resources are.
 	// This field should be specified when users want to list resources.
 	// in the control plane. e.g., when iterating Application, the

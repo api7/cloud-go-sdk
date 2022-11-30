@@ -24,11 +24,11 @@ import (
 
 // User defines user information for API7 Cloud.
 type User struct {
-	ID        string          `json:"id"`
-	FirstName string          `json:"first_name"`
-	LastName  string          `json:"last_name"`
-	Email     string          `json:"email"`
-	OrgIDs    json.RawMessage `json:"org_ids"`
+	ID        string `json:"id"`
+	FirstName string `json:"first_name"`
+	LastName  string `json:"last_name"`
+	Email     string `json:"email"`
+	OrgIDs    []ID   `json:"org_ids"`
 	// TODO change the type when we need this field.
 	Members json.RawMessage `json:"members"`
 	// TODO change the type when we need this field.
