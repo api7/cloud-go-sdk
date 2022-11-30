@@ -15,6 +15,8 @@
 package cloud
 
 import (
+	"context"
+	"path"
 	"time"
 )
 
@@ -211,4 +213,55 @@ type AccessLogRotateSettings struct {
 	MaximumKeptLogEntries uint64 `json:"maximum_kept_log_entries,omitempty"`
 	// EnableCompression indicates whether to compress the log files.
 	EnableCompression bool `json:"enable_compression"`
+}
+
+// ControlPlaneInterface is the interface for manipulating Control Plane.
+type ControlPlaneInterface interface {
+	// ListControlPlanes returns an iterator for listing Control Planes in the specified Organization with the
+	// given list conditions.
+	// Users need to specify the Organization, Paging conditions in the `opts`.
+	ListControlPlanes(ctx context.Context, opts *ResourceListOptions) (ControlPlaneListIterator, error)
+}
+
+// ControlPlaneListIterator is an iterator for listing Control Planes.
+type ControlPlaneListIterator interface {
+	// Next returns the next Control Plane according to the filter conditions.
+	Next() (*ControlPlane, error)
+}
+
+type controlPlaneImpl struct {
+	client httpClient
+}
+
+type controlPlaneListIterator struct {
+	iter listIterator
+}
+
+func (iter *controlPlaneListIterator) Next() (*ControlPlane, error) {
+	cp, err := iter.iter.Next()
+	if err != nil {
+		return nil, err
+	}
+	if cp == nil {
+		return nil, nil
+	}
+	return cp.(*ControlPlane), nil
+}
+
+func newControlPlane(cli httpClient) ControlPlaneInterface {
+	return &controlPlaneImpl{
+		client: cli,
+	}
+}
+
+func (impl *controlPlaneImpl) ListControlPlanes(ctx context.Context, opts *ResourceListOptions) (ControlPlaneListIterator, error) {
+	iter := listIterator{
+		ctx:      ctx,
+		resource: "control plane",
+		client:   impl.client,
+		path:     path.Join(_apiPathPrefix, "orgs", opts.Organization.ID.String(), "controlplanes"),
+		paging:   mergePagination(opts.Pagination),
+	}
+
+	return &controlPlaneListIterator{iter: iter}, nil
 }

@@ -150,6 +150,21 @@ func (mr *MockInterfaceMockRecorder) GetApplication(ctx, appID, opts interface{}
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetApplication", reflect.TypeOf((*MockInterface)(nil).GetApplication), ctx, appID, opts)
 }
 
+// GetOrganization mocks base method.
+func (m *MockInterface) GetOrganization(ctx context.Context, orgID ID, opts *ResourceGetOptions) (*Organization, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetOrganization", ctx, orgID, opts)
+	ret0, _ := ret[0].(*Organization)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetOrganization indicates an expected call of GetOrganization.
+func (mr *MockInterfaceMockRecorder) GetOrganization(ctx, orgID, opts interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetOrganization", reflect.TypeOf((*MockInterface)(nil).GetOrganization), ctx, orgID, opts)
+}
+
 // ListAPIs mocks base method.
 func (m *MockInterface) ListAPIs(ctx context.Context, opts *ResourceListOptions) (APIListIterator, error) {
 	m.ctrl.T.Helper()
@@ -178,6 +193,21 @@ func (m *MockInterface) ListApplications(ctx context.Context, opts *ResourceList
 func (mr *MockInterfaceMockRecorder) ListApplications(ctx, opts interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListApplications", reflect.TypeOf((*MockInterface)(nil).ListApplications), ctx, opts)
+}
+
+// ListControlPlanes mocks base method.
+func (m *MockInterface) ListControlPlanes(ctx context.Context, opts *ResourceListOptions) (ControlPlaneListIterator, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "ListControlPlanes", ctx, opts)
+	ret0, _ := ret[0].(ControlPlaneListIterator)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// ListControlPlanes indicates an expected call of ListControlPlanes.
+func (mr *MockInterfaceMockRecorder) ListControlPlanes(ctx, opts interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListControlPlanes", reflect.TypeOf((*MockInterface)(nil).ListControlPlanes), ctx, opts)
 }
 
 // Me mocks base method.
