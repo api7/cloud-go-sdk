@@ -16,6 +16,7 @@ package cloud
 
 import (
 	"context"
+	"encoding/json"
 	"path"
 )
 
@@ -77,14 +78,18 @@ type consumerListIterator struct {
 }
 
 func (iter *consumerListIterator) Next() (*Consumer, error) {
-	app, err := iter.iter.Next()
+	var consumer Consumer
+	rawData, err := iter.iter.Next()
 	if err != nil {
 		return nil, err
 	}
-	if app == nil {
+	if rawData == nil {
 		return nil, nil
 	}
-	return app.(*Consumer), nil
+	if err = json.Unmarshal(rawData, &consumer); err != nil {
+		return nil, err
+	}
+	return &consumer, nil
 }
 
 func newConsumer(cli httpClient) ConsumerInterface {

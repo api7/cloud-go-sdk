@@ -16,6 +16,7 @@ package cloud
 
 import (
 	"context"
+	"encoding/json"
 	"path"
 )
 
@@ -86,14 +87,18 @@ type logCollectionImpl struct {
 }
 
 func (iter *logCollectionIterator) Next() (*LogCollection, error) {
-	app, err := iter.iter.Next()
+	var lc LogCollection
+	rawData, err := iter.iter.Next()
 	if err != nil {
 		return nil, err
 	}
-	if app == nil {
+	if rawData == nil {
 		return nil, nil
 	}
-	return app.(*LogCollection), nil
+	if err = json.Unmarshal(rawData, &lc); err != nil {
+		return nil, err
+	}
+	return &lc, nil
 }
 
 func newLogCollection(cli httpClient) LogCollectionInterface {

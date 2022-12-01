@@ -107,14 +107,15 @@ type certificatesListIterator struct {
 }
 
 func (iter *certificatesListIterator) Next() (*Certificate, error) {
-	cert, err := iter.iter.Next()
+	var cert Certificate
+	rawData, err := iter.iter.Next()
 	if err != nil {
 		return nil, err
 	}
-	if cert == nil {
+	if rawData == nil {
 		return nil, nil
 	}
-	return cert.(*Certificate), nil
+	return &cert, nil
 }
 
 func newCertificate(cli httpClient) CertificateInterface {
