@@ -16,6 +16,7 @@ package cloud
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"path"
 	"time"
@@ -132,14 +133,19 @@ func newCanaryRelease(cli httpClient) CanaryReleaseInterface {
 	}
 }
 func (iter *canaryReleaseListIterator) Next() (*CanaryRelease, error) {
-	cr, err := iter.iter.Next()
+	var cr CanaryRelease
+	rawData, err := iter.iter.Next()
 	if err != nil {
 		return nil, err
 	}
-	if cr == nil {
+	if rawData == nil {
 		return nil, nil
 	}
-	return cr.(*CanaryRelease), nil
+
+	if err = json.Unmarshal(rawData, &cr); err != nil {
+		return nil, err
+	}
+	return &cr, nil
 }
 
 func (impl *canaryReleaseImpl) CreateCanaryRelease(ctx context.Context, cr *CanaryRelease, opts *ResourceCreateOptions) (*CanaryRelease, error) {

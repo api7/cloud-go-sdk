@@ -16,6 +16,7 @@ package cloud
 
 import (
 	"context"
+	"encoding/json"
 	"net/url"
 	"strconv"
 
@@ -38,6 +39,15 @@ type Pagination struct {
 	PageSize int
 }
 
+func (paging *Pagination) step() {
+	paging.Page++
+}
+
+type listResponse struct {
+	List  []json.RawMessage `json:"list"`
+	Count uint64            `json:"count"`
+}
+
 type listIterator struct {
 	ctx      context.Context
 	resource string
@@ -45,37 +55,37 @@ type listIterator struct {
 	path     string
 	paging   Pagination
 	eof      bool
-	items    []interface{}
+	items    []json.RawMessage
 }
 
-func (iter *listIterator) Next() (interface{}, error) {
+func (iter *listIterator) Next() (json.RawMessage, error) {
 	if iter.eof {
 		return nil, nil
 	}
 
 	if len(iter.items) == 0 {
-		var (
-			items []interface{}
-		)
+		var lr listResponse
+
 		query := make(url.Values)
 		query.Set("page", strconv.Itoa(iter.paging.Page))
 		query.Set("page_size", strconv.Itoa(iter.paging.PageSize))
 
-		err := iter.client.sendGetRequest(iter.ctx, iter.path, query.Encode(), jsonPayloadDecodeFactory(&items))
+		err := iter.client.sendGetRequest(iter.ctx, iter.path, query.Encode(), jsonPayloadDecodeFactory(&lr))
 		if err != nil {
 			return nil, errors.Wrap(err, "list resources")
 		}
 
-		iter.items = items
+		iter.items = lr.List
+
+		if len(iter.items) == 0 {
+			iter.eof = true
+			return nil, nil
+		}
+		(&iter.paging).step()
 	}
 
-	if len(iter.items) > 0 {
-		res := iter.items[0]
-		iter.items[0] = nil
-		iter.items = iter.items[1:]
-		return res, nil
-	} else {
-		iter.eof = true
-		return nil, nil
-	}
+	res := iter.items[0]
+	iter.items[0] = nil
+	iter.items = iter.items[1:]
+	return res, nil
 }

@@ -16,10 +16,12 @@ package cloud
 
 import (
 	"context"
+	"encoding/json"
 	"errors"
+	"testing"
+
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
-	"testing"
 )
 
 func TestListIterator(t *testing.T) {
@@ -66,30 +68,18 @@ func TestListIterator(t *testing.T) {
 						Page:     1,
 						PageSize: 3,
 					},
-					items: []interface{}{
-						&Application{
-							ID: 1,
-						},
-						&Application{
-							ID: 2,
-						},
-						&Application{
-							ID: 3,
-						},
+					items: []json.RawMessage{
+						json.RawMessage("{\"id\":1}"),
+						json.RawMessage("{\"id\":2}"),
+						json.RawMessage("{\"id\":3}"),
 					},
 				}
 				return iter
 			},
 			getItems: []interface{}{
-				&Application{
-					ID: 1,
-				},
-				&Application{
-					ID: 2,
-				},
-				&Application{
-					ID: 3,
-				},
+				json.RawMessage("{\"id\":1}"),
+				json.RawMessage("{\"id\":2}"),
+				json.RawMessage("{\"id\":3}"),
 			},
 		},
 	}
@@ -116,7 +106,7 @@ func TestListIterator(t *testing.T) {
 			}
 			assert.Len(t, items, len(tc.getItems), "check the number of items")
 			for i, item := range items {
-				assert.Equalf(t, tc.getItems[i].(*Application).ID, item.(*Application).ID, "check ID of item #%d", i)
+				assert.Equalf(t, tc.getItems[i], item, "check item #%d", i)
 			}
 		})
 	}

@@ -16,6 +16,7 @@ package cloud
 
 import (
 	"context"
+	"encoding/json"
 	"path"
 	"time"
 )
@@ -238,14 +239,18 @@ type controlPlaneListIterator struct {
 }
 
 func (iter *controlPlaneListIterator) Next() (*ControlPlane, error) {
-	cp, err := iter.iter.Next()
+	var cp ControlPlane
+	rawData, err := iter.iter.Next()
 	if err != nil {
 		return nil, err
 	}
-	if cp == nil {
+	if rawData == nil {
 		return nil, nil
 	}
-	return cp.(*ControlPlane), nil
+	if err = json.Unmarshal(rawData, &cp); err != nil {
+		return nil, err
+	}
+	return &cp, nil
 }
 
 func newControlPlane(cli httpClient) ControlPlaneInterface {

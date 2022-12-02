@@ -16,6 +16,7 @@ package cloud
 
 import (
 	"context"
+	"encoding/json"
 	"path"
 	"time"
 )
@@ -134,14 +135,18 @@ type apiListIterator struct {
 }
 
 func (iter *apiListIterator) Next() (*API, error) {
-	api, err := iter.iter.Next()
+	var api API
+	rawData, err := iter.iter.Next()
 	if err != nil {
 		return nil, err
 	}
-	if api == nil {
+	if rawData == nil {
 		return nil, nil
 	}
-	return api.(*API), nil
+	if err = json.Unmarshal(rawData, &api); err != nil {
+		return nil, err
+	}
+	return &api, nil
 }
 
 func newAPI(cli httpClient) APIInterface {

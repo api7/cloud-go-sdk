@@ -16,6 +16,7 @@ package cloud
 
 import (
 	"context"
+	"encoding/json"
 	"path"
 	"time"
 )
@@ -123,14 +124,18 @@ type applicationListIterator struct {
 }
 
 func (iter *applicationListIterator) Next() (*Application, error) {
-	app, err := iter.iter.Next()
+	var app Application
+	rawData, err := iter.iter.Next()
 	if err != nil {
 		return nil, err
 	}
-	if app == nil {
+	if rawData == nil {
 		return nil, nil
 	}
-	return app.(*Application), nil
+	if err = json.Unmarshal(rawData, &app); err != nil {
+		return nil, err
+	}
+	return &app, nil
 }
 
 func newApplication(cli httpClient) ApplicationInterface {
