@@ -120,6 +120,21 @@ func (mr *MockInterfaceMockRecorder) DeleteApplication(ctx, appID, opts interfac
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteApplication", reflect.TypeOf((*MockInterface)(nil).DeleteApplication), ctx, appID, opts)
 }
 
+// GenerateGatewaySideCertificate mocks base method.
+func (m *MockInterface) GenerateGatewaySideCertificate(ctx context.Context, opts *ResourceCreateOptions) (*TLSBundle, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GenerateGatewaySideCertificate", ctx, opts)
+	ret0, _ := ret[0].(*TLSBundle)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GenerateGatewaySideCertificate indicates an expected call of GenerateGatewaySideCertificate.
+func (mr *MockInterfaceMockRecorder) GenerateGatewaySideCertificate(ctx, opts interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GenerateGatewaySideCertificate", reflect.TypeOf((*MockInterface)(nil).GenerateGatewaySideCertificate), ctx, opts)
+}
+
 // GetAPI mocks base method.
 func (m *MockInterface) GetAPI(ctx context.Context, apiID ID, opts *ResourceGetOptions) (*API, error) {
 	m.ctrl.T.Helper()

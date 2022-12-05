@@ -216,12 +216,24 @@ type AccessLogRotateSettings struct {
 	EnableCompression bool `json:"enable_compression"`
 }
 
+// TLSBundle contains a pair of certificate, private key,
+// and the issuing certificate.
+type TLSBundle struct {
+	Certificate   string `json:"certificate"`
+	PrivateKey    string `json:"private_key"`
+	CACertificate string `json:"ca_certificate"`
+}
+
 // ControlPlaneInterface is the interface for manipulating Control Plane.
 type ControlPlaneInterface interface {
 	// ListControlPlanes returns an iterator for listing Control Planes in the specified Organization with the
 	// given list conditions.
 	// Users need to specify the Organization, Paging conditions in the `opts`.
 	ListControlPlanes(ctx context.Context, opts *ResourceListOptions) (ControlPlaneListIterator, error)
+	// GenerateGatewaySideCertificate generates the tls bundle for gateway instances to communicate with
+	// the specified Control Plane on API7 Cloud.
+	// Users need to specify the ControlPlane.ID in the `opts`.
+	GenerateGatewaySideCertificate(ctx context.Context, opts *ResourceCreateOptions) (*TLSBundle, error)
 }
 
 // ControlPlaneListIterator is an iterator for listing Control Planes.
@@ -269,4 +281,16 @@ func (impl *controlPlaneImpl) ListControlPlanes(ctx context.Context, opts *Resou
 	}
 
 	return &controlPlaneListIterator{iter: iter}, nil
+}
+
+func (impl *controlPlaneImpl) GenerateGatewaySideCertificate(ctx context.Context, opts *ResourceCreateOptions) (*TLSBundle, error) {
+	var bundle TLSBundle
+
+	cpID := opts.ControlPlane.ID
+	uri := path.Join(_apiPathPrefix, "controlplanes", cpID.String(), "dp_certificate")
+	err := impl.client.sendGetRequest(ctx, uri, "", jsonPayloadDecodeFactory(&bundle))
+	if err != nil {
+		return nil, err
+	}
+	return &bundle, nil
 }
