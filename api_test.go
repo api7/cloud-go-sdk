@@ -233,7 +233,7 @@ func TestGetAPI(t *testing.T) {
 		tc := tc
 		t.Run(tc.name, func(t *testing.T) {
 			cli := tc.mockFunc(t)
-			// ignore the application check since currently we don't mock it, and the app is always a zero value.
+			// ignore the API check since currently we don't mock it, and the app is always a zero value.
 			_, err := newAPI(cli).GetAPI(context.Background(), 12, &ResourceGetOptions{
 				Application: &Application{
 					ID: 1,
