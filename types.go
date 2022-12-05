@@ -29,6 +29,7 @@ type Interface interface {
 	APIInterface
 	ControlPlaneInterface
 	OrganizationInterface
+	RegionInterface
 }
 
 // AccessToken is the token used by API7 Cloud to authenticate clients.
@@ -48,6 +49,7 @@ type impl struct {
 	APIInterface
 	ControlPlaneInterface
 	OrganizationInterface
+	RegionInterface
 }
 
 var (
@@ -99,5 +101,6 @@ func NewInterface(opts *Options) (Interface, error) {
 		APIInterface:          newAPI(cli),
 		ControlPlaneInterface: newControlPlane(cli),
 		OrganizationInterface: newOrganization(cli),
+		RegionInterface:       newRegion(cli),
 	}, err
 }
