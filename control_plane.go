@@ -235,6 +235,14 @@ type AccessLogRotateSettings struct {
 	EnableCompression bool `json:"enable_compression"`
 }
 
+// TLSBundle contains a pair of certificate, private key,
+// and the issuing certificate.
+type TLSBundle struct {
+	Certificate   string `json:"certificate"`
+	PrivateKey    string `json:"private_key"`
+	CACertificate string `json:"ca_certificate"`
+}
+
 // GatewayInstancePayload contains basic information for a gateway instance.
 type GatewayInstancePayload struct {
 	// ID is the unique identity for the APISEVEN instance.
@@ -277,6 +285,10 @@ type ControlPlaneInterface interface {
 	// given list conditions.
 	// Users need to specify the Organization, Paging conditions in the `opts`.
 	ListControlPlanes(ctx context.Context, opts *ResourceListOptions) (ControlPlaneListIterator, error)
+	// GenerateGatewaySideCertificate generates the tls bundle for gateway instances to communicate with
+	// the specified Control Plane on API7 Cloud.
+	// Users need to specify the ControlPlane.ID in the `opts`.
+	GenerateGatewaySideCertificate(ctx context.Context, opts *ResourceCreateOptions) (*TLSBundle, error)
 	// ListAllGatewayInstances returns all the gateway instances (ever) connected to the given Control Plane.
 	// Note currently users don't need to pass the `opts` parameter. Just pass `nil` is OK.
 	ListAllGatewayInstances(ctx context.Context, cpID ID, opts *ResourceListOptions) ([]GatewayInstance, error)
@@ -327,6 +339,18 @@ func (impl *controlPlaneImpl) ListControlPlanes(ctx context.Context, opts *Resou
 	}
 
 	return &controlPlaneListIterator{iter: iter}, nil
+}
+
+func (impl *controlPlaneImpl) GenerateGatewaySideCertificate(ctx context.Context, opts *ResourceCreateOptions) (*TLSBundle, error) {
+	var bundle TLSBundle
+
+	cpID := opts.ControlPlane.ID
+	uri := path.Join(_apiPathPrefix, "controlplanes", cpID.String(), "dp_certificate")
+	err := impl.client.sendGetRequest(ctx, uri, "", jsonPayloadDecodeFactory(&bundle))
+	if err != nil {
+		return nil, err
+	}
+	return &bundle, nil
 }
 
 func (impl *controlPlaneImpl) ListAllGatewayInstances(ctx context.Context, cpID ID, _ *ResourceListOptions) ([]GatewayInstance, error) {
