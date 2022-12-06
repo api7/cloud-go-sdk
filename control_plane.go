@@ -17,6 +17,7 @@ package cloud
 import (
 	"context"
 	"encoding/json"
+	"github.com/pkg/errors"
 	"path"
 	"time"
 )
@@ -77,6 +78,24 @@ const (
 	RealIPPositionQuery = "query"
 	// RealIPPositionCookie indicates the real ip is in cookie.
 	RealIPPositionCookie = "cookie"
+)
+
+// GatewayInstanceStatus is the status of an gateway instance.
+type GatewayInstanceStatus string
+
+const (
+	// GatewayInstanceHealthy indicates the instance is healthy. Note Healthy means
+	// the heartbeat probes sent from the instance are received periodically,
+	// at the same while, the configuration delivery (currently it's ETCD
+	// connections) is also normal.
+	GatewayInstanceHealthy = GatewayInstanceStatus("Healthy")
+	// GatewayInstanceOnlyHeartbeats indicates the instance sends heartbeat probes
+	// periodically but the configuration cannot be delivered to the instance.
+	GatewayInstanceOnlyHeartbeats = GatewayInstanceStatus("Only Heartbeats")
+	// GatewayInstanceLostConnection indicate the instance lose heartbeat in short time(between InstanceLostConnectionThresholdDuration and InstanceOfflineThresholdDuration)
+	GatewayInstanceLostConnection = GatewayInstanceStatus("Lost Connection")
+	// GatewayInstanceOffline indicates the instance loses heartbeat for long time(out-of the InstanceLiveThresholdDuration)
+	GatewayInstanceOffline = GatewayInstanceStatus("Offline")
 )
 
 // ControlPlane contains the control plane specification and management fields.
@@ -224,6 +243,42 @@ type TLSBundle struct {
 	CACertificate string `json:"ca_certificate"`
 }
 
+// GatewayInstancePayload contains basic information for a gateway instance.
+type GatewayInstancePayload struct {
+	// ID is the unique identity for the APISEVEN instance.
+	ID string `json:"id"`
+	// Hostname is the name for the VM or container that the APISEVEN
+	// instance resides.
+	Hostname string `json:"hostname"`
+	// IP is the IP address of the VM or container that the APISEVEN
+	// instance resides.
+	IP string `json:"ip"`
+	// Domain is the domain assigned by APISEVEN Cloud for the owner
+	// (organization) of the APISEVEN instance.
+	Domain string `json:"domain"`
+	// APICalls is the number of HTTP requests counted in the reporting period
+	APICalls uint64 `json:"api_calls"`
+	// Version is the version of the data plane
+	Version string `json:"version"`
+	// EtcdReachable indicates whether the instance can reach the etcd.
+	EtcdReachable bool `json:"etcd_reachable"`
+	// ConfigVersion is the version of the config currently in use on the data plane
+	ConfigVersion uint64 `json:"config_version"`
+}
+
+// GatewayInstance shows the gateway instance (Apache APISIX) status.
+type GatewayInstance struct {
+	GatewayInstancePayload `json:",inline"`
+	// LastSeenTime is the last time that Cloud seen this instance.
+	// An instance should be marked as offline once the elapsed time is over
+	// 30s since the last seen time.
+	LastSeenTime time.Time `json:"last_seen_time"`
+	// RegisterTime is the first time that Cloud seen this instance.
+	RegisterTime time.Time `json:"register_time"`
+	// Status is the instance status.
+	Status GatewayInstanceStatus `json:"status"`
+}
+
 // ControlPlaneInterface is the interface for manipulating Control Plane.
 type ControlPlaneInterface interface {
 	// ListControlPlanes returns an iterator for listing Control Planes in the specified Organization with the
@@ -234,6 +289,9 @@ type ControlPlaneInterface interface {
 	// the specified Control Plane on API7 Cloud.
 	// Users need to specify the ControlPlane.ID in the `opts`.
 	GenerateGatewaySideCertificate(ctx context.Context, opts *ResourceCreateOptions) (*TLSBundle, error)
+	// ListAllGatewayInstances returns all the gateway instances (ever) connected to the given Control Plane.
+	// Note currently users don't need to pass the `opts` parameter. Just pass `nil` is OK.
+	ListAllGatewayInstances(ctx context.Context, cpID ID, opts *ResourceListOptions) ([]GatewayInstance, error)
 }
 
 // ControlPlaneListIterator is an iterator for listing Control Planes.
@@ -293,4 +351,26 @@ func (impl *controlPlaneImpl) GenerateGatewaySideCertificate(ctx context.Context
 		return nil, err
 	}
 	return &bundle, nil
+}
+
+func (impl *controlPlaneImpl) ListAllGatewayInstances(ctx context.Context, cpID ID, _ *ResourceListOptions) ([]GatewayInstance, error) {
+	var (
+		lr        listResponse
+		instances []GatewayInstance
+	)
+	uri := path.Join(_apiPathPrefix, "controlplanes", cpID.String(), "instances")
+	err := impl.client.sendGetRequest(ctx, uri, "", jsonPayloadDecodeFactory(&lr))
+	if err != nil {
+		return nil, err
+	}
+
+	for i, raw := range lr.List {
+		var instance GatewayInstance
+		if err = json.Unmarshal(raw, &instance); err != nil {
+			return nil, errors.Wrapf(err, "unmarshal gateway instance #%d", i)
+		}
+		instances = append(instances, instance)
+	}
+
+	return instances, nil
 }

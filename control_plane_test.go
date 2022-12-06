@@ -70,6 +70,49 @@ func TestListControlPlanes(t *testing.T) {
 	}
 }
 
+func TestListAllGatewayInstances(t *testing.T) {
+	t.Parallel()
+
+	testCases := []struct {
+		name          string
+		expectedError string
+		mockFunc      func(t *testing.T) httpClient
+	}{
+		{
+			name: "list successfully",
+			mockFunc: func(t *testing.T) httpClient {
+				ctrl := gomock.NewController(t)
+				cli := NewMockhttpClient(ctrl)
+				cli.EXPECT().sendGetRequest(gomock.Any(), path.Join(_apiPathPrefix, "/controlplanes/12/instances"), "", gomock.Any()).Return(nil)
+				return cli
+			},
+		},
+		{
+			name: "mock error",
+			mockFunc: func(t *testing.T) httpClient {
+				ctrl := gomock.NewController(t)
+				cli := NewMockhttpClient(ctrl)
+				cli.EXPECT().sendGetRequest(gomock.Any(), path.Join(_apiPathPrefix, "/controlplanes/12/instances"), "", gomock.Any()).Return(errors.New("mock error"))
+				return cli
+			},
+			expectedError: "mock error",
+		},
+	}
+	for _, tc := range testCases {
+		tc := tc
+		t.Run(tc.name, func(t *testing.T) {
+			cli := tc.mockFunc(t)
+			// ignore the gateway instances check since currently we don't mock it, and the app is always a zero value.
+			_, err := newControlPlane(cli).ListAllGatewayInstances(context.Background(), 12, nil)
+			if tc.expectedError == "" {
+				assert.Nil(t, err, "check gateway instances get error")
+			} else {
+				assert.Contains(t, err.Error(), tc.expectedError, "check the error details")
+			}
+		})
+	}
+}
+
 func TestGenerateGatewaySideCertificate(t *testing.T) {
 	t.Parallel()
 
@@ -118,5 +161,4 @@ func TestGenerateGatewaySideCertificate(t *testing.T) {
 			}
 		})
 	}
-
 }

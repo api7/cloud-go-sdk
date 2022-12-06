@@ -87,4 +87,12 @@ func main() {
 		i++
 		fmt.Printf("got application #%d:\n%+v\n", i, app)
 	}
+
+	gatewayInstances, err := sdk.ListAllGatewayInstances(context.Background(), cp.ID, nil)
+	if err != nil {
+		panic(err)
+	}
+	for _, gw := range gatewayInstances {
+		fmt.Printf("id:%s, version:%s, ip:%s\n", gw.ID, gw.Version, gw.IP)
+	}
 }
