@@ -237,7 +237,7 @@ type AccessLogRotateSettings struct {
 
 // GatewayInstancePayload contains basic information for a gateway instance.
 type GatewayInstancePayload struct {
-	// ID is the unique identify for the APISEVEN instance.
+	// ID is the unique identity for the APISEVEN instance.
 	ID string `json:"id"`
 	// Hostname is the name for the VM or container that the APISEVEN
 	// instance resides.
@@ -245,12 +245,12 @@ type GatewayInstancePayload struct {
 	// IP is the IP address of the VM or container that the APISEVEN
 	// instance resides.
 	IP string `json:"ip"`
-	// Domain is the domain that assigned by APISEVEN Cloud for the owner
+	// Domain is the domain assigned by APISEVEN Cloud for the owner
 	// (organization) of the APISEVEN instance.
 	Domain string `json:"domain"`
-	// APICalls is number of HTTP requests counting in report period
+	// APICalls is the number of HTTP requests counted in the reporting period
 	APICalls uint64 `json:"api_calls"`
-	// Version is the version of data plane
+	// Version is the version of the data plane
 	Version string `json:"version"`
 	// EtcdReachable indicates whether the instance can reach the etcd.
 	EtcdReachable bool `json:"etcd_reachable"`
