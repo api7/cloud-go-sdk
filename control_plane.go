@@ -85,7 +85,7 @@ type GatewayInstanceStatus string
 
 const (
 	// GatewayInstanceHealthy indicates the instance is healthy. Note Healthy means
-	// the heartbeat probes sent from instance are received periodically,
+	// the heartbeat probes sent from the instance are received periodically,
 	// at the same while, the configuration delivery (currently it's ETCD
 	// connections) is also normal.
 	GatewayInstanceHealthy = GatewayInstanceStatus("Healthy")
@@ -94,7 +94,7 @@ const (
 	GatewayInstanceOnlyHeartbeats = GatewayInstanceStatus("Only Heartbeats")
 	// GatewayInstanceLostConnection indicate the instance lose heartbeat in short time(between InstanceLostConnectionThresholdDuration and InstanceOfflineThresholdDuration)
 	GatewayInstanceLostConnection = GatewayInstanceStatus("Lost Connection")
-	// GatewayInstanceOffline indicate the instance lose heartbeat in long time(out-of the InstanceLiveThresholdDuration)
+	// GatewayInstanceOffline indicates the instance loses heartbeat for long time(out-of the InstanceLiveThresholdDuration)
 	GatewayInstanceOffline = GatewayInstanceStatus("Offline")
 )
 
