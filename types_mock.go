@@ -180,6 +180,21 @@ func (mr *MockInterfaceMockRecorder) ListAPIs(ctx, opts interface{}) *gomock.Cal
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListAPIs", reflect.TypeOf((*MockInterface)(nil).ListAPIs), ctx, opts)
 }
 
+// ListAllGatewayInstances mocks base method.
+func (m *MockInterface) ListAllGatewayInstances(ctx context.Context, cpID ID, opts *ResourceListOptions) ([]GatewayInstance, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "ListAllGatewayInstances", ctx, cpID, opts)
+	ret0, _ := ret[0].([]GatewayInstance)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// ListAllGatewayInstances indicates an expected call of ListAllGatewayInstances.
+func (mr *MockInterfaceMockRecorder) ListAllGatewayInstances(ctx, cpID, opts interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListAllGatewayInstances", reflect.TypeOf((*MockInterface)(nil).ListAllGatewayInstances), ctx, cpID, opts)
+}
+
 // ListApplications mocks base method.
 func (m *MockInterface) ListApplications(ctx context.Context, opts *ResourceListOptions) (ApplicationListIterator, error) {
 	m.ctrl.T.Helper()
