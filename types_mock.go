@@ -225,6 +225,21 @@ func (mr *MockInterfaceMockRecorder) ListControlPlanes(ctx, opts interface{}) *g
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListControlPlanes", reflect.TypeOf((*MockInterface)(nil).ListControlPlanes), ctx, opts)
 }
 
+// ListRegions mocks base method.
+func (m *MockInterface) ListRegions(ctx context.Context, opts *ResourceListOptions) (RegionListIterator, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "ListRegions", ctx, opts)
+	ret0, _ := ret[0].(RegionListIterator)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// ListRegions indicates an expected call of ListRegions.
+func (mr *MockInterfaceMockRecorder) ListRegions(ctx, opts interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListRegions", reflect.TypeOf((*MockInterface)(nil).ListRegions), ctx, opts)
+}
+
 // Me mocks base method.
 func (m *MockInterface) Me(ctx context.Context) (*User, error) {
 	m.ctrl.T.Helper()
