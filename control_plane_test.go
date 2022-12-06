@@ -108,7 +108,7 @@ func TestGenerateGatewaySideCertificate(t *testing.T) {
 			// ignore the application check since currently we don't mock it, and the app is always a zero value.
 			_, err := newControlPlane(cli).GenerateGatewaySideCertificate(context.Background(), &ResourceCreateOptions{
 				ControlPlane: &ControlPlane{
-					ID:               1,
+					ID: 1,
 				},
 			})
 			if tc.expectedError == "" {
