@@ -115,6 +115,14 @@ func constructHTTPClient(opts *httpClientConstructOptions) (httpClient, error) {
 		TLSHandshakeTimeout: opts.configOptions.TLSHandshakeTimeout,
 	}
 
+	if opts.configOptions.ClientCert != "" && opts.configOptions.ClientPrivateKey != "" {
+		cert, err := tls.X509KeyPair([]byte(opts.configOptions.ClientCert), []byte(opts.configOptions.ClientPrivateKey))
+		if err != nil {
+			return nil, errors.Wrap(err, "load client certificate")
+		}
+		tr.TLSClientConfig.Certificates = []tls.Certificate{cert}
+	}
+
 	return &httpClientImpl{
 		url: url,
 		client: &http.Client{
