@@ -30,6 +30,7 @@ type Interface interface {
 	ControlPlaneInterface
 	OrganizationInterface
 	RegionInterface
+	CanaryReleaseInterface
 	ConsumerInterface
 }
 
@@ -51,6 +52,7 @@ type impl struct {
 	ControlPlaneInterface
 	OrganizationInterface
 	RegionInterface
+	CanaryReleaseInterface
 	ConsumerInterface
 }
 
@@ -96,14 +98,15 @@ func NewInterface(opts *Options) (Interface, error) {
 	}
 
 	return &impl{
-		TraceInterface:        trace,
-		UserInterface:         newUser(cli),
-		AuthInterface:         newAuth(cli),
-		ApplicationInterface:  newApplication(cli),
-		APIInterface:          newAPI(cli),
-		ControlPlaneInterface: newControlPlane(cli),
-		OrganizationInterface: newOrganization(cli),
-		RegionInterface:       newRegion(cli),
-		ConsumerInterface:     newConsumer(cli),
+		TraceInterface:         trace,
+		UserInterface:          newUser(cli),
+		AuthInterface:          newAuth(cli),
+		ApplicationInterface:   newApplication(cli),
+		APIInterface:           newAPI(cli),
+		ControlPlaneInterface:  newControlPlane(cli),
+		OrganizationInterface:  newOrganization(cli),
+		RegionInterface:        newRegion(cli),
+		CanaryReleaseInterface: newCanaryRelease(cli),
+		ConsumerInterface:      newConsumer(cli),
 	}, err
 }
