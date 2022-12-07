@@ -537,6 +537,21 @@ func (mr *MockInterfaceMockRecorder) UpdateApplication(ctx, app, opts interface{
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateApplication", reflect.TypeOf((*MockInterface)(nil).UpdateApplication), ctx, app, opts)
 }
 
+// UpdateCanaryRelease mocks base method.
+func (m *MockInterface) UpdateCanaryRelease(ctx context.Context, cr *CanaryRelease, opts *ResourceUpdateOptions) (*CanaryRelease, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "UpdateCanaryRelease", ctx, cr, opts)
+	ret0, _ := ret[0].(*CanaryRelease)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// UpdateCanaryRelease indicates an expected call of UpdateCanaryRelease.
+func (mr *MockInterfaceMockRecorder) UpdateCanaryRelease(ctx, cr, opts interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateCanaryRelease", reflect.TypeOf((*MockInterface)(nil).UpdateCanaryRelease), ctx, cr, opts)
+}
+
 // UpdateConsumer mocks base method.
 func (m *MockInterface) UpdateConsumer(ctx context.Context, consumer *Consumer, opts *ResourceUpdateOptions) (*Consumer, error) {
 	m.ctrl.T.Helper()
