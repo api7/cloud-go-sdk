@@ -21,17 +21,21 @@ on:
   pull_request:
     branches:
       - main
-permissions: read-all
 jobs:
   mockgen:
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
       - uses: actions/checkout@v3
+      - name: Setup Go Environment
+        uses: actions/setup-go@v3
+      - name: Install Go mockgen
+        run: |
+          go install github.com/golang/mock/mockgen@v1.6.0
       - name: Run make mockgen
         working-directory: ./
         run: |
-          make mockgen
+          PATH=${PATH}:$(go env GOPATH)/bin make mockgen
           if git status -s 2>&1 | grep -E -q '^\s*[MADRCU]'
           then
             echo 'Please run make mockgen to re-generate mock codes'
