@@ -221,16 +221,25 @@ func (impl *httpClientImpl) sendPostRequest(ctx context.Context, path, query str
 }
 
 func (impl *httpClientImpl) sendPutRequest(ctx context.Context, path, query string, body interface{}, payloadDecodeFunc payloadDecodeFunc) error {
+	var (
+		reader io.Reader
+		data   []byte
+		err    error
+	)
+
 	url := *impl.url
 	url.Path = path
 	url.RawQuery = query
 
-	data, err := json.Marshal(body)
-	if err != nil {
-		return errors.Wrap(err, "encode http request body")
+	if body != nil {
+		data, err := json.Marshal(body)
+		if err != nil {
+			return errors.Wrap(err, "encode http request body")
+		}
+		reader = bytes.NewReader(data)
 	}
 
-	req, err := http.NewRequestWithContext(ctx, http.MethodPut, url.String(), bytes.NewReader(data))
+	req, err := http.NewRequestWithContext(ctx, http.MethodPut, url.String(), reader)
 	if err != nil {
 		return errors.Wrap(err, "construct http request")
 	}

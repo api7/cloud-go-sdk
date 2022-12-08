@@ -150,6 +150,11 @@ type EntityStatus int
 
 // ResourceCreateOptions contains some options for creating an API7 Cloud resource.
 type ResourceCreateOptions struct {
+	// Organization indicates where the resources are.
+	// This field should be specified when users want to create resources.
+	// in the organization. e.g., when inviting a member, the
+	// Organization.ID should be specified.
+	Organization *Organization
 	// ControlPlane indicates where the resource belongs.
 	// This field should be specified when users want to create resources
 	// in the control plane. e.g., when creating Application, the
@@ -164,6 +169,11 @@ type ResourceCreateOptions struct {
 
 // ResourceUpdateOptions contains some options for updating an API7 Cloud resource.
 type ResourceUpdateOptions struct {
+	// Organization indicates where the resources are.
+	// This field should be specified when users want to update resources.
+	// in the organization. e.g., when re-inviting a member, the
+	// Organization.ID should be specified.
+	Organization *Organization
 	// ControlPlane indicates where the resource belongs.
 	// This field should be specified when users want to update resources
 	// in the control plane. e.g., when updating Application, the
