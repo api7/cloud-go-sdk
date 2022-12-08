@@ -77,7 +77,12 @@ type CanaryReleaseInterface interface {
 	// The returned CanaryRelease will contain the same CanaryRelease specification plus some
 	// management fields and default values
 	CreateCanaryRelease(ctx context.Context, cr *CanaryRelease, opts *ResourceCreateOptions) (*CanaryRelease, error)
-
+	// UpdateCanaryRelease updates an existing API7 Cloud Canary Release in the specified Application.
+	// The given `cr` parameter should specify the desired Canary Release specification.
+	// Users need to specify the Application in the `opts`.
+	// The returned CanaryRelease will contain the same CanaryRelease specification plus some
+	// management fields and default values.
+	UpdateCanaryRelease(ctx context.Context, cr *CanaryRelease, opts *ResourceUpdateOptions) (*CanaryRelease, error)
 	// StartCanaryRelease makes the Canary Release in progress in the specified Application
 	// (a shortcut of UpdateCanaryRelease and set CanaryReleaseSpec.State to CanaryReleaseStateInProgress).
 	// The given `crID` parameter should specify the desired Canary Release ID.
@@ -132,6 +137,7 @@ func newCanaryRelease(cli httpClient) CanaryReleaseInterface {
 		client: cli,
 	}
 }
+
 func (iter *canaryReleaseListIterator) Next() (*CanaryRelease, error) {
 	var cr CanaryRelease
 	rawData, err := iter.iter.Next()
@@ -149,15 +155,26 @@ func (iter *canaryReleaseListIterator) Next() (*CanaryRelease, error) {
 }
 
 func (impl *canaryReleaseImpl) CreateCanaryRelease(ctx context.Context, cr *CanaryRelease, opts *ResourceCreateOptions) (*CanaryRelease, error) {
-	var createCr CanaryRelease
+	var createdCr CanaryRelease
 
 	appID := opts.Application.ID
 	uri := path.Join(_apiPathPrefix, "apps", appID.String(), "canary_releases")
-	err := impl.client.sendPostRequest(ctx, uri, "", cr, jsonPayloadDecodeFactory(&createCr))
+	err := impl.client.sendPostRequest(ctx, uri, "", cr, jsonPayloadDecodeFactory(&createdCr))
 	if err != nil {
 		return nil, err
 	}
-	return &createCr, nil
+	return &createdCr, nil
+}
+
+func (impl *canaryReleaseImpl) UpdateCanaryRelease(ctx context.Context, cr *CanaryRelease, opts *ResourceUpdateOptions) (*CanaryRelease, error) {
+	var updatedCr CanaryRelease
+	appID := opts.Application.ID
+	uri := path.Join(_apiPathPrefix, "apps", appID.String(), "canary_releases", cr.ID.String())
+	err := impl.client.sendPutRequest(ctx, uri, "", cr, jsonPayloadDecodeFactory(&updatedCr))
+	if err != nil {
+		return nil, err
+	}
+	return &updatedCr, nil
 }
 
 func (impl *canaryReleaseImpl) StartCanaryRelease(ctx context.Context, crID ID, opts *ResourceUpdateOptions) (*CanaryRelease, error) {

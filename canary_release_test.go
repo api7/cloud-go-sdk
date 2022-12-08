@@ -90,6 +90,69 @@ func TestCreateCanaryRelease(t *testing.T) {
 	}
 }
 
+func TestUpdateCanaryRelease(t *testing.T) {
+	t.Parallel()
+
+	testCases := []struct {
+		name          string
+		pendingCr     *CanaryRelease
+		expectedError string
+		mockFunc      func(t *testing.T) httpClient
+	}{
+		{
+			name: "update successfully",
+			pendingCr: &CanaryRelease{
+				CanaryReleaseSpec: CanaryReleaseSpec{
+					Name: "test canary release",
+				},
+				ID: 12,
+			},
+			mockFunc: func(t *testing.T) httpClient {
+				ctrl := gomock.NewController(t)
+				cli := NewMockhttpClient(ctrl)
+				cli.EXPECT().sendPutRequest(gomock.Any(), path.Join(_apiPathPrefix, "/apps/1/canary_releases/12"), "", gomock.Any(), gomock.Any()).Return(nil)
+				return cli
+
+			},
+			expectedError: "",
+		},
+		{
+			name: "mock error",
+			pendingCr: &CanaryRelease{
+				CanaryReleaseSpec: CanaryReleaseSpec{
+					Name: "test canary release",
+				},
+				ID: 12,
+			},
+			mockFunc: func(t *testing.T) httpClient {
+				ctrl := gomock.NewController(t)
+				cli := NewMockhttpClient(ctrl)
+				cli.EXPECT().sendPutRequest(gomock.Any(), path.Join(_apiPathPrefix, "/apps/1/canary_releases/12"), "", gomock.Any(), gomock.Any()).Return(errors.New("mock error"))
+				return cli
+
+			},
+			expectedError: "mock error",
+		},
+	}
+
+	for _, tc := range testCases {
+		tc := tc
+		t.Run(tc.name, func(t *testing.T) {
+			cli := tc.mockFunc(t)
+			_, err := newCanaryRelease(cli).UpdateCanaryRelease(context.Background(), tc.pendingCr, &ResourceUpdateOptions{
+				Application: &Application{
+					ID: 1,
+				},
+			})
+			if tc.expectedError == "" {
+				assert.Nil(t, err, "check api update error")
+			} else {
+				assert.Contains(t, err.Error(), tc.expectedError, "check the error details")
+			}
+		})
+	}
+}
+
 func TestStartCanaryRelease(t *testing.T) {
 	t.Parallel()
 
@@ -205,7 +268,6 @@ func TestFinishCanaryRelease(t *testing.T) {
 				cli := NewMockhttpClient(ctrl)
 				cli.EXPECT().sendPatchRequest(gomock.Any(), path.Join(_apiPathPrefix, "/apps/1/canary_releases/12"), "", []byte(`{"state":"finish"}`), gomock.Any()).Return(nil)
 				return cli
-
 			},
 			expectedError: "",
 		},
