@@ -99,8 +99,15 @@ const (
 )
 
 const (
-	APITypeRest      = "Rest"
+	// APITypeRest indicates this is a Rest API.
+	APITypeRest = "Rest"
+	// APITypeWebSocket indicates this is a Websocket API.
 	APITypeWebSocket = "WebSocket"
+
+	// CanaryReleaseTypePercent means using percent to do canary release
+	CanaryReleaseTypePercent = "percent"
+	// CanaryReleaseTypeRule means using rule match to do canary release
+	CanaryReleaseTypeRule = "rule"
 )
 
 const (
