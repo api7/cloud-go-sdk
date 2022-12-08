@@ -283,7 +283,8 @@ type GatewayInstance struct {
 type ControlPlaneInterface interface {
 	// ListControlPlanes returns an iterator for listing Control Planes in the specified Organization with the
 	// given list conditions.
-	// Users need to specify the Organization, Paging conditions in the `opts`.
+	// Users need to specify the Organization, Paging, and Filter conditions (if necessary)
+	// in the `opts`.
 	ListControlPlanes(ctx context.Context, opts *ResourceListOptions) (ControlPlaneListIterator, error)
 	// GenerateGatewaySideCertificate generates the tls bundle for gateway instances to communicate with
 	// the specified Control Plane on API7 Cloud.
@@ -336,6 +337,7 @@ func (impl *controlPlaneImpl) ListControlPlanes(ctx context.Context, opts *Resou
 		client:   impl.client,
 		path:     path.Join(_apiPathPrefix, "orgs", opts.Organization.ID.String(), "controlplanes"),
 		paging:   mergePagination(opts.Pagination),
+		filter:   opts.Filter,
 	}
 
 	return &controlPlaneListIterator{iter: iter}, nil

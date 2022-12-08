@@ -33,6 +33,20 @@ const (
 	HealthCheckTypeHTTP = "http"
 	// HealthCheckTypeHTTPS indicates an HTTPS-type health check.
 	HealthCheckTypeHTTPS = "https"
+
+	// UpstreamSchemeHTTP indicates the http scheme for communicating with upstream.
+	UpstreamSchemeHTTP = "http"
+	// UpstreamSchemeHTTPS indicates the https scheme for communicating with upstream.
+	UpstreamSchemeHTTPS = "https"
+
+	// LoadBalanceRoundRobin indicates the weighted round robin load balancing algorithm.
+	LoadBalanceRoundRobin = "roundrobin"
+	// LoadBalanceConsistentHash indicates the consistent hash load balancing algorithm.
+	LoadBalanceConsistentHash = "consistent_hash"
+	// LoadBalanceEWMA indicates the ewma load balancing algorithm.
+	LoadBalanceEWMA = "ewma"
+	// LoadBalanceLeastConn indicates the  least connection load balancing algorithm.
+	LoadBalanceLeastConn = "least_conn"
 )
 
 // UpstreamAndVersion contains both the upstream definition and the version information.

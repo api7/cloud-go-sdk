@@ -68,7 +68,8 @@ type LogCollectionInterface interface {
 	GetLogCollection(ctx context.Context, lcID ID, opts *ResourceGetOptions) (*LogCollection, error)
 	// ListLogCollections returns an iterator for listing Log Collections in the specified control plane with the
 	// given list conditions.
-	// Users need to specify the ControlPlane, Paging conditions in the `opts`.
+	// Users need to specify the ControlPlane, Paging, Filter conditions (if necessary)
+	// in the `opts`.
 	ListLogCollections(ctx context.Context, opts *ResourceListOptions) (LogCollectionIterator, error)
 }
 
@@ -112,7 +113,7 @@ func (impl *logCollectionImpl) CreateLogCollection(ctx context.Context, lc *LogC
 
 	cpID := opts.ControlPlane.ID
 	uri := path.Join(_apiPathPrefix, "controlplanes", cpID.String(), "log_collections")
-	err := impl.client.sendPostRequest(ctx, uri, "", lc, jsonPayloadDecodeFactory(createdLogCollection))
+	err := impl.client.sendPostRequest(ctx, uri, "", lc, jsonPayloadDecodeFactory(&createdLogCollection))
 	if err != nil {
 		return nil, err
 	}
@@ -124,7 +125,7 @@ func (impl *logCollectionImpl) UpdateLogCollection(ctx context.Context, lc *LogC
 
 	cpID := opts.ControlPlane.ID
 	uri := path.Join(_apiPathPrefix, "controlplanes", cpID.String(), "log_collections", lc.ID.String())
-	err := impl.client.sendPutRequest(ctx, uri, "", lc, jsonPayloadDecodeFactory(createdLogCollection))
+	err := impl.client.sendPutRequest(ctx, uri, "", lc, jsonPayloadDecodeFactory(&createdLogCollection))
 	if err != nil {
 		return nil, err
 	}
@@ -156,6 +157,7 @@ func (impl *logCollectionImpl) ListLogCollections(ctx context.Context, opts *Res
 		client:   impl.client,
 		path:     path.Join(_apiPathPrefix, "controlplanes", opts.ControlPlane.ID.String(), "log_collections"),
 		paging:   mergePagination(opts.Pagination),
+		filter:   opts.Filter,
 	}
 
 	return &logCollectionIterator{iter: iter}, nil

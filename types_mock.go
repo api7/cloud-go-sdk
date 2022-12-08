@@ -108,6 +108,21 @@ func (mr *MockInterfaceMockRecorder) CreateConsumer(ctx, consumer, opts interfac
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateConsumer", reflect.TypeOf((*MockInterface)(nil).CreateConsumer), ctx, consumer, opts)
 }
 
+// CreateLogCollection mocks base method.
+func (m *MockInterface) CreateLogCollection(ctx context.Context, lc *LogCollection, opts *ResourceCreateOptions) (*LogCollection, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "CreateLogCollection", ctx, lc, opts)
+	ret0, _ := ret[0].(*LogCollection)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// CreateLogCollection indicates an expected call of CreateLogCollection.
+func (mr *MockInterfaceMockRecorder) CreateLogCollection(ctx, lc, opts interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateLogCollection", reflect.TypeOf((*MockInterface)(nil).CreateLogCollection), ctx, lc, opts)
+}
+
 // DeleteAPI mocks base method.
 func (m *MockInterface) DeleteAPI(ctx context.Context, apiID ID, opts *ResourceDeleteOptions) error {
 	m.ctrl.T.Helper()
@@ -176,6 +191,20 @@ func (m *MockInterface) DeleteConsumer(ctx context.Context, consumerID ID, opts 
 func (mr *MockInterfaceMockRecorder) DeleteConsumer(ctx, consumerID, opts interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteConsumer", reflect.TypeOf((*MockInterface)(nil).DeleteConsumer), ctx, consumerID, opts)
+}
+
+// DeleteLogCollection mocks base method.
+func (m *MockInterface) DeleteLogCollection(ctx context.Context, lcID ID, opts *ResourceDeleteOptions) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "DeleteLogCollection", ctx, lcID, opts)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// DeleteLogCollection indicates an expected call of DeleteLogCollection.
+func (mr *MockInterfaceMockRecorder) DeleteLogCollection(ctx, lcID, opts interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteLogCollection", reflect.TypeOf((*MockInterface)(nil).DeleteLogCollection), ctx, lcID, opts)
 }
 
 // FinishCanaryRelease mocks base method.
@@ -266,6 +295,21 @@ func (m *MockInterface) GetConsumer(ctx context.Context, consumerID ID, opts *Re
 func (mr *MockInterfaceMockRecorder) GetConsumer(ctx, consumerID, opts interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetConsumer", reflect.TypeOf((*MockInterface)(nil).GetConsumer), ctx, consumerID, opts)
+}
+
+// GetLogCollection mocks base method.
+func (m *MockInterface) GetLogCollection(ctx context.Context, lcID ID, opts *ResourceGetOptions) (*LogCollection, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetLogCollection", ctx, lcID, opts)
+	ret0, _ := ret[0].(*LogCollection)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetLogCollection indicates an expected call of GetLogCollection.
+func (mr *MockInterfaceMockRecorder) GetLogCollection(ctx, lcID, opts interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetLogCollection", reflect.TypeOf((*MockInterface)(nil).GetLogCollection), ctx, lcID, opts)
 }
 
 // GetOrganization mocks base method.
@@ -371,6 +415,21 @@ func (m *MockInterface) ListControlPlanes(ctx context.Context, opts *ResourceLis
 func (mr *MockInterfaceMockRecorder) ListControlPlanes(ctx, opts interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListControlPlanes", reflect.TypeOf((*MockInterface)(nil).ListControlPlanes), ctx, opts)
+}
+
+// ListLogCollections mocks base method.
+func (m *MockInterface) ListLogCollections(ctx context.Context, opts *ResourceListOptions) (LogCollectionIterator, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "ListLogCollections", ctx, opts)
+	ret0, _ := ret[0].(LogCollectionIterator)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// ListLogCollections indicates an expected call of ListLogCollections.
+func (mr *MockInterfaceMockRecorder) ListLogCollections(ctx, opts interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListLogCollections", reflect.TypeOf((*MockInterface)(nil).ListLogCollections), ctx, opts)
 }
 
 // ListRegions mocks base method.
@@ -565,6 +624,21 @@ func (m *MockInterface) UpdateConsumer(ctx context.Context, consumer *Consumer, 
 func (mr *MockInterfaceMockRecorder) UpdateConsumer(ctx, consumer, opts interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateConsumer", reflect.TypeOf((*MockInterface)(nil).UpdateConsumer), ctx, consumer, opts)
+}
+
+// UpdateLogCollection mocks base method.
+func (m *MockInterface) UpdateLogCollection(ctx context.Context, lc *LogCollection, opts *ResourceUpdateOptions) (*LogCollection, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "UpdateLogCollection", ctx, lc, opts)
+	ret0, _ := ret[0].(*LogCollection)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// UpdateLogCollection indicates an expected call of UpdateLogCollection.
+func (mr *MockInterfaceMockRecorder) UpdateLogCollection(ctx, lc, opts interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateLogCollection", reflect.TypeOf((*MockInterface)(nil).UpdateLogCollection), ctx, lc, opts)
 }
 
 // sendSeries mocks base method.

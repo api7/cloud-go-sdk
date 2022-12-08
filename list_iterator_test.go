@@ -57,7 +57,7 @@ func TestListIterator(t *testing.T) {
 			mockFn: func(t *testing.T) *listIterator {
 				ctrl := gomock.NewController(t)
 				cli := NewMockhttpClient(ctrl)
-				cli.EXPECT().sendGetRequest(gomock.Any(), "/api/v1/controlplanes/1/apps", "page=1&page_size=3", gomock.Any()).Return(nil)
+				cli.EXPECT().sendGetRequest(gomock.Any(), "/api/v1/controlplanes/1/apps", "page=1&page_size=3&search=redeem", gomock.Any()).Return(nil)
 
 				iter := &listIterator{
 					ctx:      context.Background(),
@@ -68,6 +68,10 @@ func TestListIterator(t *testing.T) {
 						Page:     1,
 						PageSize: 3,
 					},
+					filter: &Filter{
+						Search: "redeem",
+					},
+					eof: false,
 					items: []json.RawMessage{
 						json.RawMessage("{\"id\":1}"),
 						json.RawMessage("{\"id\":2}"),

@@ -43,6 +43,12 @@ func (paging *Pagination) step() {
 	paging.Page++
 }
 
+// Filter indicates conditions to filter out list results.
+type Filter struct {
+	// Search indicates the search condition for filtering out list results.
+	Search string
+}
+
 type listResponse struct {
 	List  []json.RawMessage `json:"list"`
 	Count uint64            `json:"count"`
@@ -54,6 +60,7 @@ type listIterator struct {
 	client   httpClient
 	path     string
 	paging   Pagination
+	filter   *Filter
 	eof      bool
 	items    []json.RawMessage
 }
@@ -69,6 +76,12 @@ func (iter *listIterator) Next() (json.RawMessage, error) {
 		query := make(url.Values)
 		query.Set("page", strconv.Itoa(iter.paging.Page))
 		query.Set("page_size", strconv.Itoa(iter.paging.PageSize))
+
+		if iter.filter != nil {
+			if iter.filter.Search != "" {
+				query.Set("search", iter.filter.Search)
+			}
+		}
 
 		err := iter.client.sendGetRequest(iter.ctx, iter.path, query.Encode(), jsonPayloadDecodeFactory(&lr))
 		if err != nil {

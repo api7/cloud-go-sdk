@@ -216,4 +216,6 @@ type ResourceListOptions struct {
 	Application *Application
 	// Pagination indicates the start page and the page size for listing resources.
 	Pagination *Pagination
+	// Filter indicates conditions to filter out resources.
+	Filter *Filter
 }

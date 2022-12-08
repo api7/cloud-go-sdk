@@ -114,7 +114,8 @@ type CanaryReleaseInterface interface {
 	GetCanaryRelease(ctx context.Context, crID ID, opts *ResourceGetOptions) (*CanaryRelease, error)
 	// ListCanaryReleases returns an iterator for listing CanaryReleases in the specified Application with the
 	// given list conditions.
-	// Users need to specify the Application, Paging conditions in the `opts`.
+	// Users need to specify the Application, Paging and Filter conditions (if necessary)
+	// in the `opts`.
 	ListCanaryReleases(ctx context.Context, opts *ResourceListOptions) (CanaryReleaseListIterator, error)
 }
 
@@ -241,6 +242,7 @@ func (impl *canaryReleaseImpl) ListCanaryReleases(ctx context.Context, opts *Res
 		client:   impl.client,
 		path:     path.Join(_apiPathPrefix, "apps", opts.Application.ID.String(), "canary_releases"),
 		paging:   mergePagination(opts.Pagination),
+		filter:   opts.Filter,
 	}
 
 	return &canaryReleaseListIterator{iter: iter}, nil

@@ -41,6 +41,8 @@ type Region struct {
 type RegionInterface interface {
 	// ListRegions returns an iterator for listing Regions with the
 	// given list conditions.
+	// Users need to specify the Paging and Filter conditions (if necessary)
+	// in the `opts`.
 	ListRegions(ctx context.Context, opts *ResourceListOptions) (RegionListIterator, error)
 }
 
@@ -80,9 +82,13 @@ func (iter *regionListIterator) Next() (*Region, error) {
 }
 
 func (impl *regionImpl) ListRegions(ctx context.Context, opts *ResourceListOptions) (RegionListIterator, error) {
-	var paging *Pagination
+	var (
+		paging *Pagination
+		filter *Filter
+	)
 	if opts != nil {
 		paging = opts.Pagination
+		filter = opts.Filter
 	}
 
 	iter := listIterator{
@@ -91,6 +97,7 @@ func (impl *regionImpl) ListRegions(ctx context.Context, opts *ResourceListOptio
 		client:   impl.client,
 		path:     path.Join(_apiPathPrefix, "regions"),
 		paging:   mergePagination(paging),
+		filter:   filter,
 	}
 
 	return &regionListIterator{iter: iter}, nil
