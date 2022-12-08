@@ -88,7 +88,8 @@ type CertificateInterface interface {
 	GetCertificate(ctx context.Context, certID ID, opts *ResourceGetOptions) (*Certificate, error)
 	// ListCertificates returns an iterator for listing Certificates in the specified control plane with the
 	// given list conditions.
-	// Users need to specify the ControlPlane, Paging conditions in the `opts`.
+	// Users need to specify the ControlPlane, Paging and Filter conditions (if necessary)
+	// in the `opts`.
 	// The `PrivateKey` field will be empty in the returned Certificate.
 	ListCertificates(ctx context.Context, opts *ResourceListOptions) (CertificateListIterator, error)
 }
@@ -173,6 +174,7 @@ func (impl *certificateImpl) ListCertificates(ctx context.Context, opts *Resourc
 		client:   impl.client,
 		path:     path.Join(_apiPathPrefix, "controlplanes", opts.ControlPlane.ID.String(), "certificates"),
 		paging:   mergePagination(opts.Pagination),
+		filter:   opts.Filter,
 	}
 
 	return &certificatesListIterator{iter: iter}, nil

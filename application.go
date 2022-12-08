@@ -105,7 +105,8 @@ type ApplicationInterface interface {
 	UnpublishApplication(ctx context.Context, appID ID, opts *ResourceUpdateOptions) (*Application, error)
 	// ListApplications returns an iterator for listing Applications in the specified control plane with the
 	// given list conditions.
-	// Users need to specify the ControlPlane, Paging conditions in the `opts`.
+	// Users need to specify the ControlPlane, Paging and Filter conditions (if necessary)
+	// in the `opts`.
 	ListApplications(ctx context.Context, opts *ResourceListOptions) (ApplicationListIterator, error)
 }
 
@@ -219,6 +220,7 @@ func (impl *applicationImpl) ListApplications(ctx context.Context, opts *Resourc
 		client:   impl.client,
 		path:     path.Join(_apiPathPrefix, "controlplanes", opts.ControlPlane.ID.String(), "apps"),
 		paging:   mergePagination(opts.Pagination),
+		filter:   opts.Filter,
 	}
 
 	return &applicationListIterator{iter: iter}, nil

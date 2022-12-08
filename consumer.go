@@ -59,7 +59,8 @@ type ConsumerInterface interface {
 	GetConsumer(ctx context.Context, consumerID ID, opts *ResourceGetOptions) (*Consumer, error)
 	// ListConsumers returns an iterator for listing Consumers in the specified control plane with the
 	// given list conditions.
-	// Users need to specify the ControlPlane, Paging conditions in the `opts`.
+	// Users need to specify the ControlPlane, Paging and Filter conditions (if necessary)
+	// in the `opts`.
 	ListConsumers(ctx context.Context, opts *ResourceListOptions) (ConsumerListIterator, error)
 }
 

@@ -116,7 +116,8 @@ type APIInterface interface {
 	UnpublishAPI(ctx context.Context, apiID ID, opts *ResourceUpdateOptions) (*API, error)
 	// ListAPIs returns an iterator for listing APIs in the specified Application with the
 	// given list conditions.
-	// Users need to specify the Application, Paging conditions in the `opts`.
+	// Users need to specify the Application, Paging and Filter conditions (if necessary)
+	// in the `opts`.
 	ListAPIs(ctx context.Context, opts *ResourceListOptions) (APIListIterator, error)
 }
 
@@ -230,6 +231,7 @@ func (impl *apiImpl) ListAPIs(ctx context.Context, opts *ResourceListOptions) (A
 		client:   impl.client,
 		path:     path.Join(_apiPathPrefix, "apps", opts.Application.ID.String(), "apis"),
 		paging:   mergePagination(opts.Pagination),
+		filter:   opts.Filter,
 	}
 
 	return &apiListIterator{iter: iter}, nil
