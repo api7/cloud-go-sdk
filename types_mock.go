@@ -327,6 +327,21 @@ func (mr *MockInterfaceMockRecorder) GetOrganization(ctx, orgID, opts interface{
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetOrganization", reflect.TypeOf((*MockInterface)(nil).GetOrganization), ctx, orgID, opts)
 }
 
+// InviteMember mocks base method.
+func (m *MockInterface) InviteMember(ctx context.Context, email string, role *Role, opts *ResourceCreateOptions) (*Member, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "InviteMember", ctx, email, role, opts)
+	ret0, _ := ret[0].(*Member)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// InviteMember indicates an expected call of InviteMember.
+func (mr *MockInterfaceMockRecorder) InviteMember(ctx, email, role, opts interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "InviteMember", reflect.TypeOf((*MockInterface)(nil).InviteMember), ctx, email, role, opts)
+}
+
 // ListAPIs mocks base method.
 func (m *MockInterface) ListAPIs(ctx context.Context, opts *ResourceListOptions) (APIListIterator, error) {
 	m.ctrl.T.Helper()
@@ -432,6 +447,21 @@ func (mr *MockInterfaceMockRecorder) ListLogCollections(ctx, opts interface{}) *
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListLogCollections", reflect.TypeOf((*MockInterface)(nil).ListLogCollections), ctx, opts)
 }
 
+// ListMembers mocks base method.
+func (m *MockInterface) ListMembers(ctx context.Context, opts *ResourceListOptions) (MemberListIterator, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "ListMembers", ctx, opts)
+	ret0, _ := ret[0].(MemberListIterator)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// ListMembers indicates an expected call of ListMembers.
+func (mr *MockInterfaceMockRecorder) ListMembers(ctx, opts interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListMembers", reflect.TypeOf((*MockInterface)(nil).ListMembers), ctx, opts)
+}
+
 // ListRegions mocks base method.
 func (m *MockInterface) ListRegions(ctx context.Context, opts *ResourceListOptions) (RegionListIterator, error) {
 	m.ctrl.T.Helper()
@@ -445,6 +475,21 @@ func (m *MockInterface) ListRegions(ctx context.Context, opts *ResourceListOptio
 func (mr *MockInterfaceMockRecorder) ListRegions(ctx, opts interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListRegions", reflect.TypeOf((*MockInterface)(nil).ListRegions), ctx, opts)
+}
+
+// ListRoles mocks base method.
+func (m *MockInterface) ListRoles(ctx context.Context, opts *ResourceListOptions) (RoleListIterator, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "ListRoles", ctx, opts)
+	ret0, _ := ret[0].(RoleListIterator)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// ListRoles indicates an expected call of ListRoles.
+func (mr *MockInterfaceMockRecorder) ListRoles(ctx, opts interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListRoles", reflect.TypeOf((*MockInterface)(nil).ListRoles), ctx, opts)
 }
 
 // Me mocks base method.
@@ -505,6 +550,21 @@ func (m *MockInterface) PublishApplication(ctx context.Context, appID ID, opts *
 func (mr *MockInterfaceMockRecorder) PublishApplication(ctx, appID, opts interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "PublishApplication", reflect.TypeOf((*MockInterface)(nil).PublishApplication), ctx, appID, opts)
+}
+
+// ReInviteMember mocks base method.
+func (m *MockInterface) ReInviteMember(ctx context.Context, memberID ID, opts *ResourceUpdateOptions) (*Member, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "ReInviteMember", ctx, memberID, opts)
+	ret0, _ := ret[0].(*Member)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// ReInviteMember indicates an expected call of ReInviteMember.
+func (mr *MockInterfaceMockRecorder) ReInviteMember(ctx, memberID, opts interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ReInviteMember", reflect.TypeOf((*MockInterface)(nil).ReInviteMember), ctx, memberID, opts)
 }
 
 // StartCanaryRelease mocks base method.

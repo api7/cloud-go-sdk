@@ -17,11 +17,10 @@ package cloud
 import (
 	"context"
 	"errors"
-	"path"
-	"testing"
-
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
+	"path"
+	"testing"
 )
 
 func TestGetOrganization(t *testing.T) {
@@ -63,6 +62,198 @@ func TestGetOrganization(t *testing.T) {
 			_, err := newOrganization(cli).GetOrganization(context.Background(), 12, nil)
 			if tc.expectedError == "" {
 				assert.Nil(t, err, "check api get error")
+			} else {
+				assert.Contains(t, err.Error(), tc.expectedError, "check the error details")
+			}
+		})
+	}
+}
+
+func TestListMembers(t *testing.T) {
+	t.Parallel()
+
+	testCases := []struct {
+		name     string
+		iterator *memberListIterator
+	}{
+		{
+			name: "create iterator successfully",
+			iterator: &memberListIterator{
+				iter: listIterator{
+					resource: "member",
+					path:     "/api/v1/orgs/123/members",
+					paging: Pagination{
+						Page:     14,
+						PageSize: 25,
+					},
+					eof: false,
+				},
+			},
+		},
+	}
+
+	for _, tc := range testCases {
+		tc := tc
+		t.Run(tc.name, func(t *testing.T) {
+			// ignore the application check since currently we don't mock it, and the api is always a zero value.
+			raw, err := newOrganization(nil).ListMembers(context.Background(), &ResourceListOptions{
+				Organization: &Organization{
+					ID: 123,
+				},
+				Pagination: &Pagination{
+					Page:     14,
+					PageSize: 25,
+				},
+			})
+			assert.Nil(t, err, "check list api error")
+			iter := raw.(*memberListIterator)
+			assert.Equal(t, tc.iterator.iter.resource, iter.iter.resource, "check resource")
+			assert.Equal(t, tc.iterator.iter.path, iter.iter.path, "check path")
+			assert.Equal(t, tc.iterator.iter.paging.Page, iter.iter.paging.Page, "check page")
+			assert.Equal(t, tc.iterator.iter.paging.PageSize, iter.iter.paging.PageSize, "check page size")
+		})
+	}
+}
+
+func TestListRoles(t *testing.T) {
+	t.Parallel()
+
+	testCases := []struct {
+		name     string
+		iterator *roleListIterator
+	}{
+		{
+			name: "create iterator successfully",
+			iterator: &roleListIterator{
+				iter: listIterator{
+					resource: "role",
+					path:     "/api/v1/orgs/123/roles",
+					paging: Pagination{
+						Page:     14,
+						PageSize: 25,
+					},
+					eof: false,
+				},
+			},
+		},
+	}
+
+	for _, tc := range testCases {
+		tc := tc
+		t.Run(tc.name, func(t *testing.T) {
+			// ignore the application check since currently we don't mock it, and the api is always a zero value.
+			raw, err := newOrganization(nil).ListRoles(context.Background(), &ResourceListOptions{
+				Organization: &Organization{
+					ID: 123,
+				},
+				Pagination: &Pagination{
+					Page:     14,
+					PageSize: 25,
+				},
+			})
+			assert.Nil(t, err, "check list api error")
+			iter := raw.(*roleListIterator)
+			assert.Equal(t, tc.iterator.iter.resource, iter.iter.resource, "check resource")
+			assert.Equal(t, tc.iterator.iter.path, iter.iter.path, "check path")
+			assert.Equal(t, tc.iterator.iter.paging.Page, iter.iter.paging.Page, "check page")
+			assert.Equal(t, tc.iterator.iter.paging.PageSize, iter.iter.paging.PageSize, "check page size")
+		})
+	}
+}
+
+func TestInviteMember(t *testing.T) {
+	t.Parallel()
+
+	testCases := []struct {
+		name          string
+		expectedError string
+		mockFunc      func(t *testing.T) httpClient
+	}{
+		{
+			name: "update successfully",
+			mockFunc: func(t *testing.T) httpClient {
+				ctrl := gomock.NewController(t)
+				cli := NewMockhttpClient(ctrl)
+				cli.EXPECT().sendPostRequest(gomock.Any(), path.Join(_apiPathPrefix, "/orgs/1/members"), "", gomock.Any(), gomock.Any()).Return(nil)
+				return cli
+
+			},
+			expectedError: "",
+		},
+		{
+			name: "mock error",
+			mockFunc: func(t *testing.T) httpClient {
+				ctrl := gomock.NewController(t)
+				cli := NewMockhttpClient(ctrl)
+				cli.EXPECT().sendPostRequest(gomock.Any(), path.Join(_apiPathPrefix, "/orgs/1/members"), "", gomock.Any(), gomock.Any()).Return(errors.New("mock error"))
+				return cli
+
+			},
+			expectedError: "mock error",
+		},
+	}
+
+	for _, tc := range testCases {
+		tc := tc
+		t.Run(tc.name, func(t *testing.T) {
+			cli := tc.mockFunc(t)
+			_, err := newOrganization(cli).InviteMember(context.Background(), "foo@test.org", &Role{}, &ResourceCreateOptions{
+				Organization: &Organization{
+					ID: 1,
+				},
+			})
+			if tc.expectedError == "" {
+				assert.Nil(t, err, "check member invite error")
+			} else {
+				assert.Contains(t, err.Error(), tc.expectedError, "check the error details")
+			}
+		})
+	}
+}
+
+func TestReInviteMember(t *testing.T) {
+	t.Parallel()
+
+	testCases := []struct {
+		name          string
+		expectedError string
+		mockFunc      func(t *testing.T) httpClient
+	}{
+		{
+			name: "update successfully",
+			mockFunc: func(t *testing.T) httpClient {
+				ctrl := gomock.NewController(t)
+				cli := NewMockhttpClient(ctrl)
+				cli.EXPECT().sendPutRequest(gomock.Any(), path.Join(_apiPathPrefix, "/orgs/1/members/1/re_invite"), "", gomock.Any(), gomock.Any()).Return(nil)
+				return cli
+
+			},
+			expectedError: "",
+		},
+		{
+			name: "mock error",
+			mockFunc: func(t *testing.T) httpClient {
+				ctrl := gomock.NewController(t)
+				cli := NewMockhttpClient(ctrl)
+				cli.EXPECT().sendPutRequest(gomock.Any(), path.Join(_apiPathPrefix, "/orgs/1/members/1/re_invite"), "", gomock.Any(), gomock.Any()).Return(errors.New("mock error"))
+				return cli
+
+			},
+			expectedError: "mock error",
+		},
+	}
+
+	for _, tc := range testCases {
+		tc := tc
+		t.Run(tc.name, func(t *testing.T) {
+			cli := tc.mockFunc(t)
+			_, err := newOrganization(cli).ReInviteMember(context.Background(), 1, &ResourceUpdateOptions{
+				Organization: &Organization{
+					ID: 1,
+				},
+			})
+			if tc.expectedError == "" {
+				assert.Nil(t, err, "check member re-invite error")
 			} else {
 				assert.Contains(t, err.Error(), tc.expectedError, "check the error details")
 			}
