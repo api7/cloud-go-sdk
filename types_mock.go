@@ -312,6 +312,21 @@ func (mr *MockInterfaceMockRecorder) GetLogCollection(ctx, lcID, opts interface{
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetLogCollection", reflect.TypeOf((*MockInterface)(nil).GetLogCollection), ctx, lcID, opts)
 }
 
+// GetMember mocks base method.
+func (m *MockInterface) GetMember(ctx context.Context, memberID ID, opts *ResourceGetOptions) (*Member, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetMember", ctx, memberID, opts)
+	ret0, _ := ret[0].(*Member)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetMember indicates an expected call of GetMember.
+func (mr *MockInterfaceMockRecorder) GetMember(ctx, memberID, opts interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetMember", reflect.TypeOf((*MockInterface)(nil).GetMember), ctx, memberID, opts)
+}
+
 // GetOrganization mocks base method.
 func (m *MockInterface) GetOrganization(ctx context.Context, orgID ID, opts *ResourceGetOptions) (*Organization, error) {
 	m.ctrl.T.Helper()
@@ -567,6 +582,20 @@ func (mr *MockInterfaceMockRecorder) ReInviteMember(ctx, memberID, opts interfac
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ReInviteMember", reflect.TypeOf((*MockInterface)(nil).ReInviteMember), ctx, memberID, opts)
 }
 
+// RemoveMember mocks base method.
+func (m *MockInterface) RemoveMember(ctx context.Context, memberID ID, opts *ResourceDeleteOptions) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "RemoveMember", ctx, memberID, opts)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// RemoveMember indicates an expected call of RemoveMember.
+func (mr *MockInterfaceMockRecorder) RemoveMember(ctx, memberID, opts interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RemoveMember", reflect.TypeOf((*MockInterface)(nil).RemoveMember), ctx, memberID, opts)
+}
+
 // StartCanaryRelease mocks base method.
 func (m *MockInterface) StartCanaryRelease(ctx context.Context, crID ID, opts *ResourceUpdateOptions) (*CanaryRelease, error) {
 	m.ctrl.T.Helper()
@@ -594,6 +623,20 @@ func (m *MockInterface) TraceChan() <-chan *TraceSeries {
 func (mr *MockInterfaceMockRecorder) TraceChan() *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "TraceChan", reflect.TypeOf((*MockInterface)(nil).TraceChan))
+}
+
+// TransferOwnership mocks base method.
+func (m *MockInterface) TransferOwnership(ctx context.Context, toMember ID, opts *ResourceUpdateOptions) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "TransferOwnership", ctx, toMember, opts)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// TransferOwnership indicates an expected call of TransferOwnership.
+func (mr *MockInterfaceMockRecorder) TransferOwnership(ctx, toMember, opts interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "TransferOwnership", reflect.TypeOf((*MockInterface)(nil).TransferOwnership), ctx, toMember, opts)
 }
 
 // UnpublishAPI mocks base method.
@@ -699,6 +742,20 @@ func (m *MockInterface) UpdateLogCollection(ctx context.Context, lc *LogCollecti
 func (mr *MockInterfaceMockRecorder) UpdateLogCollection(ctx, lc, opts interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateLogCollection", reflect.TypeOf((*MockInterface)(nil).UpdateLogCollection), ctx, lc, opts)
+}
+
+// UpdateMemberRoles mocks base method.
+func (m *MockInterface) UpdateMemberRoles(ctx context.Context, memberID ID, roleBindings []RoleBinding, opts *ResourceUpdateOptions) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "UpdateMemberRoles", ctx, memberID, roleBindings, opts)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// UpdateMemberRoles indicates an expected call of UpdateMemberRoles.
+func (mr *MockInterfaceMockRecorder) UpdateMemberRoles(ctx, memberID, roleBindings, opts interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateMemberRoles", reflect.TypeOf((*MockInterface)(nil).UpdateMemberRoles), ctx, memberID, roleBindings, opts)
 }
 
 // sendSeries mocks base method.

@@ -260,3 +260,208 @@ func TestReInviteMember(t *testing.T) {
 		})
 	}
 }
+
+func TestGetMember(t *testing.T) {
+	t.Parallel()
+
+	testCases := []struct {
+		name          string
+		expectedError string
+		mockFunc      func(t *testing.T) httpClient
+	}{
+		{
+			name: "get successfully",
+			mockFunc: func(t *testing.T) httpClient {
+				ctrl := gomock.NewController(t)
+				cli := NewMockhttpClient(ctrl)
+				cli.EXPECT().sendGetRequest(gomock.Any(), path.Join(_apiPathPrefix, "/orgs/1/members/12"), "", gomock.Any()).Return(nil)
+				return cli
+
+			},
+			expectedError: "",
+		},
+		{
+			name: "mock error",
+			mockFunc: func(t *testing.T) httpClient {
+				ctrl := gomock.NewController(t)
+				cli := NewMockhttpClient(ctrl)
+				cli.EXPECT().sendGetRequest(gomock.Any(), path.Join(_apiPathPrefix, "/orgs/1/members/12"), "", gomock.Any()).Return(errors.New("mock error"))
+				return cli
+			},
+			expectedError: "mock error",
+		},
+	}
+
+	for _, tc := range testCases {
+		tc := tc
+		t.Run(tc.name, func(t *testing.T) {
+			cli := tc.mockFunc(t)
+			// ignore the API check since currently we don't mock it, and the app is always a zero value.
+			_, err := newOrganization(cli).GetMember(context.Background(), 12, &ResourceGetOptions{
+				Organization: &Organization{
+					ID: 1,
+				},
+			})
+			if tc.expectedError == "" {
+				assert.Nil(t, err, "check member get error")
+			} else {
+				assert.Contains(t, err.Error(), tc.expectedError, "check the error details")
+			}
+		})
+	}
+}
+
+func TestUpdateMemberRoles(t *testing.T) {
+	t.Parallel()
+
+	testCases := []struct {
+		name          string
+		expectedError string
+		mockFunc      func(t *testing.T) httpClient
+	}{
+		{
+			name: "update successfully",
+			mockFunc: func(t *testing.T) httpClient {
+				ctrl := gomock.NewController(t)
+				cli := NewMockhttpClient(ctrl)
+				cli.EXPECT().sendPutRequest(gomock.Any(), path.Join(_apiPathPrefix, "/orgs/1/members/12"), "", gomock.Any(), gomock.Any()).Return(nil)
+				return cli
+
+			},
+			expectedError: "",
+		},
+		{
+			name: "mock error",
+			mockFunc: func(t *testing.T) httpClient {
+				ctrl := gomock.NewController(t)
+				cli := NewMockhttpClient(ctrl)
+				cli.EXPECT().sendPutRequest(gomock.Any(), path.Join(_apiPathPrefix, "/orgs/1/members/12"), "", gomock.Any(), gomock.Any()).Return(errors.New("mock error"))
+				return cli
+
+			},
+			expectedError: "mock error",
+		},
+	}
+
+	for _, tc := range testCases {
+		tc := tc
+		t.Run(tc.name, func(t *testing.T) {
+			cli := tc.mockFunc(t)
+			err := newOrganization(cli).UpdateMemberRoles(context.Background(), 12, []RoleBinding{
+				{
+					RoleID: 1,
+				},
+			}, &ResourceUpdateOptions{
+				Organization: &Organization{
+					ID: 1,
+				},
+			})
+
+			if tc.expectedError == "" {
+				assert.Nil(t, err, "check roles update error")
+			} else {
+				assert.Contains(t, err.Error(), tc.expectedError, "check the error details")
+			}
+		})
+	}
+}
+
+func TestDeleteMember(t *testing.T) {
+	t.Parallel()
+
+	testCases := []struct {
+		name          string
+		expectedError string
+		mockFunc      func(t *testing.T) httpClient
+	}{
+		{
+			name: "delete successfully",
+			mockFunc: func(t *testing.T) httpClient {
+				ctrl := gomock.NewController(t)
+				cli := NewMockhttpClient(ctrl)
+				cli.EXPECT().sendDeleteRequest(gomock.Any(), path.Join(_apiPathPrefix, "/orgs/1/members/12"), "", nil).Return(nil)
+				return cli
+
+			},
+			expectedError: "",
+		},
+		{
+			name: "mock error",
+			mockFunc: func(t *testing.T) httpClient {
+				ctrl := gomock.NewController(t)
+				cli := NewMockhttpClient(ctrl)
+				cli.EXPECT().sendDeleteRequest(gomock.Any(), path.Join(_apiPathPrefix, "/orgs/1/members/12"), "", nil).Return(errors.New("mock error"))
+				return cli
+
+			},
+			expectedError: "mock error",
+		},
+	}
+
+	for _, tc := range testCases {
+		tc := tc
+		t.Run(tc.name, func(t *testing.T) {
+			cli := tc.mockFunc(t)
+			err := newOrganization(cli).RemoveMember(context.Background(), 12, &ResourceDeleteOptions{
+				Organization: &Organization{
+					ID: 1,
+				},
+			})
+			if tc.expectedError == "" {
+				assert.Nil(t, err, "check member delete error")
+			} else {
+				assert.Contains(t, err.Error(), tc.expectedError, "check the error details")
+			}
+		})
+	}
+}
+
+func TestTransferOwnership(t *testing.T) {
+	t.Parallel()
+
+	testCases := []struct {
+		name          string
+		expectedError string
+		mockFunc      func(t *testing.T) httpClient
+	}{
+		{
+			name: "transfer successfully",
+			mockFunc: func(t *testing.T) httpClient {
+				ctrl := gomock.NewController(t)
+				cli := NewMockhttpClient(ctrl)
+				cli.EXPECT().sendPostRequest(gomock.Any(), path.Join(_apiPathPrefix, "/orgs/1/members/12/transfer_ownership"), "", nil, gomock.Any()).Return(nil)
+				return cli
+
+			},
+			expectedError: "",
+		},
+		{
+			name: "mock error",
+			mockFunc: func(t *testing.T) httpClient {
+				ctrl := gomock.NewController(t)
+				cli := NewMockhttpClient(ctrl)
+				cli.EXPECT().sendPostRequest(gomock.Any(), path.Join(_apiPathPrefix, "/orgs/1/members/12/transfer_ownership"), "", nil, gomock.Any()).Return(errors.New("mock error"))
+				return cli
+
+			},
+			expectedError: "mock error",
+		},
+	}
+
+	for _, tc := range testCases {
+		tc := tc
+		t.Run(tc.name, func(t *testing.T) {
+			cli := tc.mockFunc(t)
+			err := newOrganization(cli).TransferOwnership(context.Background(), 12, &ResourceUpdateOptions{
+				Organization: &Organization{
+					ID: 1,
+				},
+			})
+			if tc.expectedError == "" {
+				assert.Nil(t, err, "check member transfer error")
+			} else {
+				assert.Contains(t, err.Error(), tc.expectedError, "check the error details")
+			}
+		})
+	}
+}

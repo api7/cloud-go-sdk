@@ -188,6 +188,11 @@ type ResourceUpdateOptions struct {
 
 // ResourceDeleteOptions contains some options for deleting an API7 Cloud resource.
 type ResourceDeleteOptions struct {
+	// Organization indicates where the resources are.
+	// This field should be specified when users want to update resources.
+	// in the organization. e.g., when deleting a member, the
+	// Organization.ID should be specified.
+	Organization *Organization
 	// ControlPlane indicates where the resource is.
 	// This field should be specified when users want to delete resources
 	// in the control plane. e.g., when deleting Application, the
@@ -202,6 +207,11 @@ type ResourceDeleteOptions struct {
 
 // ResourceGetOptions contains some options for getting an API7 Cloud resource.
 type ResourceGetOptions struct {
+	// Organization indicates where the resources are.
+	// This field should be specified when users want to list resources.
+	// in the organization. e.g., when getting a member, the
+	// Organization.ID should be specified.
+	Organization *Organization
 	// ControlPlane indicates where the resource is.
 	// This field should be specified when users want to get a resource.
 	// in the control plane. e.g., when getting Application, the
