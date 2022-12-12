@@ -81,7 +81,7 @@ type MemberSpec struct {
 	Roles []Role `json:"roles"`
 	// Email is the email address of the member.
 	Email string `json:"email"`
-	// UserId refers to an user, since an 3rd party User Management
+	// UserId refers to a user, since a 3rd party User Management
 	// Service might be used so the type is not uint64.
 	UserId string `json:"user_id,omitempty" yaml:"user_id"`
 	// State is the user state. Optional values can be:
@@ -116,7 +116,7 @@ type Permissions struct {
 	APIManagement map[string]Methods `json:"api_management"`
 }
 
-// Role is the role of an member.
+// Role is the role of a member.
 type Role struct {
 	// ID is the id of role
 	ID ID `json:"id" gorm:"primaryKey"`
@@ -138,6 +138,16 @@ type Role struct {
 	UpdatedAt time.Time `json:"-" yaml:"updated_at" gorm:"autoUpdateTime"`
 }
 
+// RoleBinding binds a role to an organization member.
+type RoleBinding struct {
+	// RoleID is the id of role
+	RoleID ID `json:"role_id"`
+	// ControlPlaneID is the id of control plane
+	// This field is used only if the role is not
+	// organization scoped.
+	ControlPlaneID ID `json:"control_plane_id"`
+}
+
 // OrganizationInterface is the interface for manipulating Organization and Member.
 type OrganizationInterface interface {
 	// GetOrganization gets an existing API7 Cloud Organization.
@@ -157,10 +167,29 @@ type OrganizationInterface interface {
 	// The given `memberID` parameter should specify the existing member.
 	// Users need to specify the Organization in the `opts`.
 	ReInviteMember(ctx context.Context, memberID ID, opts *ResourceUpdateOptions) (*Member, error)
+	// RemoveMember removes an existing member from the organization.
+	// The given `memberID` parameter should specify the existing member.
+	// Users need to specify the Organization in the `opts`.
+	RemoveMember(ctx context.Context, memberID ID, opts *ResourceDeleteOptions) error
+	// GetMember gets an existing member from the organization.
+	// The given `memberID` parameter should specify the existing member.
+	// Users need to specify the Organization in the `opts`.
+	GetMember(ctx context.Context, memberID ID, opts *ResourceGetOptions) (*Member, error)
+	// UpdateMemberRoles updates the roles for the specified member.
+	// The given `memberID` parameter should specify the existing member.
+	// The given `roleBindings` parameter specifies new roles for this member.
+	// Users need to specify the Organization in the `opts`.
+	UpdateMemberRoles(ctx context.Context, memberID ID, roleBindings []RoleBinding, opts *ResourceUpdateOptions) error
 	// ListRoles returns an iterator for listing Roles in the specified Organization with the
 	// given list conditions.
 	// Users need to specify the Organization, Paging in the `opts`.
 	ListRoles(ctx context.Context, opts *ResourceListOptions) (RoleListIterator, error)
+	// TransferOwnership transfers the organization ownership from yourself to another member.
+	// The `toMember` parameter should specify the existing member in the same organization.
+	// Users need to specify the Organization, Paging in the `opts`.
+	// Note the operation will fail if you're not the owner of this organization.
+	// After the transferring, your role will be downgraded to organization admin.
+	TransferOwnership(ctx context.Context, toMember ID, opts *ResourceUpdateOptions) error
 }
 
 // MemberListIterator is an iterator for listing Members.
@@ -290,4 +319,42 @@ func (impl *organizationImpl) ReInviteMember(ctx context.Context, memberID ID, o
 		return nil, err
 	}
 	return &member, nil
+}
+
+func (impl *organizationImpl) RemoveMember(ctx context.Context, memberID ID, opts *ResourceDeleteOptions) error {
+	uri := path.Join(_apiPathPrefix, "orgs", opts.Organization.ID.String(), "members", memberID.String())
+	err := impl.client.sendDeleteRequest(ctx, uri, "", nil)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (impl *organizationImpl) GetMember(ctx context.Context, memberID ID, opts *ResourceGetOptions) (*Member, error) {
+	var member Member
+
+	uri := path.Join(_apiPathPrefix, "orgs", opts.Organization.ID.String(), "members", memberID.String())
+	err := impl.client.sendGetRequest(ctx, uri, "", jsonPayloadDecodeFactory(&member))
+	if err != nil {
+		return nil, err
+	}
+	return &member, nil
+}
+
+func (impl *organizationImpl) TransferOwnership(ctx context.Context, targetMemberID ID, opts *ResourceUpdateOptions) error {
+	uri := path.Join(_apiPathPrefix, "orgs", opts.Organization.ID.String(), "members", targetMemberID.String(), "transfer_ownership")
+	err := impl.client.sendPostRequest(ctx, uri, "", nil, nil)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (impl *organizationImpl) UpdateMemberRoles(ctx context.Context, memberID ID, roleBindings []RoleBinding, opts *ResourceUpdateOptions) error {
+	uri := path.Join(_apiPathPrefix, "orgs", opts.Organization.ID.String(), "members", memberID.String())
+	err := impl.client.sendPutRequest(ctx, uri, "", roleBindings, nil)
+	if err != nil {
+		return err
+	}
+	return nil
 }
