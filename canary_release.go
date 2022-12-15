@@ -207,7 +207,7 @@ func (impl *canaryReleaseImpl) FinishCanaryRelease(ctx context.Context, cr *Cana
 
 	appID := opts.Application.ID
 	uri := path.Join(_apiPathPrefix, "apps", appID.String(), "canary_releases", cr.ID.String())
-	cr.State = CanaryReleaseStatePaused
+	cr.State = CanaryReleaseStateFinished
 	err := impl.client.sendPutRequest(ctx, uri, "", cr, jsonPayloadDecodeFactory(&cr))
 	if err != nil {
 		return nil, err

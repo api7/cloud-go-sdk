@@ -292,7 +292,7 @@ func TestFinishCanaryRelease(t *testing.T) {
 				cli := NewMockhttpClient(ctrl)
 				cli.EXPECT().sendPutRequest(gomock.Any(), path.Join(_apiPathPrefix, "/apps/1/canary_releases/12"), "", &CanaryRelease{
 					CanaryReleaseSpec: CanaryReleaseSpec{
-						State: CanaryReleaseStatePaused,
+						State: CanaryReleaseStateFinished,
 					},
 					ID: 12,
 				}, gomock.Any()).Return(nil)
@@ -307,7 +307,7 @@ func TestFinishCanaryRelease(t *testing.T) {
 				cli := NewMockhttpClient(ctrl)
 				cli.EXPECT().sendPutRequest(gomock.Any(), path.Join(_apiPathPrefix, "/apps/1/canary_releases/12"), "", &CanaryRelease{
 					CanaryReleaseSpec: CanaryReleaseSpec{
-						State: CanaryReleaseStatePaused,
+						State: CanaryReleaseStateFinished,
 					},
 					ID: 12,
 				}, gomock.Any()).Return(errors.New("mock error"))
