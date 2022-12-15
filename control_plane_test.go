@@ -149,11 +149,7 @@ func TestGenerateGatewaySideCertificate(t *testing.T) {
 		t.Run(tc.name, func(t *testing.T) {
 			cli := tc.mockFunc(t)
 			// ignore the application check since currently we don't mock it, and the app is always a zero value.
-			_, err := newControlPlane(cli).GenerateGatewaySideCertificate(context.Background(), &ResourceCreateOptions{
-				ControlPlane: &ControlPlane{
-					ID: 1,
-				},
-			})
+			_, err := newControlPlane(cli).GenerateGatewaySideCertificate(context.Background(), 1, nil)
 			if tc.expectedError == "" {
 				assert.Nil(t, err, "check api get error")
 			} else {
@@ -161,4 +157,51 @@ func TestGenerateGatewaySideCertificate(t *testing.T) {
 			}
 		})
 	}
+}
+
+func TestListAllLabels(t *testing.T) {
+	t.Parallel()
+
+	testCases := []struct {
+		name          string
+		expectedError string
+		mockFunc      func(t *testing.T) httpClient
+	}{
+		{
+			name: "get successfully",
+			mockFunc: func(t *testing.T) httpClient {
+				ctrl := gomock.NewController(t)
+				cli := NewMockhttpClient(ctrl)
+				cli.EXPECT().sendGetRequest(gomock.Any(), path.Join(_apiPathPrefix, "/controlplanes/1/labels/api"), "", gomock.Any()).Return(nil)
+				return cli
+
+			},
+			expectedError: "",
+		},
+		{
+			name: "mock error",
+			mockFunc: func(t *testing.T) httpClient {
+				ctrl := gomock.NewController(t)
+				cli := NewMockhttpClient(ctrl)
+				cli.EXPECT().sendGetRequest(gomock.Any(), path.Join(_apiPathPrefix, "/controlplanes/1/labels/api"), "", gomock.Any()).Return(errors.New("mock error"))
+				return cli
+			},
+			expectedError: "mock error",
+		},
+	}
+
+	for _, tc := range testCases {
+		tc := tc
+		t.Run(tc.name, func(t *testing.T) {
+			cli := tc.mockFunc(t)
+			// ignore the application check since currently we don't mock it, and the app is always a zero value.
+			_, err := newControlPlane(cli).ListAllAPILabels(context.Background(), 1, nil)
+			if tc.expectedError == "" {
+				assert.Nil(t, err, "check api labels get error")
+			} else {
+				assert.Contains(t, err.Error(), tc.expectedError, "check the error details")
+			}
+		})
+	}
+
 }
