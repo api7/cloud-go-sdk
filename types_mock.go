@@ -123,6 +123,21 @@ func (mr *MockInterfaceMockRecorder) CreateLogCollection(ctx, lc, opts interface
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateLogCollection", reflect.TypeOf((*MockInterface)(nil).CreateLogCollection), ctx, lc, opts)
 }
 
+// DebugAPIResources mocks base method.
+func (m *MockInterface) DebugAPIResources(ctx context.Context, apiID ID, opts *ResourceGetOptions) (string, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "DebugAPIResources", ctx, apiID, opts)
+	ret0, _ := ret[0].(string)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// DebugAPIResources indicates an expected call of DebugAPIResources.
+func (mr *MockInterfaceMockRecorder) DebugAPIResources(ctx, apiID, opts interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DebugAPIResources", reflect.TypeOf((*MockInterface)(nil).DebugAPIResources), ctx, apiID, opts)
+}
+
 // DeleteAPI mocks base method.
 func (m *MockInterface) DeleteAPI(ctx context.Context, apiID ID, opts *ResourceDeleteOptions) error {
 	m.ctrl.T.Helper()

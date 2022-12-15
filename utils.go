@@ -1,9 +1,12 @@
 package cloud
 
 import (
+	"encoding/json"
+	"fmt"
 	"net"
 	"os"
 
+	"github.com/bitly/go-simplejson"
 	"github.com/pkg/errors"
 	"gopkg.in/yaml.v3"
 )
@@ -69,4 +72,36 @@ func mergePagination(paging *Pagination) Pagination {
 	} else {
 		return DefaultPagination
 	}
+}
+
+func formatJSONData(raw []byte) (string, error) {
+	js, err := simplejson.NewJson(raw)
+	if err != nil {
+		return "", errors.Wrap(err, "invalid json")
+	}
+
+	for _, resName := range []string{"routes", "services", "upstreams", "certificates", "consumers"} {
+		res, ok := js.CheckGet(resName)
+		if !ok {
+			continue
+		}
+
+		for i := 0; i < len(res.MustArray()); i++ {
+			var structualValue map[string]interface{}
+			value := res.GetIndex(i).Get("value").MustString()
+
+			// value is a JSON string, and we want to show it structurally, so
+			// here we unmarshal and reset it.
+			if err := json.Unmarshal([]byte(value), &structualValue); err != nil {
+				return "", errors.Wrap(err, fmt.Sprintf("unmarshal %s", value))
+			}
+
+			res.GetIndex(i).Set("value", structualValue)
+		}
+	}
+	newData, err := js.MarshalJSON()
+	if err != nil {
+		return "", err
+	}
+	return string(newData), nil
 }
