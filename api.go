@@ -119,6 +119,10 @@ type APIInterface interface {
 	// Users need to specify the Application, Paging and Filter conditions (if necessary)
 	// in the `opts`.
 	ListAPIs(ctx context.Context, opts *ResourceListOptions) (APIListIterator, error)
+	// DebugAPIResources returns the corresponding translated APISIX resources for this API.
+	// The given `apiID` parameter should specify the API that you want to operate.
+	// Users need to specify the ControlPlane.ID in the `opts`.
+	DebugAPIResources(ctx context.Context, apiID ID, opts *ResourceGetOptions) (string, error)
 }
 
 // APIListIterator is an iterator for listing APIs.
@@ -235,4 +239,14 @@ func (impl *apiImpl) ListAPIs(ctx context.Context, opts *ResourceListOptions) (A
 	}
 
 	return &apiListIterator{iter: iter}, nil
+}
+
+func (impl *apiImpl) DebugAPIResources(ctx context.Context, apiID ID, opts *ResourceGetOptions) (string, error) {
+	var rawData json.RawMessage
+	uri := path.Join(_apiPathPrefix, "controlplanes", opts.ControlPlane.ID.String(), "api", apiID.String())
+	err := impl.client.sendGetRequest(ctx, uri, "", jsonPayloadDecodeFactory(&rawData))
+	if err != nil {
+		return "", err
+	}
+	return formatJSONData(rawData)
 }
