@@ -238,18 +238,18 @@ func (mr *MockInterfaceMockRecorder) FinishCanaryRelease(ctx, cr, opts interface
 }
 
 // GenerateGatewaySideCertificate mocks base method.
-func (m *MockInterface) GenerateGatewaySideCertificate(ctx context.Context, opts *ResourceCreateOptions) (*TLSBundle, error) {
+func (m *MockInterface) GenerateGatewaySideCertificate(ctx context.Context, cpID ID, opts *ResourceCreateOptions) (*TLSBundle, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "GenerateGatewaySideCertificate", ctx, opts)
+	ret := m.ctrl.Call(m, "GenerateGatewaySideCertificate", ctx, cpID, opts)
 	ret0, _ := ret[0].(*TLSBundle)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
 // GenerateGatewaySideCertificate indicates an expected call of GenerateGatewaySideCertificate.
-func (mr *MockInterfaceMockRecorder) GenerateGatewaySideCertificate(ctx, opts interface{}) *gomock.Call {
+func (mr *MockInterfaceMockRecorder) GenerateGatewaySideCertificate(ctx, cpID, opts interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GenerateGatewaySideCertificate", reflect.TypeOf((*MockInterface)(nil).GenerateGatewaySideCertificate), ctx, opts)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GenerateGatewaySideCertificate", reflect.TypeOf((*MockInterface)(nil).GenerateGatewaySideCertificate), ctx, cpID, opts)
 }
 
 // GetAPI mocks base method.
@@ -385,6 +385,66 @@ func (m *MockInterface) ListAPIs(ctx context.Context, opts *ResourceListOptions)
 func (mr *MockInterfaceMockRecorder) ListAPIs(ctx, opts interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListAPIs", reflect.TypeOf((*MockInterface)(nil).ListAPIs), ctx, opts)
+}
+
+// ListAllAPILabels mocks base method.
+func (m *MockInterface) ListAllAPILabels(ctx context.Context, cpID ID, opts *ResourceListOptions) ([]string, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "ListAllAPILabels", ctx, cpID, opts)
+	ret0, _ := ret[0].([]string)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// ListAllAPILabels indicates an expected call of ListAllAPILabels.
+func (mr *MockInterfaceMockRecorder) ListAllAPILabels(ctx, cpID, opts interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListAllAPILabels", reflect.TypeOf((*MockInterface)(nil).ListAllAPILabels), ctx, cpID, opts)
+}
+
+// ListAllApplicationLabels mocks base method.
+func (m *MockInterface) ListAllApplicationLabels(ctx context.Context, cpID ID, opts *ResourceListOptions) ([]string, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "ListAllApplicationLabels", ctx, cpID, opts)
+	ret0, _ := ret[0].([]string)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// ListAllApplicationLabels indicates an expected call of ListAllApplicationLabels.
+func (mr *MockInterfaceMockRecorder) ListAllApplicationLabels(ctx, cpID, opts interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListAllApplicationLabels", reflect.TypeOf((*MockInterface)(nil).ListAllApplicationLabels), ctx, cpID, opts)
+}
+
+// ListAllCertificateLabels mocks base method.
+func (m *MockInterface) ListAllCertificateLabels(ctx context.Context, cpID ID, opts *ResourceListOptions) ([]string, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "ListAllCertificateLabels", ctx, cpID, opts)
+	ret0, _ := ret[0].([]string)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// ListAllCertificateLabels indicates an expected call of ListAllCertificateLabels.
+func (mr *MockInterfaceMockRecorder) ListAllCertificateLabels(ctx, cpID, opts interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListAllCertificateLabels", reflect.TypeOf((*MockInterface)(nil).ListAllCertificateLabels), ctx, cpID, opts)
+}
+
+// ListAllConsumerLabels mocks base method.
+func (m *MockInterface) ListAllConsumerLabels(ctx context.Context, cpID ID, opts *ResourceListOptions) ([]string, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "ListAllConsumerLabels", ctx, cpID, opts)
+	ret0, _ := ret[0].([]string)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// ListAllConsumerLabels indicates an expected call of ListAllConsumerLabels.
+func (mr *MockInterfaceMockRecorder) ListAllConsumerLabels(ctx, cpID, opts interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListAllConsumerLabels", reflect.TypeOf((*MockInterface)(nil).ListAllConsumerLabels), ctx, cpID, opts)
 }
 
 // ListAllGatewayInstances mocks base method.

@@ -288,11 +288,32 @@ type ControlPlaneInterface interface {
 	ListControlPlanes(ctx context.Context, opts *ResourceListOptions) (ControlPlaneListIterator, error)
 	// GenerateGatewaySideCertificate generates the tls bundle for gateway instances to communicate with
 	// the specified Control Plane on API7 Cloud.
-	// Users need to specify the ControlPlane.ID in the `opts`.
-	GenerateGatewaySideCertificate(ctx context.Context, opts *ResourceCreateOptions) (*TLSBundle, error)
+	// The `cpID` parameter specifies the Control Plane ID.
+	// Note currently users don't need to pass the `opts` parameter. Just pass `nil` is OK.
+	GenerateGatewaySideCertificate(ctx context.Context, cpID ID, opts *ResourceCreateOptions) (*TLSBundle, error)
 	// ListAllGatewayInstances returns all the gateway instances (ever) connected to the given Control Plane.
 	// Note currently users don't need to pass the `opts` parameter. Just pass `nil` is OK.
 	ListAllGatewayInstances(ctx context.Context, cpID ID, opts *ResourceListOptions) ([]GatewayInstance, error)
+	// ListAllAPILabels lists all labels for API.
+	// The `cpID` parameter specifies the Control Plane ID.
+	// Note currently users don't need to pass the `opts` parameter. Just pass `nil` is OK.
+	// The returned label slice will be `nil` if there is no any labels for API.
+	ListAllAPILabels(ctx context.Context, cpID ID, opts *ResourceListOptions) ([]string, error)
+	// ListAllApplicationLabels lists all labels for Application.
+	// The `cpID` parameter specifies the Control Plane ID.
+	// Note currently users don't need to pass the `opts` parameter. Just pass `nil` is OK.
+	// The returned label slice will be `nil` if there is no any labels for Application.
+	ListAllApplicationLabels(ctx context.Context, cpID ID, opts *ResourceListOptions) ([]string, error)
+	// ListAllCertificateLabels lists all labels for Certificate.
+	// The `cpID` parameter specifies the Control Plane ID.
+	// Note currently users don't need to pass the `opts` parameter. Just pass `nil` is OK.
+	// The returned label slice will be `nil` if there is no any labels for Certificate.
+	ListAllCertificateLabels(ctx context.Context, cpID ID, opts *ResourceListOptions) ([]string, error)
+	// ListAllConsumerLabels lists all labels for Consumer.
+	// The `cpID` parameter specifies the Control Plane ID.
+	// Note currently users don't need to pass the `opts` parameter. Just pass `nil` is OK.
+	// The returned label slice will be `nil` if there is no any labels for Consumer.
+	ListAllConsumerLabels(ctx context.Context, cpID ID, opts *ResourceListOptions) ([]string, error)
 }
 
 // ControlPlaneListIterator is an iterator for listing Control Planes.
@@ -343,10 +364,9 @@ func (impl *controlPlaneImpl) ListControlPlanes(ctx context.Context, opts *Resou
 	return &controlPlaneListIterator{iter: iter}, nil
 }
 
-func (impl *controlPlaneImpl) GenerateGatewaySideCertificate(ctx context.Context, opts *ResourceCreateOptions) (*TLSBundle, error) {
+func (impl *controlPlaneImpl) GenerateGatewaySideCertificate(ctx context.Context, cpID ID, _ *ResourceCreateOptions) (*TLSBundle, error) {
 	var bundle TLSBundle
 
-	cpID := opts.ControlPlane.ID
 	uri := path.Join(_apiPathPrefix, "controlplanes", cpID.String(), "dp_certificate")
 	err := impl.client.sendGetRequest(ctx, uri, "", jsonPayloadDecodeFactory(&bundle))
 	if err != nil {
@@ -375,4 +395,31 @@ func (impl *controlPlaneImpl) ListAllGatewayInstances(ctx context.Context, cpID 
 	}
 
 	return instances, nil
+}
+
+func (impl *controlPlaneImpl) ListAllAPILabels(ctx context.Context, cpID ID, _ *ResourceListOptions) ([]string, error) {
+	return impl.listAllLabels(ctx, cpID, "api")
+}
+
+func (impl *controlPlaneImpl) ListAllApplicationLabels(ctx context.Context, cpID ID, _ *ResourceListOptions) ([]string, error) {
+	return impl.listAllLabels(ctx, cpID, "application")
+}
+
+func (impl *controlPlaneImpl) ListAllConsumerLabels(ctx context.Context, cpID ID, _ *ResourceListOptions) ([]string, error) {
+	return impl.listAllLabels(ctx, cpID, "consumer")
+}
+
+func (impl *controlPlaneImpl) ListAllCertificateLabels(ctx context.Context, cpID ID, _ *ResourceListOptions) ([]string, error) {
+	return impl.listAllLabels(ctx, cpID, "certificate")
+}
+
+func (impl *controlPlaneImpl) listAllLabels(ctx context.Context, cpID ID, resource string) ([]string, error) {
+	var labels []string
+
+	uri := path.Join(_apiPathPrefix, "controlplanes", cpID.String(), "labels", resource)
+	err := impl.client.sendGetRequest(ctx, uri, "", jsonPayloadDecodeFactory(&labels))
+	if err != nil {
+		return nil, err
+	}
+	return labels, nil
 }
