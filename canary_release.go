@@ -17,7 +17,6 @@ package cloud
 import (
 	"context"
 	"encoding/json"
-	"fmt"
 	"path"
 	"time"
 )
@@ -89,21 +88,21 @@ type CanaryReleaseInterface interface {
 	// Users need to specify the Application in the `opts`.
 	// The updated Canary Release will be returned and the CanaryReleaseSpec.State field should be
 	// CanaryReleaseStateInProgress.
-	StartCanaryRelease(ctx context.Context, crID ID, opts *ResourceUpdateOptions) (*CanaryRelease, error)
+	StartCanaryRelease(ctx context.Context, cr *CanaryRelease, opts *ResourceUpdateOptions) (*CanaryRelease, error)
 	// PauseCanaryRelease makes the Canary Release paused in the specified Application
 	// (a shortcut of UpdateCanaryRelease and set CanaryReleaseSpec.State to CanaryReleaseStatePaused).
 	// The given `crID` parameter should specify the desired Canary Release ID.
 	// Users need to specify the Application in the `opts`.
 	// The updated Canary Release will be returned and the CanaryReleaseSpec.State field should be
 	// CanaryReleaseStatePaused.
-	PauseCanaryRelease(ctx context.Context, crID ID, opts *ResourceUpdateOptions) (*CanaryRelease, error)
+	PauseCanaryRelease(ctx context.Context, cr *CanaryRelease, opts *ResourceUpdateOptions) (*CanaryRelease, error)
 	// FinishCanaryRelease makes the Canary Release finished in the specified Application
 	// (a shortcut of UpdateCanaryRelease and set CanaryReleaseSpec.State to CanaryReleaseStateFinished).
 	// The given `crID` parameter should specify the desired Canary Release ID.
 	// Users need to specify the Application in the `opts`.
 	// The updated Canary Release will be returned and the CanaryReleaseSpec.State field should be
 	// CanaryReleaseStateFinished.
-	FinishCanaryRelease(ctx context.Context, crID ID, opts *ResourceUpdateOptions) (*CanaryRelease, error)
+	FinishCanaryRelease(ctx context.Context, cr *CanaryRelease, opts *ResourceUpdateOptions) (*CanaryRelease, error)
 	// DeleteCanaryRelease deletes an existing API7 Cloud Canary Release in the specified Application.
 	// The Given `crID` parameter should specify the Canary Release that you want to delete.
 	// Users need to specify the Application in the `opts`.
@@ -178,43 +177,42 @@ func (impl *canaryReleaseImpl) UpdateCanaryRelease(ctx context.Context, cr *Cana
 	return &updatedCr, nil
 }
 
-func (impl *canaryReleaseImpl) StartCanaryRelease(ctx context.Context, crID ID, opts *ResourceUpdateOptions) (*CanaryRelease, error) {
-	var cr CanaryRelease
-
+func (impl *canaryReleaseImpl) StartCanaryRelease(ctx context.Context, cr *CanaryRelease, opts *ResourceUpdateOptions) (*CanaryRelease, error) {
+	var updatedCr CanaryRelease
 	appID := opts.Application.ID
-	uri := path.Join(_apiPathPrefix, "apps", appID.String(), "canary_releases", crID.String())
-	body := []byte(fmt.Sprintf(`{"state":"%s"}`, CanaryReleaseStateInProgress))
-	err := impl.client.sendPatchRequest(ctx, uri, "", body, jsonPayloadDecodeFactory(&cr))
+	uri := path.Join(_apiPathPrefix, "apps", appID.String(), "canary_releases", cr.ID.String())
+	cr.State = CanaryReleaseStateInProgress
+	err := impl.client.sendPutRequest(ctx, uri, "", cr, jsonPayloadDecodeFactory(&updatedCr))
 	if err != nil {
 		return nil, err
 	}
-	return &cr, nil
+	return &updatedCr, nil
 }
 
-func (impl *canaryReleaseImpl) PauseCanaryRelease(ctx context.Context, crID ID, opts *ResourceUpdateOptions) (*CanaryRelease, error) {
-	var cr CanaryRelease
+func (impl *canaryReleaseImpl) PauseCanaryRelease(ctx context.Context, cr *CanaryRelease, opts *ResourceUpdateOptions) (*CanaryRelease, error) {
+	var updatedCr CanaryRelease
 
 	appID := opts.Application.ID
-	uri := path.Join(_apiPathPrefix, "apps", appID.String(), "canary_releases", crID.String())
-	body := []byte(fmt.Sprintf(`{"state":"%s"}`, CanaryReleaseStatePaused))
-	err := impl.client.sendPatchRequest(ctx, uri, "", body, jsonPayloadDecodeFactory(&cr))
+	uri := path.Join(_apiPathPrefix, "apps", appID.String(), "canary_releases", cr.ID.String())
+	cr.State = CanaryReleaseStatePaused
+	err := impl.client.sendPutRequest(ctx, uri, "", cr, jsonPayloadDecodeFactory(&updatedCr))
 	if err != nil {
 		return nil, err
 	}
-	return &cr, nil
+	return &updatedCr, nil
 }
 
-func (impl *canaryReleaseImpl) FinishCanaryRelease(ctx context.Context, crID ID, opts *ResourceUpdateOptions) (*CanaryRelease, error) {
-	var cr CanaryRelease
+func (impl *canaryReleaseImpl) FinishCanaryRelease(ctx context.Context, cr *CanaryRelease, opts *ResourceUpdateOptions) (*CanaryRelease, error) {
+	var updatedCr CanaryRelease
 
 	appID := opts.Application.ID
-	uri := path.Join(_apiPathPrefix, "apps", appID.String(), "canary_releases", crID.String())
-	body := []byte(fmt.Sprintf(`{"state":"%s"}`, CanaryReleaseStateFinished))
-	err := impl.client.sendPatchRequest(ctx, uri, "", body, jsonPayloadDecodeFactory(&cr))
+	uri := path.Join(_apiPathPrefix, "apps", appID.String(), "canary_releases", cr.ID.String())
+	cr.State = CanaryReleaseStatePaused
+	err := impl.client.sendPutRequest(ctx, uri, "", cr, jsonPayloadDecodeFactory(&cr))
 	if err != nil {
 		return nil, err
 	}
-	return &cr, nil
+	return &updatedCr, nil
 }
 
 func (impl *canaryReleaseImpl) DeleteCanaryRelease(ctx context.Context, crID ID, opts *ResourceDeleteOptions) error {

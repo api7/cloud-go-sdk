@@ -208,18 +208,18 @@ func (mr *MockInterfaceMockRecorder) DeleteLogCollection(ctx, lcID, opts interfa
 }
 
 // FinishCanaryRelease mocks base method.
-func (m *MockInterface) FinishCanaryRelease(ctx context.Context, crID ID, opts *ResourceUpdateOptions) (*CanaryRelease, error) {
+func (m *MockInterface) FinishCanaryRelease(ctx context.Context, cr *CanaryRelease, opts *ResourceUpdateOptions) (*CanaryRelease, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "FinishCanaryRelease", ctx, crID, opts)
+	ret := m.ctrl.Call(m, "FinishCanaryRelease", ctx, cr, opts)
 	ret0, _ := ret[0].(*CanaryRelease)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
 // FinishCanaryRelease indicates an expected call of FinishCanaryRelease.
-func (mr *MockInterfaceMockRecorder) FinishCanaryRelease(ctx, crID, opts interface{}) *gomock.Call {
+func (mr *MockInterfaceMockRecorder) FinishCanaryRelease(ctx, cr, opts interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FinishCanaryRelease", reflect.TypeOf((*MockInterface)(nil).FinishCanaryRelease), ctx, crID, opts)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FinishCanaryRelease", reflect.TypeOf((*MockInterface)(nil).FinishCanaryRelease), ctx, cr, opts)
 }
 
 // GenerateGatewaySideCertificate mocks base method.
@@ -523,18 +523,18 @@ func (mr *MockInterfaceMockRecorder) Me(ctx interface{}) *gomock.Call {
 }
 
 // PauseCanaryRelease mocks base method.
-func (m *MockInterface) PauseCanaryRelease(ctx context.Context, crID ID, opts *ResourceUpdateOptions) (*CanaryRelease, error) {
+func (m *MockInterface) PauseCanaryRelease(ctx context.Context, cr *CanaryRelease, opts *ResourceUpdateOptions) (*CanaryRelease, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "PauseCanaryRelease", ctx, crID, opts)
+	ret := m.ctrl.Call(m, "PauseCanaryRelease", ctx, cr, opts)
 	ret0, _ := ret[0].(*CanaryRelease)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
 // PauseCanaryRelease indicates an expected call of PauseCanaryRelease.
-func (mr *MockInterfaceMockRecorder) PauseCanaryRelease(ctx, crID, opts interface{}) *gomock.Call {
+func (mr *MockInterfaceMockRecorder) PauseCanaryRelease(ctx, cr, opts interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "PauseCanaryRelease", reflect.TypeOf((*MockInterface)(nil).PauseCanaryRelease), ctx, crID, opts)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "PauseCanaryRelease", reflect.TypeOf((*MockInterface)(nil).PauseCanaryRelease), ctx, cr, opts)
 }
 
 // PublishAPI mocks base method.
@@ -597,18 +597,18 @@ func (mr *MockInterfaceMockRecorder) RemoveMember(ctx, memberID, opts interface{
 }
 
 // StartCanaryRelease mocks base method.
-func (m *MockInterface) StartCanaryRelease(ctx context.Context, crID ID, opts *ResourceUpdateOptions) (*CanaryRelease, error) {
+func (m *MockInterface) StartCanaryRelease(ctx context.Context, cr *CanaryRelease, opts *ResourceUpdateOptions) (*CanaryRelease, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "StartCanaryRelease", ctx, crID, opts)
+	ret := m.ctrl.Call(m, "StartCanaryRelease", ctx, cr, opts)
 	ret0, _ := ret[0].(*CanaryRelease)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
 // StartCanaryRelease indicates an expected call of StartCanaryRelease.
-func (mr *MockInterfaceMockRecorder) StartCanaryRelease(ctx, crID, opts interface{}) *gomock.Call {
+func (mr *MockInterfaceMockRecorder) StartCanaryRelease(ctx, cr, opts interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "StartCanaryRelease", reflect.TypeOf((*MockInterface)(nil).StartCanaryRelease), ctx, crID, opts)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "StartCanaryRelease", reflect.TypeOf((*MockInterface)(nil).StartCanaryRelease), ctx, cr, opts)
 }
 
 // TraceChan mocks base method.
