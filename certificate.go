@@ -16,6 +16,7 @@ package cloud
 
 import (
 	"context"
+	"encoding/json"
 	"path"
 	"time"
 )
@@ -92,6 +93,11 @@ type CertificateInterface interface {
 	// in the `opts`.
 	// The `PrivateKey` field will be empty in the returned Certificate.
 	ListCertificates(ctx context.Context, opts *ResourceListOptions) (CertificateListIterator, error)
+	// DebugCertificateResources returns the corresponding translated APISIX resources for this Certificate.
+	// The given `certID` parameter should specify the Certificate that you want to operate.
+	// Users need to specify the ControlPlane.ID in the `opts`.
+	// Note, the private key won't be returned due to the security concerns.
+	DebugCertificateResources(ctx context.Context, appID ID, opts *ResourceGetOptions) (string, error)
 }
 
 // CertificateListIterator is an iterator for listing Certificates.
@@ -178,4 +184,14 @@ func (impl *certificateImpl) ListCertificates(ctx context.Context, opts *Resourc
 	}
 
 	return &certificatesListIterator{iter: iter}, nil
+}
+
+func (impl *certificateImpl) DebugCertificateResources(ctx context.Context, certID ID, opts *ResourceGetOptions) (string, error) {
+	var rawData json.RawMessage
+	uri := path.Join(_apiPathPrefix, "controlplanes", opts.ControlPlane.ID.String(), "certificate", certID.String())
+	err := impl.client.sendGetRequest(ctx, uri, "", jsonPayloadDecodeFactory(&rawData))
+	if err != nil {
+		return "", err
+	}
+	return formatJSONData(rawData)
 }
