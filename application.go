@@ -108,6 +108,10 @@ type ApplicationInterface interface {
 	// Users need to specify the ControlPlane, Paging and Filter conditions (if necessary)
 	// in the `opts`.
 	ListApplications(ctx context.Context, opts *ResourceListOptions) (ApplicationListIterator, error)
+	// DebugApplicationResources returns the corresponding translated APISIX resources for this Application.
+	// The given `appID` parameter should specify the Application that you want to operate.
+	// Users need to specify the ControlPlane.ID in the `opts`.
+	DebugApplicationResources(ctx context.Context, appID ID, opts *ResourceGetOptions) (string, error)
 }
 
 // ApplicationListIterator is an iterator for listing Applications.
@@ -224,4 +228,14 @@ func (impl *applicationImpl) ListApplications(ctx context.Context, opts *Resourc
 	}
 
 	return &applicationListIterator{iter: iter}, nil
+}
+
+func (impl *applicationImpl) DebugApplicationResources(ctx context.Context, appID ID, opts *ResourceGetOptions) (string, error) {
+	var rawData json.RawMessage
+	uri := path.Join(_apiPathPrefix, "debug", "config", "controlplanes", opts.ControlPlane.ID.String(), "application", appID.String())
+	err := impl.client.sendGetRequest(ctx, uri, "", jsonPayloadDecodeFactory(&rawData))
+	if err != nil {
+		return "", err
+	}
+	return formatJSONData(rawData)
 }

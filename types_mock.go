@@ -138,6 +138,36 @@ func (mr *MockInterfaceMockRecorder) DebugAPIResources(ctx, apiID, opts interfac
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DebugAPIResources", reflect.TypeOf((*MockInterface)(nil).DebugAPIResources), ctx, apiID, opts)
 }
 
+// DebugApplicationResources mocks base method.
+func (m *MockInterface) DebugApplicationResources(ctx context.Context, appID ID, opts *ResourceGetOptions) (string, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "DebugApplicationResources", ctx, appID, opts)
+	ret0, _ := ret[0].(string)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// DebugApplicationResources indicates an expected call of DebugApplicationResources.
+func (mr *MockInterfaceMockRecorder) DebugApplicationResources(ctx, appID, opts interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DebugApplicationResources", reflect.TypeOf((*MockInterface)(nil).DebugApplicationResources), ctx, appID, opts)
+}
+
+// DebugConsumerResources mocks base method.
+func (m *MockInterface) DebugConsumerResources(ctx context.Context, consumerID ID, opts *ResourceGetOptions) (string, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "DebugConsumerResources", ctx, consumerID, opts)
+	ret0, _ := ret[0].(string)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// DebugConsumerResources indicates an expected call of DebugConsumerResources.
+func (mr *MockInterfaceMockRecorder) DebugConsumerResources(ctx, consumerID, opts interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DebugConsumerResources", reflect.TypeOf((*MockInterface)(nil).DebugConsumerResources), ctx, consumerID, opts)
+}
+
 // DeleteAPI mocks base method.
 func (m *MockInterface) DeleteAPI(ctx context.Context, apiID ID, opts *ResourceDeleteOptions) error {
 	m.ctrl.T.Helper()

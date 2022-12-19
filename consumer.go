@@ -62,6 +62,10 @@ type ConsumerInterface interface {
 	// Users need to specify the ControlPlane, Paging and Filter conditions (if necessary)
 	// in the `opts`.
 	ListConsumers(ctx context.Context, opts *ResourceListOptions) (ConsumerListIterator, error)
+	// DebugConsumerResources returns the corresponding translated APISIX resources for this Consumer.
+	// The given `consumerID` parameter should specify the Consumer that you want to operate.
+	// Users need to specify the ControlPlane.ID in the `opts`.
+	DebugConsumerResources(ctx context.Context, consumerID ID, opts *ResourceGetOptions) (string, error)
 }
 
 // ConsumerListIterator is an iterator for listing Consumers.
@@ -151,4 +155,14 @@ func (impl *consumerImpl) ListConsumers(ctx context.Context, opts *ResourceListO
 	}
 
 	return &consumerListIterator{iter: iter}, nil
+}
+
+func (impl *consumerImpl) DebugConsumerResources(ctx context.Context, consumerID ID, opts *ResourceGetOptions) (string, error) {
+	var rawData json.RawMessage
+	uri := path.Join(_apiPathPrefix, "debug", "config", "controlplanes", opts.ControlPlane.ID.String(), "consumer", consumerID.String())
+	err := impl.client.sendGetRequest(ctx, uri, "", jsonPayloadDecodeFactory(&rawData))
+	if err != nil {
+		return "", err
+	}
+	return formatJSONData(rawData)
 }
