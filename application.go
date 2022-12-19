@@ -232,7 +232,7 @@ func (impl *applicationImpl) ListApplications(ctx context.Context, opts *Resourc
 
 func (impl *applicationImpl) DebugApplicationResources(ctx context.Context, appID ID, opts *ResourceGetOptions) (string, error) {
 	var rawData json.RawMessage
-	uri := path.Join(_apiPathPrefix, "controlplanes", opts.ControlPlane.ID.String(), "application", appID.String())
+	uri := path.Join(_apiPathPrefix, "debug", "config", "controlplanes", opts.ControlPlane.ID.String(), "application", appID.String())
 	err := impl.client.sendGetRequest(ctx, uri, "", jsonPayloadDecodeFactory(&rawData))
 	if err != nil {
 		return "", err

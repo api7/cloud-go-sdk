@@ -188,7 +188,7 @@ func (impl *certificateImpl) ListCertificates(ctx context.Context, opts *Resourc
 
 func (impl *certificateImpl) DebugCertificateResources(ctx context.Context, certID ID, opts *ResourceGetOptions) (string, error) {
 	var rawData json.RawMessage
-	uri := path.Join(_apiPathPrefix, "controlplanes", opts.ControlPlane.ID.String(), "certificate", certID.String())
+	uri := path.Join(_apiPathPrefix, "debug", "config", "controlplanes", opts.ControlPlane.ID.String(), "certificate", certID.String())
 	err := impl.client.sendGetRequest(ctx, uri, "", jsonPayloadDecodeFactory(&rawData))
 	if err != nil {
 		return "", err

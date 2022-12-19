@@ -243,7 +243,7 @@ func (impl *apiImpl) ListAPIs(ctx context.Context, opts *ResourceListOptions) (A
 
 func (impl *apiImpl) DebugAPIResources(ctx context.Context, apiID ID, opts *ResourceGetOptions) (string, error) {
 	var rawData json.RawMessage
-	uri := path.Join(_apiPathPrefix, "controlplanes", opts.ControlPlane.ID.String(), "api", apiID.String())
+	uri := path.Join(_apiPathPrefix, "debug", "config", "controlplanes", opts.ControlPlane.ID.String(), "api", apiID.String())
 	err := impl.client.sendGetRequest(ctx, uri, "", jsonPayloadDecodeFactory(&rawData))
 	if err != nil {
 		return "", err

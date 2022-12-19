@@ -159,7 +159,7 @@ func (impl *consumerImpl) ListConsumers(ctx context.Context, opts *ResourceListO
 
 func (impl *consumerImpl) DebugConsumerResources(ctx context.Context, consumerID ID, opts *ResourceGetOptions) (string, error) {
 	var rawData json.RawMessage
-	uri := path.Join(_apiPathPrefix, "controlplanes", opts.ControlPlane.ID.String(), "consumer", consumerID.String())
+	uri := path.Join(_apiPathPrefix, "debug", "config", "controlplanes", opts.ControlPlane.ID.String(), "consumer", consumerID.String())
 	err := impl.client.sendGetRequest(ctx, uri, "", jsonPayloadDecodeFactory(&rawData))
 	if err != nil {
 		return "", err
