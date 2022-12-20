@@ -342,6 +342,21 @@ func (mr *MockInterfaceMockRecorder) GetConsumer(ctx, consumerID, opts interface
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetConsumer", reflect.TypeOf((*MockInterface)(nil).GetConsumer), ctx, consumerID, opts)
 }
 
+// GetControlPlane mocks base method.
+func (m *MockInterface) GetControlPlane(ctx context.Context, cpID ID, opts *ResourceGetOptions) (*ControlPlane, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetControlPlane", ctx, cpID, opts)
+	ret0, _ := ret[0].(*ControlPlane)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetControlPlane indicates an expected call of GetControlPlane.
+func (mr *MockInterfaceMockRecorder) GetControlPlane(ctx, cpID, opts interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetControlPlane", reflect.TypeOf((*MockInterface)(nil).GetControlPlane), ctx, cpID, opts)
+}
+
 // GetLogCollection mocks base method.
 func (m *MockInterface) GetLogCollection(ctx context.Context, lcID ID, opts *ResourceGetOptions) (*LogCollection, error) {
 	m.ctrl.T.Helper()
@@ -832,6 +847,34 @@ func (m *MockInterface) UpdateConsumer(ctx context.Context, consumer *Consumer, 
 func (mr *MockInterfaceMockRecorder) UpdateConsumer(ctx, consumer, opts interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateConsumer", reflect.TypeOf((*MockInterface)(nil).UpdateConsumer), ctx, consumer, opts)
+}
+
+// UpdateControlPlanePlugins mocks base method.
+func (m *MockInterface) UpdateControlPlanePlugins(ctx context.Context, cpID ID, plugins Plugins, opts *ResourceUpdateOptions) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "UpdateControlPlanePlugins", ctx, cpID, plugins, opts)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// UpdateControlPlanePlugins indicates an expected call of UpdateControlPlanePlugins.
+func (mr *MockInterfaceMockRecorder) UpdateControlPlanePlugins(ctx, cpID, plugins, opts interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateControlPlanePlugins", reflect.TypeOf((*MockInterface)(nil).UpdateControlPlanePlugins), ctx, cpID, plugins, opts)
+}
+
+// UpdateControlPlaneSettings mocks base method.
+func (m *MockInterface) UpdateControlPlaneSettings(ctx context.Context, cpID ID, settings *ControlPlaneSettings, opts *ResourceUpdateOptions) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "UpdateControlPlaneSettings", ctx, cpID, settings, opts)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// UpdateControlPlaneSettings indicates an expected call of UpdateControlPlaneSettings.
+func (mr *MockInterfaceMockRecorder) UpdateControlPlaneSettings(ctx, cpID, settings, opts interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateControlPlaneSettings", reflect.TypeOf((*MockInterface)(nil).UpdateControlPlaneSettings), ctx, cpID, settings, opts)
 }
 
 // UpdateLogCollection mocks base method.

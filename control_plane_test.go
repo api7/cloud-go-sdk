@@ -203,5 +203,161 @@ func TestListAllLabels(t *testing.T) {
 			}
 		})
 	}
+}
 
+func TestGetControlPlane(t *testing.T) {
+	t.Parallel()
+
+	testCases := []struct {
+		name          string
+		expectedError string
+		mockFunc      func(t *testing.T) httpClient
+	}{
+		{
+			name: "get successfully",
+			mockFunc: func(t *testing.T) httpClient {
+				ctrl := gomock.NewController(t)
+				cli := NewMockhttpClient(ctrl)
+				cli.EXPECT().sendGetRequest(gomock.Any(), path.Join(_apiPathPrefix, "/orgs/1/controlplanes/12"), "", gomock.Any()).Return(nil)
+				return cli
+
+			},
+			expectedError: "",
+		},
+		{
+			name: "mock error",
+			mockFunc: func(t *testing.T) httpClient {
+				ctrl := gomock.NewController(t)
+				cli := NewMockhttpClient(ctrl)
+				cli.EXPECT().sendGetRequest(gomock.Any(), path.Join(_apiPathPrefix, "/orgs/1/controlplanes/12"), "", gomock.Any()).Return(errors.New("mock error"))
+				return cli
+			},
+			expectedError: "mock error",
+		},
+	}
+
+	for _, tc := range testCases {
+		tc := tc
+		t.Run(tc.name, func(t *testing.T) {
+			cli := tc.mockFunc(t)
+			// ignore the API check since currently we don't mock it, and the app is always a zero value.
+			_, err := newControlPlane(cli).GetControlPlane(context.Background(), 12, &ResourceGetOptions{
+				Organization: &Organization{
+					ID: 1,
+				},
+			})
+			if tc.expectedError == "" {
+				assert.Nil(t, err, "check cp get error")
+			} else {
+				assert.Contains(t, err.Error(), tc.expectedError, "check the error details")
+			}
+		})
+	}
+}
+
+func TestUpdateControlPlaneSettings(t *testing.T) {
+	t.Parallel()
+
+	testCases := []struct {
+		name          string
+		expectedError string
+		mockFunc      func(t *testing.T) httpClient
+	}{
+		{
+			name: "get successfully",
+			mockFunc: func(t *testing.T) httpClient {
+				ctrl := gomock.NewController(t)
+				cli := NewMockhttpClient(ctrl)
+				cli.EXPECT().sendPatchRequest(gomock.Any(), path.Join(_apiPathPrefix, "/orgs/1/controlplanes/12/config"), "", gomock.Any(), gomock.Any()).Return(nil)
+				return cli
+
+			},
+			expectedError: "",
+		},
+		{
+			name: "mock error",
+			mockFunc: func(t *testing.T) httpClient {
+				ctrl := gomock.NewController(t)
+				cli := NewMockhttpClient(ctrl)
+				cli.EXPECT().sendPatchRequest(gomock.Any(), path.Join(_apiPathPrefix, "/orgs/1/controlplanes/12/config"), "", gomock.Any(), gomock.Any()).Return(errors.New("mock error"))
+				return cli
+			},
+			expectedError: "mock error",
+		},
+	}
+
+	for _, tc := range testCases {
+		tc := tc
+		t.Run(tc.name, func(t *testing.T) {
+			cli := tc.mockFunc(t)
+			// ignore the API check since currently we don't mock it, and the app is always a zero value.
+			err := newControlPlane(cli).UpdateControlPlaneSettings(context.Background(), 12,
+				&ControlPlaneSettings{
+					ClientSettings:        ClientSettings{},
+					ObservabilitySettings: ObservabilitySettings{},
+					APIProxySettings:      APIProxySettings{},
+				},
+				&ResourceUpdateOptions{
+					Organization: &Organization{
+						ID: 1,
+					},
+				})
+			if tc.expectedError == "" {
+				assert.Nil(t, err, "check update cp settings error")
+			} else {
+				assert.Contains(t, err.Error(), tc.expectedError, "check the error details")
+			}
+		})
+	}
+}
+
+func TestUpdateControlPlanePlugins(t *testing.T) {
+	t.Parallel()
+
+	testCases := []struct {
+		name          string
+		expectedError string
+		mockFunc      func(t *testing.T) httpClient
+	}{
+		{
+			name: "get successfully",
+			mockFunc: func(t *testing.T) httpClient {
+				ctrl := gomock.NewController(t)
+				cli := NewMockhttpClient(ctrl)
+				cli.EXPECT().sendPatchRequest(gomock.Any(), path.Join(_apiPathPrefix, "/orgs/1/controlplanes/12/plugins"), "", gomock.Any(), gomock.Any()).Return(nil)
+				return cli
+			},
+			expectedError: "",
+		},
+		{
+			name: "mock error",
+			mockFunc: func(t *testing.T) httpClient {
+				ctrl := gomock.NewController(t)
+				cli := NewMockhttpClient(ctrl)
+				cli.EXPECT().sendPatchRequest(gomock.Any(), path.Join(_apiPathPrefix, "/orgs/1/controlplanes/12/plugins"), "", gomock.Any(), gomock.Any()).Return(errors.New("mock error"))
+				return cli
+			},
+			expectedError: "mock error",
+		},
+	}
+
+	for _, tc := range testCases {
+		tc := tc
+		t.Run(tc.name, func(t *testing.T) {
+			cli := tc.mockFunc(t)
+			// ignore the API check since currently we don't mock it, and the app is always a zero value.
+			err := newControlPlane(cli).UpdateControlPlanePlugins(context.Background(), 12,
+				Plugins{},
+				&ResourceUpdateOptions{
+					Organization: &Organization{
+						ID: 1,
+					},
+				})
+			if tc.expectedError == "" {
+				assert.Nil(t, err, "check update cp settings error")
+			} else {
+				assert.Contains(t, err.Error(), tc.expectedError, "check the error details")
+			}
+		})
+	}
 }
