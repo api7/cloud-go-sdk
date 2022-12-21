@@ -281,6 +281,20 @@ type GatewayInstance struct {
 
 // ControlPlaneInterface is the interface for manipulating Control Plane.
 type ControlPlaneInterface interface {
+	// GetControlPlane gets an existing API7 Cloud ControlPlane.
+	// The given `cpID` parameter should specify the ControlPlane that you want to get.
+	// Users need to specify the Organization.ID in the `opts`.
+	GetControlPlane(ctx context.Context, cpID ID, opts *ResourceGetOptions) (*ControlPlane, error)
+	// UpdateControlPlaneSettings updates the ControlPlaneSettings for the specified ControlPlane.
+	// The given `cpID` parameter should specify the ControlPlane that you want to update.
+	// The given `settings` parameter should specify the new settings you want to apply.
+	// Users need to specify the Organization.ID in the `opts`.
+	UpdateControlPlaneSettings(ctx context.Context, cpID ID, settings *ControlPlaneSettings, opts *ResourceUpdateOptions) error
+	// UpdateControlPlanePlugins updates the plugins bound on the specified ControlPlane.
+	// The given `cpID` parameter should specify the ControlPlane that you want to update.
+	// The given `plugins` parameter should specify the new plugins you want to bind.
+	// Users need to specify the Organization.ID in the `opts`.
+	UpdateControlPlanePlugins(ctx context.Context, cpID ID, plugins Plugins, opts *ResourceUpdateOptions) error
 	// ListControlPlanes returns an iterator for listing Control Planes in the specified Organization with the
 	// given list conditions.
 	// Users need to specify the Organization, Paging, and Filter conditions (if necessary)
@@ -349,6 +363,32 @@ func newControlPlane(cli httpClient) ControlPlaneInterface {
 	return &controlPlaneImpl{
 		client: cli,
 	}
+}
+
+func (impl *controlPlaneImpl) GetControlPlane(ctx context.Context, cpID ID, opts *ResourceGetOptions) (*ControlPlane, error) {
+	var cp ControlPlane
+
+	uri := path.Join(_apiPathPrefix, "orgs", opts.Organization.ID.String(), "controlplanes", cpID.String())
+	if err := impl.client.sendGetRequest(ctx, uri, "", jsonPayloadDecodeFactory(&cp)); err != nil {
+		return nil, err
+	}
+	return &cp, nil
+}
+
+func (impl *controlPlaneImpl) UpdateControlPlaneSettings(ctx context.Context, cpID ID, settings *ControlPlaneSettings, opts *ResourceUpdateOptions) error {
+	uri := path.Join(_apiPathPrefix, "orgs", opts.Organization.ID.String(), "controlplanes", cpID.String(), "config")
+	if err := impl.client.sendPatchRequest(ctx, uri, "", settings, nil); err != nil {
+		return err
+	}
+	return nil
+}
+
+func (impl *controlPlaneImpl) UpdateControlPlanePlugins(ctx context.Context, cpID ID, plugins Plugins, opts *ResourceUpdateOptions) error {
+	uri := path.Join(_apiPathPrefix, "orgs", opts.Organization.ID.String(), "controlplanes", cpID.String(), "plugins")
+	if err := impl.client.sendPatchRequest(ctx, uri, "", plugins, nil); err != nil {
+		return err
+	}
+	return nil
 }
 
 func (impl *controlPlaneImpl) ListControlPlanes(ctx context.Context, opts *ResourceListOptions) (ControlPlaneListIterator, error) {
