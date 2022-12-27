@@ -18,14 +18,6 @@ import (
 	"fmt"
 )
 
-// ServiceRegistryType describes the type of service registry.
-type ServiceRegistryType int
-
-const (
-	// ServiceRegistryKubernetes indicates the kubernetes-type service registry.
-	ServiceRegistryKubernetes = ServiceRegistryType(iota) + 1
-)
-
 const (
 	// HealthCheckTypeTCP indicates a TCP-type health check.
 	HealthCheckTypeTCP = "tcp"

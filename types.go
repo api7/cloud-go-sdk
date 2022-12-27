@@ -33,6 +33,7 @@ type Interface interface {
 	CanaryReleaseInterface
 	ConsumerInterface
 	LogCollectionInterface
+	ServiceDiscoveryInterface
 }
 
 // AccessToken is the token used by API7 Cloud to authenticate clients.
@@ -56,6 +57,7 @@ type impl struct {
 	CanaryReleaseInterface
 	ConsumerInterface
 	LogCollectionInterface
+	ServiceDiscoveryInterface
 }
 
 var (
@@ -100,16 +102,17 @@ func NewInterface(opts *Options) (Interface, error) {
 	}
 
 	return &impl{
-		TraceInterface:         trace,
-		UserInterface:          newUser(cli),
-		AuthInterface:          newAuth(cli),
-		ApplicationInterface:   newApplication(cli),
-		APIInterface:           newAPI(cli),
-		ControlPlaneInterface:  newControlPlane(cli),
-		OrganizationInterface:  newOrganization(cli),
-		RegionInterface:        newRegion(cli),
-		CanaryReleaseInterface: newCanaryRelease(cli),
-		ConsumerInterface:      newConsumer(cli),
-		LogCollectionInterface: newLogCollection(cli),
+		TraceInterface:            trace,
+		UserInterface:             newUser(cli),
+		AuthInterface:             newAuth(cli),
+		ApplicationInterface:      newApplication(cli),
+		APIInterface:              newAPI(cli),
+		ControlPlaneInterface:     newControlPlane(cli),
+		OrganizationInterface:     newOrganization(cli),
+		RegionInterface:           newRegion(cli),
+		CanaryReleaseInterface:    newCanaryRelease(cli),
+		ConsumerInterface:         newConsumer(cli),
+		LogCollectionInterface:    newLogCollection(cli),
+		ServiceDiscoveryInterface: newServiceDiscovery(cli),
 	}, err
 }
