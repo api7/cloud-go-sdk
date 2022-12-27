@@ -123,6 +123,21 @@ func (mr *MockInterfaceMockRecorder) CreateLogCollection(ctx, lc, opts interface
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateLogCollection", reflect.TypeOf((*MockInterface)(nil).CreateLogCollection), ctx, lc, opts)
 }
 
+// CreateServiceRegistry mocks base method.
+func (m *MockInterface) CreateServiceRegistry(ctx context.Context, registry *ServiceRegistry, opts *ResourceCreateOptions) (*ServiceRegistry, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "CreateServiceRegistry", ctx, registry, opts)
+	ret0, _ := ret[0].(*ServiceRegistry)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// CreateServiceRegistry indicates an expected call of CreateServiceRegistry.
+func (mr *MockInterfaceMockRecorder) CreateServiceRegistry(ctx, registry, opts interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateServiceRegistry", reflect.TypeOf((*MockInterface)(nil).CreateServiceRegistry), ctx, registry, opts)
+}
+
 // DebugAPIResources mocks base method.
 func (m *MockInterface) DebugAPIResources(ctx context.Context, apiID ID, opts *ResourceGetOptions) (string, error) {
 	m.ctrl.T.Helper()
@@ -250,6 +265,20 @@ func (m *MockInterface) DeleteLogCollection(ctx context.Context, lcID ID, opts *
 func (mr *MockInterfaceMockRecorder) DeleteLogCollection(ctx, lcID, opts interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteLogCollection", reflect.TypeOf((*MockInterface)(nil).DeleteLogCollection), ctx, lcID, opts)
+}
+
+// DeleteServiceRegistry mocks base method.
+func (m *MockInterface) DeleteServiceRegistry(ctx context.Context, registryID ID, opts *ResourceDeleteOptions) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "DeleteServiceRegistry", ctx, registryID, opts)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// DeleteServiceRegistry indicates an expected call of DeleteServiceRegistry.
+func (mr *MockInterfaceMockRecorder) DeleteServiceRegistry(ctx, registryID, opts interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteServiceRegistry", reflect.TypeOf((*MockInterface)(nil).DeleteServiceRegistry), ctx, registryID, opts)
 }
 
 // FinishCanaryRelease mocks base method.
@@ -400,6 +429,21 @@ func (m *MockInterface) GetOrganization(ctx context.Context, orgID ID, opts *Res
 func (mr *MockInterfaceMockRecorder) GetOrganization(ctx, orgID, opts interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetOrganization", reflect.TypeOf((*MockInterface)(nil).GetOrganization), ctx, orgID, opts)
+}
+
+// GetServiceRegistry mocks base method.
+func (m *MockInterface) GetServiceRegistry(ctx context.Context, registryID ID, opts *ResourceGetOptions) (*ServiceRegistry, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetServiceRegistry", ctx, registryID, opts)
+	ret0, _ := ret[0].(*ServiceRegistry)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetServiceRegistry indicates an expected call of GetServiceRegistry.
+func (mr *MockInterfaceMockRecorder) GetServiceRegistry(ctx, registryID, opts interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetServiceRegistry", reflect.TypeOf((*MockInterface)(nil).GetServiceRegistry), ctx, registryID, opts)
 }
 
 // InviteMember mocks base method.
@@ -625,6 +669,21 @@ func (m *MockInterface) ListRoles(ctx context.Context, opts *ResourceListOptions
 func (mr *MockInterfaceMockRecorder) ListRoles(ctx, opts interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListRoles", reflect.TypeOf((*MockInterface)(nil).ListRoles), ctx, opts)
+}
+
+// ListServiceRegistries mocks base method.
+func (m *MockInterface) ListServiceRegistries(ctx context.Context, opts *ResourceListOptions) (ServiceRegistryListIterator, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "ListServiceRegistries", ctx, opts)
+	ret0, _ := ret[0].(ServiceRegistryListIterator)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// ListServiceRegistries indicates an expected call of ListServiceRegistries.
+func (mr *MockInterfaceMockRecorder) ListServiceRegistries(ctx, opts interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListServiceRegistries", reflect.TypeOf((*MockInterface)(nil).ListServiceRegistries), ctx, opts)
 }
 
 // Me mocks base method.
@@ -904,6 +963,21 @@ func (m *MockInterface) UpdateMemberRoles(ctx context.Context, memberID ID, role
 func (mr *MockInterfaceMockRecorder) UpdateMemberRoles(ctx, memberID, roleBindings, opts interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateMemberRoles", reflect.TypeOf((*MockInterface)(nil).UpdateMemberRoles), ctx, memberID, roleBindings, opts)
+}
+
+// UpdateServiceRegistry mocks base method.
+func (m *MockInterface) UpdateServiceRegistry(ctx context.Context, registry *ServiceRegistry, opts *ResourceUpdateOptions) (*ServiceRegistry, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "UpdateServiceRegistry", ctx, registry, opts)
+	ret0, _ := ret[0].(*ServiceRegistry)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// UpdateServiceRegistry indicates an expected call of UpdateServiceRegistry.
+func (mr *MockInterfaceMockRecorder) UpdateServiceRegistry(ctx, registry, opts interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateServiceRegistry", reflect.TypeOf((*MockInterface)(nil).UpdateServiceRegistry), ctx, registry, opts)
 }
 
 // sendSeries mocks base method.
