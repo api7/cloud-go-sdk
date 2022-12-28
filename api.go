@@ -50,6 +50,8 @@ type APISpec struct {
 	Methods []string `json:"methods"`
 	// Paths indicates which URI paths can be matched (prefix or exact) to this API.
 	Paths []APIPath `json:"paths"`
+	// FineGrainedRouteControl is used to control the route matching.
+	FineGrainedRouteControl *FineGrainedRouteControl `json:"fine_grained_route_control,omitempty"`
 	// StripPathPrefix indicates whether to strip the path prefix (defined in the Application)
 	// before the gateway forwards API requests to upstream.
 	StripPathPrefix bool `json:"strip_path_prefix"`
@@ -78,6 +80,16 @@ type APIPath struct {
 	// * PathPrefixMatch means the requests' URL path leads with the API path will match this API;
 	// * PathExactMatch means the requests' URL path has to be same to the API path.
 	PathType string `json:"path_type"`
+}
+
+// FineGrainedRouteControl is fine grained route control settings.
+type FineGrainedRouteControl struct {
+	// Enabled indicates whether to enable fine-grained route control.
+	Enabled bool `json:"enabled,omitempty"`
+	// LogicalRelationship indicates the logical relationship between expressions.
+	LogicalRelationship ExpressionLogicalRelationship `json:"logical_relationship,omitempty"`
+	// Expressions is a list of expressions.
+	Expressions []Expression `json:"expressions,omitempty"`
 }
 
 // APIInterface is the interface for manipulating API.

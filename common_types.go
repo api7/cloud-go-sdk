@@ -246,3 +246,67 @@ type ResourceListOptions struct {
 	// Filter indicates conditions to filter out resources.
 	Filter *Filter
 }
+
+// ExpressionLogicalRelationship is the logical relationship between expressions.
+type ExpressionLogicalRelationship string
+
+const (
+	// MatchAll meaning all the expressions should be matched.
+	MatchAll ExpressionLogicalRelationship = "All"
+	// MatchAny meaning any of the expressions should be matched.
+	MatchAny ExpressionLogicalRelationship = "Any"
+)
+
+// ExpressionSubject is the subject category of the expression.
+type ExpressionSubject string
+
+const (
+	// HeaderSubject indicates the expression subject is from a HTTP request header.
+	HeaderSubject ExpressionSubject = "header"
+	// QuerySubject indicates the expression subject is from the HTTP query string.
+	QuerySubject ExpressionSubject = "query"
+	// CookieSubject indicates the expression subject is from Cookie header.
+	CookieSubject ExpressionSubject = "cookie"
+	// PathSubject indicates the expression subject is from the URI path.
+	PathSubject ExpressionSubject = "path"
+	// VariableSubject indicates the expression subject is a Nginx or APISIX variable.
+	VariableSubject ExpressionSubject = "variable"
+)
+
+// ExpressionOperator is the operator of the expression.
+type ExpressionOperator string
+
+const (
+	// EqualOperator indicates the expression operator is "equal"
+	EqualOperator ExpressionOperator = "equal"
+	// NotEqualOperator indicates the expression operator is "not_equal"
+	NotEqualOperator ExpressionOperator = "not_equal"
+	// RegexMatchOperator indicates the expression operator is "regex_match"
+	RegexMatchOperator ExpressionOperator = "regex_match"
+	// RegexNotMatchOperator indicates the expression operator is "regex_not_match"
+	RegexNotMatchOperator ExpressionOperator = "regex_not_match"
+	// PresentOperator indicates the expression operator is "present"
+	PresentOperator ExpressionOperator = "present"
+	// NotPresentOperator indicates the expression operator is "not_present"
+	NotPresentOperator ExpressionOperator = "not_present"
+	// LargerEqualOperator indicates the expression operator is "larger_equal"
+	LargerEqualOperator ExpressionOperator = "larger_equal"
+	// LargerThanOperator indicates the expression operator is "larger_than"
+	LargerThanOperator ExpressionOperator = "larger_than"
+	// LessEqualOperator indicates the expression operator is "less_equal"
+	LessEqualOperator ExpressionOperator = "less_equal"
+	// LessThanOperator indicates the expression operator is "less_than"
+	LessThanOperator ExpressionOperator = "less_than"
+)
+
+// Expression is the route match expressions.
+type Expression struct {
+	// Subject is the subject category of the expression.
+	Subject ExpressionSubject `json:"subject,omitempty"`
+	// Name is the subject name of the expression.
+	Name string `json:"name,omitempty"`
+	// Operator is the operator of the expression.
+	Operator ExpressionOperator `json:"operator,omitempty"`
+	// Value is the value that the expression should be matched.
+	Value string `json:"value,omitempty"`
+}
