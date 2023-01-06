@@ -282,19 +282,19 @@ type GatewayInstance struct {
 // ClusterInterface is the interface for manipulating Control Plane.
 type ClusterInterface interface {
 	// GetCluster gets an existing API7 Cloud Cluster.
-	// The given `cpID` parameter should specify the Cluster that you want to get.
+	// The given `clusterID` parameter should specify the Cluster that you want to get.
 	// Users need to specify the Organization.ID in the `opts`.
-	GetCluster(ctx context.Context, cpID ID, opts *ResourceGetOptions) (*Cluster, error)
+	GetCluster(ctx context.Context, clusterID ID, opts *ResourceGetOptions) (*Cluster, error)
 	// UpdateClusterSettings updates the ClusterSettings for the specified Cluster.
-	// The given `cpID` parameter should specify the Cluster that you want to update.
+	// The given `clusterID` parameter should specify the Cluster that you want to update.
 	// The given `settings` parameter should specify the new settings you want to apply.
 	// Users need to specify the Organization.ID in the `opts`.
-	UpdateClusterSettings(ctx context.Context, cpID ID, settings *ClusterSettings, opts *ResourceUpdateOptions) error
+	UpdateClusterSettings(ctx context.Context, clusterID ID, settings *ClusterSettings, opts *ResourceUpdateOptions) error
 	// UpdateClusterPlugins updates the plugins bound on the specified Cluster.
-	// The given `cpID` parameter should specify the Cluster that you want to update.
+	// The given `clusterID` parameter should specify the Cluster that you want to update.
 	// The given `plugins` parameter should specify the new plugins you want to bind.
 	// Users need to specify the Organization.ID in the `opts`.
-	UpdateClusterPlugins(ctx context.Context, cpID ID, plugins Plugins, opts *ResourceUpdateOptions) error
+	UpdateClusterPlugins(ctx context.Context, clusterID ID, plugins Plugins, opts *ResourceUpdateOptions) error
 	// ListClusters returns an iterator for listing Control Planes in the specified Organization with the
 	// given list conditions.
 	// Users need to specify the Organization, Paging, and Filter conditions (if necessary)
@@ -302,32 +302,32 @@ type ClusterInterface interface {
 	ListClusters(ctx context.Context, opts *ResourceListOptions) (ClusterListIterator, error)
 	// GenerateGatewaySideCertificate generates the tls bundle for gateway instances to communicate with
 	// the specified Control Plane on API7 Cloud.
-	// The `cpID` parameter specifies the Control Plane ID.
+	// The `clusterID` parameter specifies the Control Plane ID.
 	// Note currently users don't need to pass the `opts` parameter. Just pass `nil` is OK.
-	GenerateGatewaySideCertificate(ctx context.Context, cpID ID, opts *ResourceCreateOptions) (*TLSBundle, error)
+	GenerateGatewaySideCertificate(ctx context.Context, clusterID ID, opts *ResourceCreateOptions) (*TLSBundle, error)
 	// ListAllGatewayInstances returns all the gateway instances (ever) connected to the given Control Plane.
 	// Note currently users don't need to pass the `opts` parameter. Just pass `nil` is OK.
-	ListAllGatewayInstances(ctx context.Context, cpID ID, opts *ResourceListOptions) ([]GatewayInstance, error)
+	ListAllGatewayInstances(ctx context.Context, clusterID ID, opts *ResourceListOptions) ([]GatewayInstance, error)
 	// ListAllAPILabels lists all labels for API.
-	// The `cpID` parameter specifies the Control Plane ID.
+	// The `clusterID` parameter specifies the Control Plane ID.
 	// Note currently users don't need to pass the `opts` parameter. Just pass `nil` is OK.
 	// The returned label slice will be `nil` if there is no any labels for API.
-	ListAllAPILabels(ctx context.Context, cpID ID, opts *ResourceListOptions) ([]string, error)
+	ListAllAPILabels(ctx context.Context, clusterID ID, opts *ResourceListOptions) ([]string, error)
 	// ListAllApplicationLabels lists all labels for Application.
-	// The `cpID` parameter specifies the Control Plane ID.
+	// The `clusterID` parameter specifies the Control Plane ID.
 	// Note currently users don't need to pass the `opts` parameter. Just pass `nil` is OK.
 	// The returned label slice will be `nil` if there is no any labels for Application.
-	ListAllApplicationLabels(ctx context.Context, cpID ID, opts *ResourceListOptions) ([]string, error)
+	ListAllApplicationLabels(ctx context.Context, clusterID ID, opts *ResourceListOptions) ([]string, error)
 	// ListAllCertificateLabels lists all labels for Certificate.
-	// The `cpID` parameter specifies the Control Plane ID.
+	// The `clusterID` parameter specifies the Control Plane ID.
 	// Note currently users don't need to pass the `opts` parameter. Just pass `nil` is OK.
 	// The returned label slice will be `nil` if there is no any labels for Certificate.
-	ListAllCertificateLabels(ctx context.Context, cpID ID, opts *ResourceListOptions) ([]string, error)
+	ListAllCertificateLabels(ctx context.Context, clusterID ID, opts *ResourceListOptions) ([]string, error)
 	// ListAllConsumerLabels lists all labels for Consumer.
-	// The `cpID` parameter specifies the Control Plane ID.
+	// The `clusterID` parameter specifies the Control Plane ID.
 	// Note currently users don't need to pass the `opts` parameter. Just pass `nil` is OK.
 	// The returned label slice will be `nil` if there is no any labels for Consumer.
-	ListAllConsumerLabels(ctx context.Context, cpID ID, opts *ResourceListOptions) ([]string, error)
+	ListAllConsumerLabels(ctx context.Context, clusterID ID, opts *ResourceListOptions) ([]string, error)
 }
 
 // ClusterListIterator is an iterator for listing Control Planes.
@@ -345,7 +345,7 @@ type clusterListIterator struct {
 }
 
 func (iter *clusterListIterator) Next() (*Cluster, error) {
-	var cp Cluster
+	var cluster Cluster
 	rawData, err := iter.iter.Next()
 	if err != nil {
 		return nil, err
@@ -353,10 +353,10 @@ func (iter *clusterListIterator) Next() (*Cluster, error) {
 	if rawData == nil {
 		return nil, nil
 	}
-	if err = json.Unmarshal(rawData, &cp); err != nil {
+	if err = json.Unmarshal(rawData, &cluster); err != nil {
 		return nil, err
 	}
-	return &cp, nil
+	return &cluster, nil
 }
 
 func newCluster(cli httpClient) ClusterInterface {
@@ -365,26 +365,26 @@ func newCluster(cli httpClient) ClusterInterface {
 	}
 }
 
-func (impl *clusterImpl) GetCluster(ctx context.Context, cpID ID, opts *ResourceGetOptions) (*Cluster, error) {
-	var cp Cluster
+func (impl *clusterImpl) GetCluster(ctx context.Context, clusterID ID, opts *ResourceGetOptions) (*Cluster, error) {
+	var cluster Cluster
 
-	uri := path.Join(_apiPathPrefix, "orgs", opts.Organization.ID.String(), "clusters", cpID.String())
-	if err := impl.client.sendGetRequest(ctx, uri, "", jsonPayloadDecodeFactory(&cp)); err != nil {
+	uri := path.Join(_apiPathPrefix, "orgs", opts.Organization.ID.String(), "clusters", clusterID.String())
+	if err := impl.client.sendGetRequest(ctx, uri, "", jsonPayloadDecodeFactory(&cluster)); err != nil {
 		return nil, err
 	}
-	return &cp, nil
+	return &cluster, nil
 }
 
-func (impl *clusterImpl) UpdateClusterSettings(ctx context.Context, cpID ID, settings *ClusterSettings, opts *ResourceUpdateOptions) error {
-	uri := path.Join(_apiPathPrefix, "orgs", opts.Organization.ID.String(), "clusters", cpID.String(), "config")
+func (impl *clusterImpl) UpdateClusterSettings(ctx context.Context, clusterID ID, settings *ClusterSettings, opts *ResourceUpdateOptions) error {
+	uri := path.Join(_apiPathPrefix, "orgs", opts.Organization.ID.String(), "clusters", clusterID.String(), "config")
 	if err := impl.client.sendPatchRequest(ctx, uri, "", settings, nil); err != nil {
 		return err
 	}
 	return nil
 }
 
-func (impl *clusterImpl) UpdateClusterPlugins(ctx context.Context, cpID ID, plugins Plugins, opts *ResourceUpdateOptions) error {
-	uri := path.Join(_apiPathPrefix, "orgs", opts.Organization.ID.String(), "clusters", cpID.String(), "plugins")
+func (impl *clusterImpl) UpdateClusterPlugins(ctx context.Context, clusterID ID, plugins Plugins, opts *ResourceUpdateOptions) error {
+	uri := path.Join(_apiPathPrefix, "orgs", opts.Organization.ID.String(), "clusters", clusterID.String(), "plugins")
 	if err := impl.client.sendPatchRequest(ctx, uri, "", plugins, nil); err != nil {
 		return err
 	}
@@ -404,10 +404,10 @@ func (impl *clusterImpl) ListClusters(ctx context.Context, opts *ResourceListOpt
 	return &clusterListIterator{iter: iter}, nil
 }
 
-func (impl *clusterImpl) GenerateGatewaySideCertificate(ctx context.Context, cpID ID, _ *ResourceCreateOptions) (*TLSBundle, error) {
+func (impl *clusterImpl) GenerateGatewaySideCertificate(ctx context.Context, clusterID ID, _ *ResourceCreateOptions) (*TLSBundle, error) {
 	var bundle TLSBundle
 
-	uri := path.Join(_apiPathPrefix, "clusters", cpID.String(), "dp_certificate")
+	uri := path.Join(_apiPathPrefix, "clusters", clusterID.String(), "dp_certificate")
 	err := impl.client.sendGetRequest(ctx, uri, "", jsonPayloadDecodeFactory(&bundle))
 	if err != nil {
 		return nil, err
@@ -415,12 +415,12 @@ func (impl *clusterImpl) GenerateGatewaySideCertificate(ctx context.Context, cpI
 	return &bundle, nil
 }
 
-func (impl *clusterImpl) ListAllGatewayInstances(ctx context.Context, cpID ID, _ *ResourceListOptions) ([]GatewayInstance, error) {
+func (impl *clusterImpl) ListAllGatewayInstances(ctx context.Context, clusterID ID, _ *ResourceListOptions) ([]GatewayInstance, error) {
 	var (
 		lr        listResponse
 		instances []GatewayInstance
 	)
-	uri := path.Join(_apiPathPrefix, "clusters", cpID.String(), "instances")
+	uri := path.Join(_apiPathPrefix, "clusters", clusterID.String(), "instances")
 	err := impl.client.sendGetRequest(ctx, uri, "", jsonPayloadDecodeFactory(&lr))
 	if err != nil {
 		return nil, err
@@ -437,26 +437,26 @@ func (impl *clusterImpl) ListAllGatewayInstances(ctx context.Context, cpID ID, _
 	return instances, nil
 }
 
-func (impl *clusterImpl) ListAllAPILabels(ctx context.Context, cpID ID, _ *ResourceListOptions) ([]string, error) {
-	return impl.listAllLabels(ctx, cpID, "api")
+func (impl *clusterImpl) ListAllAPILabels(ctx context.Context, clusterID ID, _ *ResourceListOptions) ([]string, error) {
+	return impl.listAllLabels(ctx, clusterID, "api")
 }
 
-func (impl *clusterImpl) ListAllApplicationLabels(ctx context.Context, cpID ID, _ *ResourceListOptions) ([]string, error) {
-	return impl.listAllLabels(ctx, cpID, "application")
+func (impl *clusterImpl) ListAllApplicationLabels(ctx context.Context, clusterID ID, _ *ResourceListOptions) ([]string, error) {
+	return impl.listAllLabels(ctx, clusterID, "application")
 }
 
-func (impl *clusterImpl) ListAllConsumerLabels(ctx context.Context, cpID ID, _ *ResourceListOptions) ([]string, error) {
-	return impl.listAllLabels(ctx, cpID, "consumer")
+func (impl *clusterImpl) ListAllConsumerLabels(ctx context.Context, clusterID ID, _ *ResourceListOptions) ([]string, error) {
+	return impl.listAllLabels(ctx, clusterID, "consumer")
 }
 
-func (impl *clusterImpl) ListAllCertificateLabels(ctx context.Context, cpID ID, _ *ResourceListOptions) ([]string, error) {
-	return impl.listAllLabels(ctx, cpID, "certificate")
+func (impl *clusterImpl) ListAllCertificateLabels(ctx context.Context, clusterID ID, _ *ResourceListOptions) ([]string, error) {
+	return impl.listAllLabels(ctx, clusterID, "certificate")
 }
 
-func (impl *clusterImpl) listAllLabels(ctx context.Context, cpID ID, resource string) ([]string, error) {
+func (impl *clusterImpl) listAllLabels(ctx context.Context, clusterID ID, resource string) ([]string, error) {
 	var labels []string
 
-	uri := path.Join(_apiPathPrefix, "clusters", cpID.String(), "labels", resource)
+	uri := path.Join(_apiPathPrefix, "clusters", clusterID.String(), "labels", resource)
 	err := impl.client.sendGetRequest(ctx, uri, "", jsonPayloadDecodeFactory(&labels))
 	if err != nil {
 		return nil, err

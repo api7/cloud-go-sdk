@@ -134,8 +134,8 @@ func newCertificate(cli httpClient) CertificateInterface {
 func (impl *certificateImpl) CreateCertificate(ctx context.Context, cert *Certificate, opts *ResourceCreateOptions) (*Certificate, error) {
 	var createdCert Certificate
 
-	cpID := opts.Cluster.ID
-	uri := path.Join(_apiPathPrefix, "clusters", cpID.String(), "certificates")
+	clusterID := opts.Cluster.ID
+	uri := path.Join(_apiPathPrefix, "clusters", clusterID.String(), "certificates")
 	err := impl.client.sendPostRequest(ctx, uri, "", cert, jsonPayloadDecodeFactory(&createdCert))
 	if err != nil {
 		return nil, err
@@ -146,8 +146,8 @@ func (impl *certificateImpl) CreateCertificate(ctx context.Context, cert *Certif
 func (impl *certificateImpl) UpdateCertificate(ctx context.Context, cert *Certificate, opts *ResourceUpdateOptions) (*Certificate, error) {
 	var updatedCert Certificate
 
-	cpID := opts.Cluster.ID
-	uri := path.Join(_apiPathPrefix, "clusters", cpID.String(), "certificates", cert.ID.String())
+	clusterID := opts.Cluster.ID
+	uri := path.Join(_apiPathPrefix, "clusters", clusterID.String(), "certificates", cert.ID.String())
 	err := impl.client.sendPutRequest(ctx, uri, "", cert, jsonPayloadDecodeFactory(&updatedCert))
 	if err != nil {
 		return nil, err
@@ -156,16 +156,16 @@ func (impl *certificateImpl) UpdateCertificate(ctx context.Context, cert *Certif
 }
 
 func (impl *certificateImpl) DeleteCertificate(ctx context.Context, certID ID, opts *ResourceDeleteOptions) error {
-	cpID := opts.Cluster.ID
-	uri := path.Join(_apiPathPrefix, "clusters", cpID.String(), "certificates", certID.String())
+	clusterID := opts.Cluster.ID
+	uri := path.Join(_apiPathPrefix, "clusters", clusterID.String(), "certificates", certID.String())
 	return impl.client.sendDeleteRequest(ctx, uri, "", nil)
 }
 
 func (impl *certificateImpl) GetCertificate(ctx context.Context, certID ID, opts *ResourceGetOptions) (*Certificate, error) {
 	var cert Certificate
 
-	cpID := opts.Cluster.ID
-	uri := path.Join(_apiPathPrefix, "clusters", cpID.String(), "certificates", certID.String())
+	clusterID := opts.Cluster.ID
+	uri := path.Join(_apiPathPrefix, "clusters", clusterID.String(), "certificates", certID.String())
 	err := impl.client.sendGetRequest(ctx, uri, "", jsonPayloadDecodeFactory(&cert))
 	if err != nil {
 		return nil, err

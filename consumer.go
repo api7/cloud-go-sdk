@@ -106,8 +106,8 @@ func newConsumer(cli httpClient) ConsumerInterface {
 func (impl *consumerImpl) CreateConsumer(ctx context.Context, consumer *Consumer, opts *ResourceCreateOptions) (*Consumer, error) {
 	var createdConsumer Consumer
 
-	cpID := opts.Cluster.ID
-	uri := path.Join(_apiPathPrefix, "clusters", cpID.String(), "consumers")
+	clusterID := opts.Cluster.ID
+	uri := path.Join(_apiPathPrefix, "clusters", clusterID.String(), "consumers")
 	err := impl.client.sendPostRequest(ctx, uri, "", consumer, jsonPayloadDecodeFactory(&createdConsumer))
 	if err != nil {
 		return nil, err
@@ -118,8 +118,8 @@ func (impl *consumerImpl) CreateConsumer(ctx context.Context, consumer *Consumer
 func (impl *consumerImpl) UpdateConsumer(ctx context.Context, consumer *Consumer, opts *ResourceUpdateOptions) (*Consumer, error) {
 	var updatedConsumer Consumer
 
-	cpID := opts.Cluster.ID
-	uri := path.Join(_apiPathPrefix, "clusters", cpID.String(), "consumers", consumer.ID.String())
+	clusterID := opts.Cluster.ID
+	uri := path.Join(_apiPathPrefix, "clusters", clusterID.String(), "consumers", consumer.ID.String())
 	err := impl.client.sendPutRequest(ctx, uri, "", consumer, jsonPayloadDecodeFactory(&updatedConsumer))
 	if err != nil {
 		return nil, err
@@ -128,16 +128,16 @@ func (impl *consumerImpl) UpdateConsumer(ctx context.Context, consumer *Consumer
 }
 
 func (impl *consumerImpl) DeleteConsumer(ctx context.Context, consumerID ID, opts *ResourceDeleteOptions) error {
-	cpID := opts.Cluster.ID
-	uri := path.Join(_apiPathPrefix, "clusters", cpID.String(), "consumers", consumerID.String())
+	clusterID := opts.Cluster.ID
+	uri := path.Join(_apiPathPrefix, "clusters", clusterID.String(), "consumers", consumerID.String())
 	return impl.client.sendDeleteRequest(ctx, uri, "", nil)
 }
 
 func (impl *consumerImpl) GetConsumer(ctx context.Context, consumerID ID, opts *ResourceGetOptions) (*Consumer, error) {
 	var consumer Consumer
 
-	cpID := opts.Cluster.ID
-	uri := path.Join(_apiPathPrefix, "clusters", cpID.String(), "consumers", consumerID.String())
+	clusterID := opts.Cluster.ID
+	uri := path.Join(_apiPathPrefix, "clusters", clusterID.String(), "consumers", consumerID.String())
 	err := impl.client.sendGetRequest(ctx, uri, "", jsonPayloadDecodeFactory(&consumer))
 	if err != nil {
 		return nil, err

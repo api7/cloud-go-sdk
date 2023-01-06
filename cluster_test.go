@@ -247,7 +247,7 @@ func TestGetCluster(t *testing.T) {
 				},
 			})
 			if tc.expectedError == "" {
-				assert.Nil(t, err, "check cp get error")
+				assert.Nil(t, err, "check cluster get error")
 			} else {
 				assert.Contains(t, err.Error(), tc.expectedError, "check the error details")
 			}
@@ -303,7 +303,7 @@ func TestUpdateClusterSettings(t *testing.T) {
 					},
 				})
 			if tc.expectedError == "" {
-				assert.Nil(t, err, "check update cp settings error")
+				assert.Nil(t, err, "check update cluster settings error")
 			} else {
 				assert.Contains(t, err.Error(), tc.expectedError, "check the error details")
 			}
@@ -354,7 +354,7 @@ func TestUpdateClusterPlugins(t *testing.T) {
 					},
 				})
 			if tc.expectedError == "" {
-				assert.Nil(t, err, "check update cp settings error")
+				assert.Nil(t, err, "check update cluster settings error")
 			} else {
 				assert.Contains(t, err.Error(), tc.expectedError, "check the error details")
 			}

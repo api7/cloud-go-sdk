@@ -297,18 +297,18 @@ func (mr *MockInterfaceMockRecorder) FinishCanaryRelease(ctx, cr, opts interface
 }
 
 // GenerateGatewaySideCertificate mocks base method.
-func (m *MockInterface) GenerateGatewaySideCertificate(ctx context.Context, cpID ID, opts *ResourceCreateOptions) (*TLSBundle, error) {
+func (m *MockInterface) GenerateGatewaySideCertificate(ctx context.Context, clusterID ID, opts *ResourceCreateOptions) (*TLSBundle, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "GenerateGatewaySideCertificate", ctx, cpID, opts)
+	ret := m.ctrl.Call(m, "GenerateGatewaySideCertificate", ctx, clusterID, opts)
 	ret0, _ := ret[0].(*TLSBundle)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
 // GenerateGatewaySideCertificate indicates an expected call of GenerateGatewaySideCertificate.
-func (mr *MockInterfaceMockRecorder) GenerateGatewaySideCertificate(ctx, cpID, opts interface{}) *gomock.Call {
+func (mr *MockInterfaceMockRecorder) GenerateGatewaySideCertificate(ctx, clusterID, opts interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GenerateGatewaySideCertificate", reflect.TypeOf((*MockInterface)(nil).GenerateGatewaySideCertificate), ctx, cpID, opts)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GenerateGatewaySideCertificate", reflect.TypeOf((*MockInterface)(nil).GenerateGatewaySideCertificate), ctx, clusterID, opts)
 }
 
 // GetAPI mocks base method.
@@ -357,18 +357,18 @@ func (mr *MockInterfaceMockRecorder) GetCanaryRelease(ctx, crID, opts interface{
 }
 
 // GetCluster mocks base method.
-func (m *MockInterface) GetCluster(ctx context.Context, cpID ID, opts *ResourceGetOptions) (*Cluster, error) {
+func (m *MockInterface) GetCluster(ctx context.Context, clusterID ID, opts *ResourceGetOptions) (*Cluster, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "GetCluster", ctx, cpID, opts)
+	ret := m.ctrl.Call(m, "GetCluster", ctx, clusterID, opts)
 	ret0, _ := ret[0].(*Cluster)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
 // GetCluster indicates an expected call of GetCluster.
-func (mr *MockInterfaceMockRecorder) GetCluster(ctx, cpID, opts interface{}) *gomock.Call {
+func (mr *MockInterfaceMockRecorder) GetCluster(ctx, clusterID, opts interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetCluster", reflect.TypeOf((*MockInterface)(nil).GetCluster), ctx, cpID, opts)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetCluster", reflect.TypeOf((*MockInterface)(nil).GetCluster), ctx, clusterID, opts)
 }
 
 // GetConsumer mocks base method.
@@ -477,78 +477,78 @@ func (mr *MockInterfaceMockRecorder) ListAPIs(ctx, opts interface{}) *gomock.Cal
 }
 
 // ListAllAPILabels mocks base method.
-func (m *MockInterface) ListAllAPILabels(ctx context.Context, cpID ID, opts *ResourceListOptions) ([]string, error) {
+func (m *MockInterface) ListAllAPILabels(ctx context.Context, clusterID ID, opts *ResourceListOptions) ([]string, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "ListAllAPILabels", ctx, cpID, opts)
+	ret := m.ctrl.Call(m, "ListAllAPILabels", ctx, clusterID, opts)
 	ret0, _ := ret[0].([]string)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
 // ListAllAPILabels indicates an expected call of ListAllAPILabels.
-func (mr *MockInterfaceMockRecorder) ListAllAPILabels(ctx, cpID, opts interface{}) *gomock.Call {
+func (mr *MockInterfaceMockRecorder) ListAllAPILabels(ctx, clusterID, opts interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListAllAPILabels", reflect.TypeOf((*MockInterface)(nil).ListAllAPILabels), ctx, cpID, opts)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListAllAPILabels", reflect.TypeOf((*MockInterface)(nil).ListAllAPILabels), ctx, clusterID, opts)
 }
 
 // ListAllApplicationLabels mocks base method.
-func (m *MockInterface) ListAllApplicationLabels(ctx context.Context, cpID ID, opts *ResourceListOptions) ([]string, error) {
+func (m *MockInterface) ListAllApplicationLabels(ctx context.Context, clusterID ID, opts *ResourceListOptions) ([]string, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "ListAllApplicationLabels", ctx, cpID, opts)
+	ret := m.ctrl.Call(m, "ListAllApplicationLabels", ctx, clusterID, opts)
 	ret0, _ := ret[0].([]string)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
 // ListAllApplicationLabels indicates an expected call of ListAllApplicationLabels.
-func (mr *MockInterfaceMockRecorder) ListAllApplicationLabels(ctx, cpID, opts interface{}) *gomock.Call {
+func (mr *MockInterfaceMockRecorder) ListAllApplicationLabels(ctx, clusterID, opts interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListAllApplicationLabels", reflect.TypeOf((*MockInterface)(nil).ListAllApplicationLabels), ctx, cpID, opts)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListAllApplicationLabels", reflect.TypeOf((*MockInterface)(nil).ListAllApplicationLabels), ctx, clusterID, opts)
 }
 
 // ListAllCertificateLabels mocks base method.
-func (m *MockInterface) ListAllCertificateLabels(ctx context.Context, cpID ID, opts *ResourceListOptions) ([]string, error) {
+func (m *MockInterface) ListAllCertificateLabels(ctx context.Context, clusterID ID, opts *ResourceListOptions) ([]string, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "ListAllCertificateLabels", ctx, cpID, opts)
+	ret := m.ctrl.Call(m, "ListAllCertificateLabels", ctx, clusterID, opts)
 	ret0, _ := ret[0].([]string)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
 // ListAllCertificateLabels indicates an expected call of ListAllCertificateLabels.
-func (mr *MockInterfaceMockRecorder) ListAllCertificateLabels(ctx, cpID, opts interface{}) *gomock.Call {
+func (mr *MockInterfaceMockRecorder) ListAllCertificateLabels(ctx, clusterID, opts interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListAllCertificateLabels", reflect.TypeOf((*MockInterface)(nil).ListAllCertificateLabels), ctx, cpID, opts)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListAllCertificateLabels", reflect.TypeOf((*MockInterface)(nil).ListAllCertificateLabels), ctx, clusterID, opts)
 }
 
 // ListAllConsumerLabels mocks base method.
-func (m *MockInterface) ListAllConsumerLabels(ctx context.Context, cpID ID, opts *ResourceListOptions) ([]string, error) {
+func (m *MockInterface) ListAllConsumerLabels(ctx context.Context, clusterID ID, opts *ResourceListOptions) ([]string, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "ListAllConsumerLabels", ctx, cpID, opts)
+	ret := m.ctrl.Call(m, "ListAllConsumerLabels", ctx, clusterID, opts)
 	ret0, _ := ret[0].([]string)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
 // ListAllConsumerLabels indicates an expected call of ListAllConsumerLabels.
-func (mr *MockInterfaceMockRecorder) ListAllConsumerLabels(ctx, cpID, opts interface{}) *gomock.Call {
+func (mr *MockInterfaceMockRecorder) ListAllConsumerLabels(ctx, clusterID, opts interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListAllConsumerLabels", reflect.TypeOf((*MockInterface)(nil).ListAllConsumerLabels), ctx, cpID, opts)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListAllConsumerLabels", reflect.TypeOf((*MockInterface)(nil).ListAllConsumerLabels), ctx, clusterID, opts)
 }
 
 // ListAllGatewayInstances mocks base method.
-func (m *MockInterface) ListAllGatewayInstances(ctx context.Context, cpID ID, opts *ResourceListOptions) ([]GatewayInstance, error) {
+func (m *MockInterface) ListAllGatewayInstances(ctx context.Context, clusterID ID, opts *ResourceListOptions) ([]GatewayInstance, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "ListAllGatewayInstances", ctx, cpID, opts)
+	ret := m.ctrl.Call(m, "ListAllGatewayInstances", ctx, clusterID, opts)
 	ret0, _ := ret[0].([]GatewayInstance)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
 // ListAllGatewayInstances indicates an expected call of ListAllGatewayInstances.
-func (mr *MockInterfaceMockRecorder) ListAllGatewayInstances(ctx, cpID, opts interface{}) *gomock.Call {
+func (mr *MockInterfaceMockRecorder) ListAllGatewayInstances(ctx, clusterID, opts interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListAllGatewayInstances", reflect.TypeOf((*MockInterface)(nil).ListAllGatewayInstances), ctx, cpID, opts)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListAllGatewayInstances", reflect.TypeOf((*MockInterface)(nil).ListAllGatewayInstances), ctx, clusterID, opts)
 }
 
 // ListApplications mocks base method.
@@ -894,31 +894,31 @@ func (mr *MockInterfaceMockRecorder) UpdateCanaryRelease(ctx, cr, opts interface
 }
 
 // UpdateClusterPlugins mocks base method.
-func (m *MockInterface) UpdateClusterPlugins(ctx context.Context, cpID ID, plugins Plugins, opts *ResourceUpdateOptions) error {
+func (m *MockInterface) UpdateClusterPlugins(ctx context.Context, clusterID ID, plugins Plugins, opts *ResourceUpdateOptions) error {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "UpdateClusterPlugins", ctx, cpID, plugins, opts)
+	ret := m.ctrl.Call(m, "UpdateClusterPlugins", ctx, clusterID, plugins, opts)
 	ret0, _ := ret[0].(error)
 	return ret0
 }
 
 // UpdateClusterPlugins indicates an expected call of UpdateClusterPlugins.
-func (mr *MockInterfaceMockRecorder) UpdateClusterPlugins(ctx, cpID, plugins, opts interface{}) *gomock.Call {
+func (mr *MockInterfaceMockRecorder) UpdateClusterPlugins(ctx, clusterID, plugins, opts interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateClusterPlugins", reflect.TypeOf((*MockInterface)(nil).UpdateClusterPlugins), ctx, cpID, plugins, opts)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateClusterPlugins", reflect.TypeOf((*MockInterface)(nil).UpdateClusterPlugins), ctx, clusterID, plugins, opts)
 }
 
 // UpdateClusterSettings mocks base method.
-func (m *MockInterface) UpdateClusterSettings(ctx context.Context, cpID ID, settings *ClusterSettings, opts *ResourceUpdateOptions) error {
+func (m *MockInterface) UpdateClusterSettings(ctx context.Context, clusterID ID, settings *ClusterSettings, opts *ResourceUpdateOptions) error {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "UpdateClusterSettings", ctx, cpID, settings, opts)
+	ret := m.ctrl.Call(m, "UpdateClusterSettings", ctx, clusterID, settings, opts)
 	ret0, _ := ret[0].(error)
 	return ret0
 }
 
 // UpdateClusterSettings indicates an expected call of UpdateClusterSettings.
-func (mr *MockInterfaceMockRecorder) UpdateClusterSettings(ctx, cpID, settings, opts interface{}) *gomock.Call {
+func (mr *MockInterfaceMockRecorder) UpdateClusterSettings(ctx, clusterID, settings, opts interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateClusterSettings", reflect.TypeOf((*MockInterface)(nil).UpdateClusterSettings), ctx, cpID, settings, opts)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateClusterSettings", reflect.TypeOf((*MockInterface)(nil).UpdateClusterSettings), ctx, clusterID, settings, opts)
 }
 
 // UpdateConsumer mocks base method.

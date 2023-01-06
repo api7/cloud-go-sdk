@@ -166,8 +166,8 @@ func newServiceDiscovery(cli httpClient) ServiceDiscoveryInterface {
 func (impl *serviceRegistryImpl) CreateServiceRegistry(ctx context.Context, registry *ServiceRegistry, opts *ResourceCreateOptions) (*ServiceRegistry, error) {
 	var createdRegistry ServiceRegistry
 
-	cpID := opts.Cluster.ID
-	uri := path.Join(_apiPathPrefix, "clusters", cpID.String(), "service_registries")
+	clusterID := opts.Cluster.ID
+	uri := path.Join(_apiPathPrefix, "clusters", clusterID.String(), "service_registries")
 	err := impl.client.sendPostRequest(ctx, uri, "", registry, jsonPayloadDecodeFactory(&createdRegistry))
 	if err != nil {
 		return nil, err
@@ -178,8 +178,8 @@ func (impl *serviceRegistryImpl) CreateServiceRegistry(ctx context.Context, regi
 func (impl *serviceRegistryImpl) UpdateServiceRegistry(ctx context.Context, registry *ServiceRegistry, opts *ResourceUpdateOptions) (*ServiceRegistry, error) {
 	var updatedRegistry ServiceRegistry
 
-	cpID := opts.Cluster.ID
-	uri := path.Join(_apiPathPrefix, "clusters", cpID.String(), "service_registries", registry.ID.String())
+	clusterID := opts.Cluster.ID
+	uri := path.Join(_apiPathPrefix, "clusters", clusterID.String(), "service_registries", registry.ID.String())
 	err := impl.client.sendPutRequest(ctx, uri, "", registry, jsonPayloadDecodeFactory(&updatedRegistry))
 	if err != nil {
 		return nil, err
@@ -188,16 +188,16 @@ func (impl *serviceRegistryImpl) UpdateServiceRegistry(ctx context.Context, regi
 }
 
 func (impl *serviceRegistryImpl) DeleteServiceRegistry(ctx context.Context, registryID ID, opts *ResourceDeleteOptions) error {
-	cpID := opts.Cluster.ID
-	uri := path.Join(_apiPathPrefix, "clusters", cpID.String(), "service_registries", registryID.String())
+	clusterID := opts.Cluster.ID
+	uri := path.Join(_apiPathPrefix, "clusters", clusterID.String(), "service_registries", registryID.String())
 	return impl.client.sendDeleteRequest(ctx, uri, "", nil)
 }
 
 func (impl *serviceRegistryImpl) GetServiceRegistry(ctx context.Context, registryID ID, opts *ResourceGetOptions) (*ServiceRegistry, error) {
 	var registry ServiceRegistry
 
-	cpID := opts.Cluster.ID
-	uri := path.Join(_apiPathPrefix, "clusters", cpID.String(), "service_registries", registryID.String())
+	clusterID := opts.Cluster.ID
+	uri := path.Join(_apiPathPrefix, "clusters", clusterID.String(), "service_registries", registryID.String())
 
 	err := impl.client.sendGetRequest(ctx, uri, "", jsonPayloadDecodeFactory(&registry))
 	if err != nil {
