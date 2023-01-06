@@ -194,8 +194,8 @@ func (impl *applicationImpl) GetApplication(ctx context.Context, appID ID, opts 
 func (impl *applicationImpl) PublishApplication(ctx context.Context, appID ID, opts *ResourceUpdateOptions) (*Application, error) {
 	var app Application
 
-	cpID := opts.Cluster.ID
-	uri := path.Join(_apiPathPrefix, "clusters", cpID.String(), "apps", appID.String())
+	clusterID := opts.Cluster.ID
+	uri := path.Join(_apiPathPrefix, "clusters", clusterID.String(), "apps", appID.String())
 	body := []byte(`{"active":0}`)
 	err := impl.client.sendPatchRequest(ctx, uri, "", body, jsonPayloadDecodeFactory(&app))
 	if err != nil {
@@ -207,8 +207,8 @@ func (impl *applicationImpl) PublishApplication(ctx context.Context, appID ID, o
 func (impl *applicationImpl) UnpublishApplication(ctx context.Context, appID ID, opts *ResourceUpdateOptions) (*Application, error) {
 	var app Application
 
-	cpID := opts.Cluster.ID
-	uri := path.Join(_apiPathPrefix, "clusters", cpID.String(), "apps", appID.String())
+	clusterID := opts.Cluster.ID
+	uri := path.Join(_apiPathPrefix, "clusters", clusterID.String(), "apps", appID.String())
 	body := []byte(`{"active":1}`)
 	err := impl.client.sendPatchRequest(ctx, uri, "", body, jsonPayloadDecodeFactory(&app))
 	if err != nil {
