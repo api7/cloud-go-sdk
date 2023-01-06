@@ -356,21 +356,6 @@ func (mr *MockInterfaceMockRecorder) GetCanaryRelease(ctx, crID, opts interface{
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetCanaryRelease", reflect.TypeOf((*MockInterface)(nil).GetCanaryRelease), ctx, crID, opts)
 }
 
-// GetConsumer mocks base method.
-func (m *MockInterface) GetConsumer(ctx context.Context, consumerID ID, opts *ResourceGetOptions) (*Consumer, error) {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "GetConsumer", ctx, consumerID, opts)
-	ret0, _ := ret[0].(*Consumer)
-	ret1, _ := ret[1].(error)
-	return ret0, ret1
-}
-
-// GetConsumer indicates an expected call of GetConsumer.
-func (mr *MockInterfaceMockRecorder) GetConsumer(ctx, consumerID, opts interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetConsumer", reflect.TypeOf((*MockInterface)(nil).GetConsumer), ctx, consumerID, opts)
-}
-
 // GetCluster mocks base method.
 func (m *MockInterface) GetCluster(ctx context.Context, cpID ID, opts *ResourceGetOptions) (*Cluster, error) {
 	m.ctrl.T.Helper()
@@ -384,6 +369,21 @@ func (m *MockInterface) GetCluster(ctx context.Context, cpID ID, opts *ResourceG
 func (mr *MockInterfaceMockRecorder) GetCluster(ctx, cpID, opts interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetCluster", reflect.TypeOf((*MockInterface)(nil).GetCluster), ctx, cpID, opts)
+}
+
+// GetConsumer mocks base method.
+func (m *MockInterface) GetConsumer(ctx context.Context, consumerID ID, opts *ResourceGetOptions) (*Consumer, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetConsumer", ctx, consumerID, opts)
+	ret0, _ := ret[0].(*Consumer)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetConsumer indicates an expected call of GetConsumer.
+func (mr *MockInterfaceMockRecorder) GetConsumer(ctx, consumerID, opts interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetConsumer", reflect.TypeOf((*MockInterface)(nil).GetConsumer), ctx, consumerID, opts)
 }
 
 // GetLogCollection mocks base method.
@@ -581,21 +581,6 @@ func (mr *MockInterfaceMockRecorder) ListCanaryReleases(ctx, opts interface{}) *
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListCanaryReleases", reflect.TypeOf((*MockInterface)(nil).ListCanaryReleases), ctx, opts)
 }
 
-// ListConsumers mocks base method.
-func (m *MockInterface) ListConsumers(ctx context.Context, opts *ResourceListOptions) (ConsumerListIterator, error) {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "ListConsumers", ctx, opts)
-	ret0, _ := ret[0].(ConsumerListIterator)
-	ret1, _ := ret[1].(error)
-	return ret0, ret1
-}
-
-// ListConsumers indicates an expected call of ListConsumers.
-func (mr *MockInterfaceMockRecorder) ListConsumers(ctx, opts interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListConsumers", reflect.TypeOf((*MockInterface)(nil).ListConsumers), ctx, opts)
-}
-
 // ListClusters mocks base method.
 func (m *MockInterface) ListClusters(ctx context.Context, opts *ResourceListOptions) (ClusterListIterator, error) {
 	m.ctrl.T.Helper()
@@ -609,6 +594,21 @@ func (m *MockInterface) ListClusters(ctx context.Context, opts *ResourceListOpti
 func (mr *MockInterfaceMockRecorder) ListClusters(ctx, opts interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListClusters", reflect.TypeOf((*MockInterface)(nil).ListClusters), ctx, opts)
+}
+
+// ListConsumers mocks base method.
+func (m *MockInterface) ListConsumers(ctx context.Context, opts *ResourceListOptions) (ConsumerListIterator, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "ListConsumers", ctx, opts)
+	ret0, _ := ret[0].(ConsumerListIterator)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// ListConsumers indicates an expected call of ListConsumers.
+func (mr *MockInterfaceMockRecorder) ListConsumers(ctx, opts interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListConsumers", reflect.TypeOf((*MockInterface)(nil).ListConsumers), ctx, opts)
 }
 
 // ListLogCollections mocks base method.
@@ -893,21 +893,6 @@ func (mr *MockInterfaceMockRecorder) UpdateCanaryRelease(ctx, cr, opts interface
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateCanaryRelease", reflect.TypeOf((*MockInterface)(nil).UpdateCanaryRelease), ctx, cr, opts)
 }
 
-// UpdateConsumer mocks base method.
-func (m *MockInterface) UpdateConsumer(ctx context.Context, consumer *Consumer, opts *ResourceUpdateOptions) (*Consumer, error) {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "UpdateConsumer", ctx, consumer, opts)
-	ret0, _ := ret[0].(*Consumer)
-	ret1, _ := ret[1].(error)
-	return ret0, ret1
-}
-
-// UpdateConsumer indicates an expected call of UpdateConsumer.
-func (mr *MockInterfaceMockRecorder) UpdateConsumer(ctx, consumer, opts interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateConsumer", reflect.TypeOf((*MockInterface)(nil).UpdateConsumer), ctx, consumer, opts)
-}
-
 // UpdateClusterPlugins mocks base method.
 func (m *MockInterface) UpdateClusterPlugins(ctx context.Context, cpID ID, plugins Plugins, opts *ResourceUpdateOptions) error {
 	m.ctrl.T.Helper()
@@ -934,6 +919,21 @@ func (m *MockInterface) UpdateClusterSettings(ctx context.Context, cpID ID, sett
 func (mr *MockInterfaceMockRecorder) UpdateClusterSettings(ctx, cpID, settings, opts interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateClusterSettings", reflect.TypeOf((*MockInterface)(nil).UpdateClusterSettings), ctx, cpID, settings, opts)
+}
+
+// UpdateConsumer mocks base method.
+func (m *MockInterface) UpdateConsumer(ctx context.Context, consumer *Consumer, opts *ResourceUpdateOptions) (*Consumer, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "UpdateConsumer", ctx, consumer, opts)
+	ret0, _ := ret[0].(*Consumer)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// UpdateConsumer indicates an expected call of UpdateConsumer.
+func (mr *MockInterfaceMockRecorder) UpdateConsumer(ctx, consumer, opts interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateConsumer", reflect.TypeOf((*MockInterface)(nil).UpdateConsumer), ctx, consumer, opts)
 }
 
 // UpdateLogCollection mocks base method.
