@@ -22,22 +22,22 @@ import (
 	"time"
 )
 
-// ControlPlaneStage is used to depict different control plane lifecycles.
-type ControlPlaneStage int
+// ClusterStage is used to depict different control plane lifecycles.
+type ClusterStage int
 
-func (cs ControlPlaneStage) String() string {
+func (cs ClusterStage) String() string {
 	switch cs {
-	case ControlPlanePending:
+	case ClusterPending:
 		return "pending"
-	case ControlPlaneCreating:
+	case ClusterCreating:
 		return "creating"
-	case ControlPlaneNormal:
+	case ClusterNormal:
 		return "normal"
-	case ControlPlaneCreateFailed:
+	case ClusterCreateFailed:
 		return "create failed"
-	case ControlPlaneDeleting:
+	case ClusterDeleting:
 		return "deleting"
-	case ControlPlaneDeleted:
+	case ClusterDeleted:
 		return "deleted"
 	default:
 		return "unknown"
@@ -45,18 +45,18 @@ func (cs ControlPlaneStage) String() string {
 }
 
 const (
-	// ControlPlanePending means a control plane is not created yet.
-	ControlPlanePending = ControlPlaneStage(iota + 1)
-	// ControlPlaneCreating means a control plane is being created.
-	ControlPlaneCreating
-	// ControlPlaneNormal means a control plane was created, and now it's normal.
-	ControlPlaneNormal
-	// ControlPlaneCreateFailed means a control plane was not created successfully.
-	ControlPlaneCreateFailed
-	// ControlPlaneDeleting means a control plane is being deleted.
-	ControlPlaneDeleting
-	// ControlPlaneDeleted means a control plane was deleted.
-	ControlPlaneDeleted
+	// ClusterPending means a control plane is not created yet.
+	ClusterPending = ClusterStage(iota + 1)
+	// ClusterCreating means a control plane is being created.
+	ClusterCreating
+	// ClusterNormal means a control plane was created, and now it's normal.
+	ClusterNormal
+	// ClusterCreateFailed means a control plane was not created successfully.
+	ClusterCreateFailed
+	// ClusterDeleting means a control plane is being deleted.
+	ClusterDeleting
+	// ClusterDeleted means a control plane was deleted.
+	ClusterDeleted
 )
 
 const (
@@ -98,9 +98,9 @@ const (
 	GatewayInstanceOffline = GatewayInstanceStatus("Offline")
 )
 
-// ControlPlane contains the control plane specification and management fields.
-type ControlPlane struct {
-	ControlPlaneSpec
+// Cluster contains the control plane specification and management fields.
+type Cluster struct {
+	ClusterSpec
 
 	// ID is the unique identify of this control plane.
 	ID ID `json:"id,inline"`
@@ -112,8 +112,8 @@ type ControlPlane struct {
 	UpdatedAt time.Time `json:"updated_at"`
 }
 
-// ControlPlaneSpec is the specification of control plane.
-type ControlPlaneSpec struct {
+// ClusterSpec is the specification of control plane.
+type ClusterSpec struct {
 	// OrganizationID refers to an Organization object, which
 	// indicates the belonged organization for this control plane.
 	OrganizationID ID `json:"org_id"`
@@ -121,28 +121,28 @@ type ControlPlaneSpec struct {
 	// region that the Cloud Plane resides.
 	RegionID ID `json:"region_id"`
 	// Status indicates the control plane status, candidate values are:
-	// * ControlPlaneBuildInProgress: the control plane is being created.
-	// * ControlPlaneCreating means a control plane is being created.
-	// * ControlPlaneNormal: the control plane is built, and can be used normally.
-	// * ControlPlaneCreateFailed means a control plane was not created successfully.
-	// * ControlPlaneDeleting means a control plane is being deleted.
-	// * ControlPlaneDeleted means a control plane was deleted.
-	Status ControlPlaneStage `json:"status"`
+	// * ClusterBuildInProgress: the control plane is being created.
+	// * ClusterCreating means a control plane is being created.
+	// * ClusterNormal: the control plane is built, and can be used normally.
+	// * ClusterCreateFailed means a control plane was not created successfully.
+	// * ClusterDeleting means a control plane is being deleted.
+	// * ClusterDeleted means a control plane was deleted.
+	Status ClusterStage `json:"status"`
 	// Domain is the domain assigned by APISEVEN Cloud and has correct
 	// records so that DP instances can access APISEVEN Cloud by it.
 	Domain string `json:"domain"`
 	// ConfigPayload is the customized data plane config for specific control plane
 	ConfigPayload string `json:"-"`
 	// Settings is the settings for the control plane.
-	Settings ControlPlaneSettings `json:"settings"`
+	Settings ClusterSettings `json:"settings"`
 	// Plugins settings on Control Plane level
 	Plugins Plugins `json:"policies,omitempty"`
 	// ConfigVersion is the version for the control plane.
 	ConfigVersion int `json:"config_version"`
 }
 
-// ControlPlaneSettings is control plane settings
-type ControlPlaneSettings struct {
+// ClusterSettings is control plane settings
+type ClusterSettings struct {
 	// ClientSettings is the client settings config that used in apisix
 	ClientSettings ClientSettings `json:"client_settings"`
 	// ObservabilitySettings is the observability settings config that used in apisix
@@ -279,27 +279,27 @@ type GatewayInstance struct {
 	Status GatewayInstanceStatus `json:"status"`
 }
 
-// ControlPlaneInterface is the interface for manipulating Control Plane.
-type ControlPlaneInterface interface {
-	// GetControlPlane gets an existing API7 Cloud ControlPlane.
-	// The given `cpID` parameter should specify the ControlPlane that you want to get.
+// ClusterInterface is the interface for manipulating Control Plane.
+type ClusterInterface interface {
+	// GetCluster gets an existing API7 Cloud Cluster.
+	// The given `cpID` parameter should specify the Cluster that you want to get.
 	// Users need to specify the Organization.ID in the `opts`.
-	GetControlPlane(ctx context.Context, cpID ID, opts *ResourceGetOptions) (*ControlPlane, error)
-	// UpdateControlPlaneSettings updates the ControlPlaneSettings for the specified ControlPlane.
-	// The given `cpID` parameter should specify the ControlPlane that you want to update.
+	GetCluster(ctx context.Context, cpID ID, opts *ResourceGetOptions) (*Cluster, error)
+	// UpdateClusterSettings updates the ClusterSettings for the specified Cluster.
+	// The given `cpID` parameter should specify the Cluster that you want to update.
 	// The given `settings` parameter should specify the new settings you want to apply.
 	// Users need to specify the Organization.ID in the `opts`.
-	UpdateControlPlaneSettings(ctx context.Context, cpID ID, settings *ControlPlaneSettings, opts *ResourceUpdateOptions) error
-	// UpdateControlPlanePlugins updates the plugins bound on the specified ControlPlane.
-	// The given `cpID` parameter should specify the ControlPlane that you want to update.
+	UpdateClusterSettings(ctx context.Context, cpID ID, settings *ClusterSettings, opts *ResourceUpdateOptions) error
+	// UpdateClusterPlugins updates the plugins bound on the specified Cluster.
+	// The given `cpID` parameter should specify the Cluster that you want to update.
 	// The given `plugins` parameter should specify the new plugins you want to bind.
 	// Users need to specify the Organization.ID in the `opts`.
-	UpdateControlPlanePlugins(ctx context.Context, cpID ID, plugins Plugins, opts *ResourceUpdateOptions) error
-	// ListControlPlanes returns an iterator for listing Control Planes in the specified Organization with the
+	UpdateClusterPlugins(ctx context.Context, cpID ID, plugins Plugins, opts *ResourceUpdateOptions) error
+	// ListClusters returns an iterator for listing Control Planes in the specified Organization with the
 	// given list conditions.
 	// Users need to specify the Organization, Paging, and Filter conditions (if necessary)
 	// in the `opts`.
-	ListControlPlanes(ctx context.Context, opts *ResourceListOptions) (ControlPlaneListIterator, error)
+	ListClusters(ctx context.Context, opts *ResourceListOptions) (ClusterListIterator, error)
 	// GenerateGatewaySideCertificate generates the tls bundle for gateway instances to communicate with
 	// the specified Control Plane on API7 Cloud.
 	// The `cpID` parameter specifies the Control Plane ID.
@@ -330,22 +330,22 @@ type ControlPlaneInterface interface {
 	ListAllConsumerLabels(ctx context.Context, cpID ID, opts *ResourceListOptions) ([]string, error)
 }
 
-// ControlPlaneListIterator is an iterator for listing Control Planes.
-type ControlPlaneListIterator interface {
+// ClusterListIterator is an iterator for listing Control Planes.
+type ClusterListIterator interface {
 	// Next returns the next Control Plane according to the filter conditions.
-	Next() (*ControlPlane, error)
+	Next() (*Cluster, error)
 }
 
-type controlPlaneImpl struct {
+type clusterImpl struct {
 	client httpClient
 }
 
-type controlPlaneListIterator struct {
+type clusterListIterator struct {
 	iter listIterator
 }
 
-func (iter *controlPlaneListIterator) Next() (*ControlPlane, error) {
-	var cp ControlPlane
+func (iter *clusterListIterator) Next() (*Cluster, error) {
+	var cp Cluster
 	rawData, err := iter.iter.Next()
 	if err != nil {
 		return nil, err
@@ -359,55 +359,55 @@ func (iter *controlPlaneListIterator) Next() (*ControlPlane, error) {
 	return &cp, nil
 }
 
-func newControlPlane(cli httpClient) ControlPlaneInterface {
-	return &controlPlaneImpl{
+func newCluster(cli httpClient) ClusterInterface {
+	return &clusterImpl{
 		client: cli,
 	}
 }
 
-func (impl *controlPlaneImpl) GetControlPlane(ctx context.Context, cpID ID, opts *ResourceGetOptions) (*ControlPlane, error) {
-	var cp ControlPlane
+func (impl *clusterImpl) GetCluster(ctx context.Context, cpID ID, opts *ResourceGetOptions) (*Cluster, error) {
+	var cp Cluster
 
-	uri := path.Join(_apiPathPrefix, "orgs", opts.Organization.ID.String(), "controlplanes", cpID.String())
+	uri := path.Join(_apiPathPrefix, "orgs", opts.Organization.ID.String(), "clusters", cpID.String())
 	if err := impl.client.sendGetRequest(ctx, uri, "", jsonPayloadDecodeFactory(&cp)); err != nil {
 		return nil, err
 	}
 	return &cp, nil
 }
 
-func (impl *controlPlaneImpl) UpdateControlPlaneSettings(ctx context.Context, cpID ID, settings *ControlPlaneSettings, opts *ResourceUpdateOptions) error {
-	uri := path.Join(_apiPathPrefix, "orgs", opts.Organization.ID.String(), "controlplanes", cpID.String(), "config")
+func (impl *clusterImpl) UpdateClusterSettings(ctx context.Context, cpID ID, settings *ClusterSettings, opts *ResourceUpdateOptions) error {
+	uri := path.Join(_apiPathPrefix, "orgs", opts.Organization.ID.String(), "clusters", cpID.String(), "config")
 	if err := impl.client.sendPatchRequest(ctx, uri, "", settings, nil); err != nil {
 		return err
 	}
 	return nil
 }
 
-func (impl *controlPlaneImpl) UpdateControlPlanePlugins(ctx context.Context, cpID ID, plugins Plugins, opts *ResourceUpdateOptions) error {
-	uri := path.Join(_apiPathPrefix, "orgs", opts.Organization.ID.String(), "controlplanes", cpID.String(), "plugins")
+func (impl *clusterImpl) UpdateClusterPlugins(ctx context.Context, cpID ID, plugins Plugins, opts *ResourceUpdateOptions) error {
+	uri := path.Join(_apiPathPrefix, "orgs", opts.Organization.ID.String(), "clusters", cpID.String(), "plugins")
 	if err := impl.client.sendPatchRequest(ctx, uri, "", plugins, nil); err != nil {
 		return err
 	}
 	return nil
 }
 
-func (impl *controlPlaneImpl) ListControlPlanes(ctx context.Context, opts *ResourceListOptions) (ControlPlaneListIterator, error) {
+func (impl *clusterImpl) ListClusters(ctx context.Context, opts *ResourceListOptions) (ClusterListIterator, error) {
 	iter := listIterator{
 		ctx:      ctx,
 		resource: "control plane",
 		client:   impl.client,
-		path:     path.Join(_apiPathPrefix, "orgs", opts.Organization.ID.String(), "controlplanes"),
+		path:     path.Join(_apiPathPrefix, "orgs", opts.Organization.ID.String(), "clusters"),
 		paging:   mergePagination(opts.Pagination),
 		filter:   opts.Filter,
 	}
 
-	return &controlPlaneListIterator{iter: iter}, nil
+	return &clusterListIterator{iter: iter}, nil
 }
 
-func (impl *controlPlaneImpl) GenerateGatewaySideCertificate(ctx context.Context, cpID ID, _ *ResourceCreateOptions) (*TLSBundle, error) {
+func (impl *clusterImpl) GenerateGatewaySideCertificate(ctx context.Context, cpID ID, _ *ResourceCreateOptions) (*TLSBundle, error) {
 	var bundle TLSBundle
 
-	uri := path.Join(_apiPathPrefix, "controlplanes", cpID.String(), "dp_certificate")
+	uri := path.Join(_apiPathPrefix, "clusters", cpID.String(), "dp_certificate")
 	err := impl.client.sendGetRequest(ctx, uri, "", jsonPayloadDecodeFactory(&bundle))
 	if err != nil {
 		return nil, err
@@ -415,12 +415,12 @@ func (impl *controlPlaneImpl) GenerateGatewaySideCertificate(ctx context.Context
 	return &bundle, nil
 }
 
-func (impl *controlPlaneImpl) ListAllGatewayInstances(ctx context.Context, cpID ID, _ *ResourceListOptions) ([]GatewayInstance, error) {
+func (impl *clusterImpl) ListAllGatewayInstances(ctx context.Context, cpID ID, _ *ResourceListOptions) ([]GatewayInstance, error) {
 	var (
 		lr        listResponse
 		instances []GatewayInstance
 	)
-	uri := path.Join(_apiPathPrefix, "controlplanes", cpID.String(), "instances")
+	uri := path.Join(_apiPathPrefix, "clusters", cpID.String(), "instances")
 	err := impl.client.sendGetRequest(ctx, uri, "", jsonPayloadDecodeFactory(&lr))
 	if err != nil {
 		return nil, err
@@ -437,26 +437,26 @@ func (impl *controlPlaneImpl) ListAllGatewayInstances(ctx context.Context, cpID 
 	return instances, nil
 }
 
-func (impl *controlPlaneImpl) ListAllAPILabels(ctx context.Context, cpID ID, _ *ResourceListOptions) ([]string, error) {
+func (impl *clusterImpl) ListAllAPILabels(ctx context.Context, cpID ID, _ *ResourceListOptions) ([]string, error) {
 	return impl.listAllLabels(ctx, cpID, "api")
 }
 
-func (impl *controlPlaneImpl) ListAllApplicationLabels(ctx context.Context, cpID ID, _ *ResourceListOptions) ([]string, error) {
+func (impl *clusterImpl) ListAllApplicationLabels(ctx context.Context, cpID ID, _ *ResourceListOptions) ([]string, error) {
 	return impl.listAllLabels(ctx, cpID, "application")
 }
 
-func (impl *controlPlaneImpl) ListAllConsumerLabels(ctx context.Context, cpID ID, _ *ResourceListOptions) ([]string, error) {
+func (impl *clusterImpl) ListAllConsumerLabels(ctx context.Context, cpID ID, _ *ResourceListOptions) ([]string, error) {
 	return impl.listAllLabels(ctx, cpID, "consumer")
 }
 
-func (impl *controlPlaneImpl) ListAllCertificateLabels(ctx context.Context, cpID ID, _ *ResourceListOptions) ([]string, error) {
+func (impl *clusterImpl) ListAllCertificateLabels(ctx context.Context, cpID ID, _ *ResourceListOptions) ([]string, error) {
 	return impl.listAllLabels(ctx, cpID, "certificate")
 }
 
-func (impl *controlPlaneImpl) listAllLabels(ctx context.Context, cpID ID, resource string) ([]string, error) {
+func (impl *clusterImpl) listAllLabels(ctx context.Context, cpID ID, resource string) ([]string, error) {
 	var labels []string
 
-	uri := path.Join(_apiPathPrefix, "controlplanes", cpID.String(), "labels", resource)
+	uri := path.Join(_apiPathPrefix, "clusters", cpID.String(), "labels", resource)
 	err := impl.client.sendGetRequest(ctx, uri, "", jsonPayloadDecodeFactory(&labels))
 	if err != nil {
 		return nil, err

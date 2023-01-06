@@ -24,8 +24,8 @@ import (
 const (
 	// RoleScopeOrganization indicates an organization scoped role.
 	RoleScopeOrganization = "organization"
-	// RoleScopeControlPlane indicates an control plane scoped role.
-	RoleScopeControlPlane = "control_plane"
+	// RoleScopeCluster indicates a cluster scoped role.
+	RoleScopeCluster = "cluster"
 
 	// MemberStatePending means the member is still in pending state.
 	MemberStatePending = "Pending"
@@ -108,8 +108,8 @@ type Methods struct {
 type Permissions struct {
 	// Organization is the organization scope of permission
 	Organization map[string]Methods `json:"organization"`
-	// ControlPlane is the control plane scope of permission
-	ControlPlane map[string]Methods `json:"control_plane"`
+	// Cluster is the cluster scope of permission
+	Cluster map[string]Methods `json:"cluster"`
 	// Billing is the billing scope of permission
 	Billing map[string]Methods `json:"billing"`
 	// APIManagement is the API management scope of permission
@@ -132,7 +132,7 @@ type Role struct {
 	Permissions Permissions `json:"permissions" gorm:"serializer:json;"`
 	// Scope is the scope of role. Optional values can be:
 	// * RoleScopeOrganization
-	// * RoleScopeControlPlane
+	// * RoleScopeCluster
 	Scope     string    `json:"scope" gorm:"column:scope"`
 	CreatedAt time.Time `json:"-" yaml:"created_at" gorm:"autoCreateTime"`
 	UpdatedAt time.Time `json:"-" yaml:"updated_at" gorm:"autoUpdateTime"`
@@ -142,10 +142,10 @@ type Role struct {
 type RoleBinding struct {
 	// RoleID is the id of role
 	RoleID ID `json:"role_id"`
-	// ControlPlaneID is the id of control plane
+	// ClusterID is the id of control plane
 	// This field is used only if the role is not
 	// organization scoped.
-	ControlPlaneID ID `json:"control_plane_id"`
+	ClusterID ID `json:"cluster_id"`
 }
 
 // OrganizationInterface is the interface for manipulating Organization and Member.

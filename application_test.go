@@ -46,7 +46,7 @@ func TestCreateApplication(t *testing.T) {
 			mockFunc: func(t *testing.T) httpClient {
 				ctrl := gomock.NewController(t)
 				cli := NewMockhttpClient(ctrl)
-				cli.EXPECT().sendPostRequest(gomock.Any(), path.Join(_apiPathPrefix, "/controlplanes/1/apps"), "", gomock.Any(), gomock.Any()).Return(nil)
+				cli.EXPECT().sendPostRequest(gomock.Any(), path.Join(_apiPathPrefix, "/clusters/1/apps"), "", gomock.Any(), gomock.Any()).Return(nil)
 				return cli
 
 			},
@@ -65,7 +65,7 @@ func TestCreateApplication(t *testing.T) {
 			mockFunc: func(t *testing.T) httpClient {
 				ctrl := gomock.NewController(t)
 				cli := NewMockhttpClient(ctrl)
-				cli.EXPECT().sendPostRequest(gomock.Any(), path.Join(_apiPathPrefix, "/controlplanes/1/apps"), "", gomock.Any(), gomock.Any()).Return(errors.New("mock error"))
+				cli.EXPECT().sendPostRequest(gomock.Any(), path.Join(_apiPathPrefix, "/clusters/1/apps"), "", gomock.Any(), gomock.Any()).Return(errors.New("mock error"))
 				return cli
 
 			},
@@ -78,7 +78,7 @@ func TestCreateApplication(t *testing.T) {
 		t.Run(tc.name, func(t *testing.T) {
 			cli := tc.mockFunc(t)
 			_, err := newApplication(cli).CreateApplication(context.Background(), tc.pendingApp, &ResourceCreateOptions{
-				ControlPlane: &ControlPlane{
+				Cluster: &Cluster{
 					ID: 1,
 				},
 			})
@@ -114,7 +114,7 @@ func TestUpdateApplication(t *testing.T) {
 			mockFunc: func(t *testing.T) httpClient {
 				ctrl := gomock.NewController(t)
 				cli := NewMockhttpClient(ctrl)
-				cli.EXPECT().sendPutRequest(gomock.Any(), path.Join(_apiPathPrefix, "/controlplanes/1/apps/12"), "", gomock.Any(), gomock.Any()).Return(nil)
+				cli.EXPECT().sendPutRequest(gomock.Any(), path.Join(_apiPathPrefix, "/clusters/1/apps/12"), "", gomock.Any(), gomock.Any()).Return(nil)
 				return cli
 
 			},
@@ -134,7 +134,7 @@ func TestUpdateApplication(t *testing.T) {
 			mockFunc: func(t *testing.T) httpClient {
 				ctrl := gomock.NewController(t)
 				cli := NewMockhttpClient(ctrl)
-				cli.EXPECT().sendPutRequest(gomock.Any(), path.Join(_apiPathPrefix, "/controlplanes/1/apps/12"), "", gomock.Any(), gomock.Any()).Return(errors.New("mock error"))
+				cli.EXPECT().sendPutRequest(gomock.Any(), path.Join(_apiPathPrefix, "/clusters/1/apps/12"), "", gomock.Any(), gomock.Any()).Return(errors.New("mock error"))
 				return cli
 
 			},
@@ -147,7 +147,7 @@ func TestUpdateApplication(t *testing.T) {
 		t.Run(tc.name, func(t *testing.T) {
 			cli := tc.mockFunc(t)
 			_, err := newApplication(cli).UpdateApplication(context.Background(), tc.pendingApp, &ResourceUpdateOptions{
-				ControlPlane: &ControlPlane{
+				Cluster: &Cluster{
 					ID: 1,
 				},
 			})
@@ -173,7 +173,7 @@ func TestDeleteApplication(t *testing.T) {
 			mockFunc: func(t *testing.T) httpClient {
 				ctrl := gomock.NewController(t)
 				cli := NewMockhttpClient(ctrl)
-				cli.EXPECT().sendDeleteRequest(gomock.Any(), path.Join(_apiPathPrefix, "/controlplanes/1/apps/12"), "", nil).Return(nil)
+				cli.EXPECT().sendDeleteRequest(gomock.Any(), path.Join(_apiPathPrefix, "/clusters/1/apps/12"), "", nil).Return(nil)
 				return cli
 
 			},
@@ -184,7 +184,7 @@ func TestDeleteApplication(t *testing.T) {
 			mockFunc: func(t *testing.T) httpClient {
 				ctrl := gomock.NewController(t)
 				cli := NewMockhttpClient(ctrl)
-				cli.EXPECT().sendDeleteRequest(gomock.Any(), path.Join(_apiPathPrefix, "/controlplanes/1/apps/12"), "", nil).Return(errors.New("mock error"))
+				cli.EXPECT().sendDeleteRequest(gomock.Any(), path.Join(_apiPathPrefix, "/clusters/1/apps/12"), "", nil).Return(errors.New("mock error"))
 				return cli
 
 			},
@@ -197,7 +197,7 @@ func TestDeleteApplication(t *testing.T) {
 		t.Run(tc.name, func(t *testing.T) {
 			cli := tc.mockFunc(t)
 			err := newApplication(cli).DeleteApplication(context.Background(), 12, &ResourceDeleteOptions{
-				ControlPlane: &ControlPlane{
+				Cluster: &Cluster{
 					ID: 1,
 				},
 			})
@@ -223,7 +223,7 @@ func TestGetApplication(t *testing.T) {
 			mockFunc: func(t *testing.T) httpClient {
 				ctrl := gomock.NewController(t)
 				cli := NewMockhttpClient(ctrl)
-				cli.EXPECT().sendGetRequest(gomock.Any(), path.Join(_apiPathPrefix, "/controlplanes/1/apps/12"), "", gomock.Any()).Return(nil)
+				cli.EXPECT().sendGetRequest(gomock.Any(), path.Join(_apiPathPrefix, "/clusters/1/apps/12"), "", gomock.Any()).Return(nil)
 				return cli
 
 			},
@@ -234,7 +234,7 @@ func TestGetApplication(t *testing.T) {
 			mockFunc: func(t *testing.T) httpClient {
 				ctrl := gomock.NewController(t)
 				cli := NewMockhttpClient(ctrl)
-				cli.EXPECT().sendGetRequest(gomock.Any(), path.Join(_apiPathPrefix, "/controlplanes/1/apps/12"), "", gomock.Any()).Return(errors.New("mock error"))
+				cli.EXPECT().sendGetRequest(gomock.Any(), path.Join(_apiPathPrefix, "/clusters/1/apps/12"), "", gomock.Any()).Return(errors.New("mock error"))
 				return cli
 			},
 			expectedError: "mock error",
@@ -247,7 +247,7 @@ func TestGetApplication(t *testing.T) {
 			cli := tc.mockFunc(t)
 			// ignore the application check since currently we don't mock it, and the app is always a zero value.
 			_, err := newApplication(cli).GetApplication(context.Background(), 12, &ResourceGetOptions{
-				ControlPlane: &ControlPlane{
+				Cluster: &Cluster{
 					ID: 1,
 				},
 			})
@@ -273,7 +273,7 @@ func TestPublishApplication(t *testing.T) {
 			mockFunc: func(t *testing.T) httpClient {
 				ctrl := gomock.NewController(t)
 				cli := NewMockhttpClient(ctrl)
-				cli.EXPECT().sendPatchRequest(gomock.Any(), path.Join(_apiPathPrefix, "/controlplanes/1/apps/12"), "", []byte(`{"active":0}`), gomock.Any()).Return(nil)
+				cli.EXPECT().sendPatchRequest(gomock.Any(), path.Join(_apiPathPrefix, "/clusters/1/apps/12"), "", []byte(`{"active":0}`), gomock.Any()).Return(nil)
 				return cli
 
 			},
@@ -284,7 +284,7 @@ func TestPublishApplication(t *testing.T) {
 			mockFunc: func(t *testing.T) httpClient {
 				ctrl := gomock.NewController(t)
 				cli := NewMockhttpClient(ctrl)
-				cli.EXPECT().sendPatchRequest(gomock.Any(), path.Join(_apiPathPrefix, "/controlplanes/1/apps/12"), "", []byte(`{"active":0}`), gomock.Any()).Return(errors.New("mock error"))
+				cli.EXPECT().sendPatchRequest(gomock.Any(), path.Join(_apiPathPrefix, "/clusters/1/apps/12"), "", []byte(`{"active":0}`), gomock.Any()).Return(errors.New("mock error"))
 				return cli
 			},
 			expectedError: "mock error",
@@ -297,7 +297,7 @@ func TestPublishApplication(t *testing.T) {
 			cli := tc.mockFunc(t)
 			// ignore the application check since currently we don't mock it, and the app is always a zero value.
 			_, err := newApplication(cli).PublishApplication(context.Background(), 12, &ResourceUpdateOptions{
-				ControlPlane: &ControlPlane{
+				Cluster: &Cluster{
 					ID: 1,
 				},
 			})
@@ -323,7 +323,7 @@ func TestUnpublishApplication(t *testing.T) {
 			mockFunc: func(t *testing.T) httpClient {
 				ctrl := gomock.NewController(t)
 				cli := NewMockhttpClient(ctrl)
-				cli.EXPECT().sendPatchRequest(gomock.Any(), path.Join(_apiPathPrefix, "/controlplanes/1/apps/12"), "", []byte(`{"active":1}`), gomock.Any()).Return(nil)
+				cli.EXPECT().sendPatchRequest(gomock.Any(), path.Join(_apiPathPrefix, "/clusters/1/apps/12"), "", []byte(`{"active":1}`), gomock.Any()).Return(nil)
 				return cli
 
 			},
@@ -334,7 +334,7 @@ func TestUnpublishApplication(t *testing.T) {
 			mockFunc: func(t *testing.T) httpClient {
 				ctrl := gomock.NewController(t)
 				cli := NewMockhttpClient(ctrl)
-				cli.EXPECT().sendPatchRequest(gomock.Any(), path.Join(_apiPathPrefix, "/controlplanes/1/apps/12"), "", []byte(`{"active":1}`), gomock.Any()).Return(errors.New("mock error"))
+				cli.EXPECT().sendPatchRequest(gomock.Any(), path.Join(_apiPathPrefix, "/clusters/1/apps/12"), "", []byte(`{"active":1}`), gomock.Any()).Return(errors.New("mock error"))
 				return cli
 			},
 			expectedError: "mock error",
@@ -347,7 +347,7 @@ func TestUnpublishApplication(t *testing.T) {
 			cli := tc.mockFunc(t)
 			// ignore the application check since currently we don't mock it, and the app is always a zero value.
 			_, err := newApplication(cli).UnpublishApplication(context.Background(), 12, &ResourceUpdateOptions{
-				ControlPlane: &ControlPlane{
+				Cluster: &Cluster{
 					ID: 1,
 				},
 			})
@@ -372,7 +372,7 @@ func TestListApplications(t *testing.T) {
 			iterator: &applicationListIterator{
 				iter: listIterator{
 					resource: "application",
-					path:     "/api/v1/controlplanes/123/apps",
+					path:     "/api/v1/clusters/123/apps",
 					paging: Pagination{
 						Page:     14,
 						PageSize: 25,
@@ -388,7 +388,7 @@ func TestListApplications(t *testing.T) {
 		t.Run(tc.name, func(t *testing.T) {
 			// ignore the application check since currently we don't mock it, and the app is always a zero value.
 			raw, err := newApplication(nil).ListApplications(context.Background(), &ResourceListOptions{
-				ControlPlane: &ControlPlane{
+				Cluster: &Cluster{
 					ID: 123,
 				},
 				Pagination: &Pagination{

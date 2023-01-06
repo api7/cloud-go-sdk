@@ -53,19 +53,19 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-	iter, err := sdk.ListControlPlanes(context.Background(), &cloud.ResourceListOptions{
+	iter, err := sdk.ListClusters(context.Background(), &cloud.ResourceListOptions{
 		Organization: org,
 	})
 	if err != nil {
 		panic(err)
 	}
-	cp, err := iter.Next()
+	cluster, err := iter.Next()
 	if err != nil {
 		panic(err)
 	}
 
 	appIter, err := sdk.ListApplications(context.Background(), &cloud.ResourceListOptions{
-		ControlPlane: cp,
+		Cluster: cluster,
 		Pagination: &cloud.Pagination{
 			Page:     1,
 			PageSize: 100,
@@ -88,7 +88,7 @@ func main() {
 		fmt.Printf("got application #%d:\n%+v\n", i, app)
 	}
 
-	gatewayInstances, err := sdk.ListAllGatewayInstances(context.Background(), cp.ID, nil)
+	gatewayInstances, err := sdk.ListAllGatewayInstances(context.Background(), cluster.ID, nil)
 	if err != nil {
 		panic(err)
 	}

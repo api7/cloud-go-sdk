@@ -41,7 +41,7 @@ func TestCreateLogCollection(t *testing.T) {
 			mockFunc: func(t *testing.T) httpClient {
 				ctrl := gomock.NewController(t)
 				cli := NewMockhttpClient(ctrl)
-				cli.EXPECT().sendPostRequest(gomock.Any(), path.Join(_apiPathPrefix, "/controlplanes/1/log_collections"), "", gomock.Any(), gomock.Any()).Return(nil)
+				cli.EXPECT().sendPostRequest(gomock.Any(), path.Join(_apiPathPrefix, "/clusters/1/log_collections"), "", gomock.Any(), gomock.Any()).Return(nil)
 				return cli
 			},
 			expectedError: "",
@@ -54,7 +54,7 @@ func TestCreateLogCollection(t *testing.T) {
 			mockFunc: func(t *testing.T) httpClient {
 				ctrl := gomock.NewController(t)
 				cli := NewMockhttpClient(ctrl)
-				cli.EXPECT().sendPostRequest(gomock.Any(), path.Join(_apiPathPrefix, "/controlplanes/1/log_collections"), "", gomock.Any(), gomock.Any()).Return(errors.New("mock error"))
+				cli.EXPECT().sendPostRequest(gomock.Any(), path.Join(_apiPathPrefix, "/clusters/1/log_collections"), "", gomock.Any(), gomock.Any()).Return(errors.New("mock error"))
 				return cli
 			},
 			expectedError: "mock error",
@@ -66,7 +66,7 @@ func TestCreateLogCollection(t *testing.T) {
 		t.Run(tc.name, func(t *testing.T) {
 			cli := tc.mockFunc(t)
 			_, err := newLogCollection(cli).CreateLogCollection(context.Background(), tc.pendingLogCollection, &ResourceCreateOptions{
-				ControlPlane: &ControlPlane{
+				Cluster: &Cluster{
 					ID: 1,
 				},
 			})
@@ -92,7 +92,7 @@ func TestDeleteLogCollection(t *testing.T) {
 			mockFunc: func(t *testing.T) httpClient {
 				ctrl := gomock.NewController(t)
 				cli := NewMockhttpClient(ctrl)
-				cli.EXPECT().sendDeleteRequest(gomock.Any(), path.Join(_apiPathPrefix, "/controlplanes/1/log_collections/2"), "", nil).Return(nil)
+				cli.EXPECT().sendDeleteRequest(gomock.Any(), path.Join(_apiPathPrefix, "/clusters/1/log_collections/2"), "", nil).Return(nil)
 				return cli
 			},
 			expectedError: "",
@@ -102,7 +102,7 @@ func TestDeleteLogCollection(t *testing.T) {
 			mockFunc: func(t *testing.T) httpClient {
 				ctrl := gomock.NewController(t)
 				cli := NewMockhttpClient(ctrl)
-				cli.EXPECT().sendDeleteRequest(gomock.Any(), path.Join(_apiPathPrefix, "/controlplanes/1/log_collections/2"), "", nil).Return(errors.New("mock error"))
+				cli.EXPECT().sendDeleteRequest(gomock.Any(), path.Join(_apiPathPrefix, "/clusters/1/log_collections/2"), "", nil).Return(errors.New("mock error"))
 				return cli
 			},
 			expectedError: "mock error",
@@ -114,7 +114,7 @@ func TestDeleteLogCollection(t *testing.T) {
 		t.Run(tc.name, func(t *testing.T) {
 			cli := tc.mockFunc(t)
 			err := newLogCollection(cli).DeleteLogCollection(context.Background(), 2, &ResourceDeleteOptions{
-				ControlPlane: &ControlPlane{
+				Cluster: &Cluster{
 					ID: 1,
 				},
 			})
@@ -140,7 +140,7 @@ func TestGetLogCollection(t *testing.T) {
 			mockFunc: func(t *testing.T) httpClient {
 				ctrl := gomock.NewController(t)
 				cli := NewMockhttpClient(ctrl)
-				cli.EXPECT().sendGetRequest(gomock.Any(), path.Join(_apiPathPrefix, "/controlplanes/1/log_collections/2"), "", gomock.Any()).Return(nil)
+				cli.EXPECT().sendGetRequest(gomock.Any(), path.Join(_apiPathPrefix, "/clusters/1/log_collections/2"), "", gomock.Any()).Return(nil)
 				return cli
 
 			},
@@ -151,7 +151,7 @@ func TestGetLogCollection(t *testing.T) {
 			mockFunc: func(t *testing.T) httpClient {
 				ctrl := gomock.NewController(t)
 				cli := NewMockhttpClient(ctrl)
-				cli.EXPECT().sendGetRequest(gomock.Any(), path.Join(_apiPathPrefix, "/controlplanes/1/log_collections/2"), "", gomock.Any()).Return(errors.New("mock error"))
+				cli.EXPECT().sendGetRequest(gomock.Any(), path.Join(_apiPathPrefix, "/clusters/1/log_collections/2"), "", gomock.Any()).Return(errors.New("mock error"))
 				return cli
 			},
 			expectedError: "mock error",
@@ -164,7 +164,7 @@ func TestGetLogCollection(t *testing.T) {
 			cli := tc.mockFunc(t)
 			// ignore the application check since currently we don't mock it, and the app is always a zero value.
 			_, err := newLogCollection(cli).GetLogCollection(context.Background(), 2, &ResourceGetOptions{
-				ControlPlane: &ControlPlane{
+				Cluster: &Cluster{
 					ID: 1,
 				},
 			})
@@ -189,7 +189,7 @@ func TestListLogCollection(t *testing.T) {
 			iterator: &logCollectionIterator{
 				iter: listIterator{
 					resource: "logcollection",
-					path:     "/api/v1/controlplanes/1/log_collections",
+					path:     "/api/v1/clusters/1/log_collections",
 					paging: Pagination{
 						Page:     2,
 						PageSize: 14,
@@ -204,7 +204,7 @@ func TestListLogCollection(t *testing.T) {
 		tc := tc
 		t.Run(tc.name, func(t *testing.T) {
 			raw, err := newLogCollection(nil).ListLogCollections(context.Background(), &ResourceListOptions{
-				ControlPlane: &ControlPlane{
+				Cluster: &Cluster{
 					ID: 1,
 				},
 				Pagination: &Pagination{
@@ -240,7 +240,7 @@ func TestUpdateLogCollection(t *testing.T) {
 			mockFunc: func(t *testing.T) httpClient {
 				ctrl := gomock.NewController(t)
 				cli := NewMockhttpClient(ctrl)
-				cli.EXPECT().sendPutRequest(gomock.Any(), path.Join(_apiPathPrefix, "/controlplanes/1/log_collections/2"), "", gomock.Any(), gomock.Any()).Return(nil)
+				cli.EXPECT().sendPutRequest(gomock.Any(), path.Join(_apiPathPrefix, "/clusters/1/log_collections/2"), "", gomock.Any(), gomock.Any()).Return(nil)
 				return cli
 			},
 			expectedError: "",
@@ -254,7 +254,7 @@ func TestUpdateLogCollection(t *testing.T) {
 			mockFunc: func(t *testing.T) httpClient {
 				ctrl := gomock.NewController(t)
 				cli := NewMockhttpClient(ctrl)
-				cli.EXPECT().sendPutRequest(gomock.Any(), path.Join(_apiPathPrefix, "/controlplanes/1/log_collections/2"), "", gomock.Any(), gomock.Any()).Return(errors.New("mock error"))
+				cli.EXPECT().sendPutRequest(gomock.Any(), path.Join(_apiPathPrefix, "/clusters/1/log_collections/2"), "", gomock.Any(), gomock.Any()).Return(errors.New("mock error"))
 				return cli
 			},
 			expectedError: "mock error",
@@ -266,7 +266,7 @@ func TestUpdateLogCollection(t *testing.T) {
 		t.Run(tc.name, func(t *testing.T) {
 			cli := tc.mockFunc(t)
 			_, err := newLogCollection(cli).UpdateLogCollection(context.Background(), tc.pendingLogCollection, &ResourceUpdateOptions{
-				ControlPlane: &ControlPlane{
+				Cluster: &Cluster{
 					ID: 1,
 				},
 			})

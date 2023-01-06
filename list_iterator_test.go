@@ -38,13 +38,13 @@ func TestListIterator(t *testing.T) {
 			mockFn: func(t *testing.T) *listIterator {
 				ctrl := gomock.NewController(t)
 				cli := NewMockhttpClient(ctrl)
-				cli.EXPECT().sendGetRequest(gomock.Any(), "/api/v1/controlplanes/1/apps", "page=1&page_size=10", gomock.Any()).Return(errors.New("mock error"))
+				cli.EXPECT().sendGetRequest(gomock.Any(), "/api/v1/clusters/1/apps", "page=1&page_size=10", gomock.Any()).Return(errors.New("mock error"))
 
 				iter := &listIterator{
 					ctx:      context.Background(),
 					resource: "applications",
 					client:   cli,
-					path:     "/api/v1/controlplanes/1/apps",
+					path:     "/api/v1/clusters/1/apps",
 					paging:   DefaultPagination,
 				}
 
@@ -57,13 +57,13 @@ func TestListIterator(t *testing.T) {
 			mockFn: func(t *testing.T) *listIterator {
 				ctrl := gomock.NewController(t)
 				cli := NewMockhttpClient(ctrl)
-				cli.EXPECT().sendGetRequest(gomock.Any(), "/api/v1/controlplanes/1/apps", "page=1&page_size=3&search=redeem", gomock.Any()).Return(nil)
+				cli.EXPECT().sendGetRequest(gomock.Any(), "/api/v1/clusters/1/apps", "page=1&page_size=3&search=redeem", gomock.Any()).Return(nil)
 
 				iter := &listIterator{
 					ctx:      context.Background(),
 					resource: "applications",
 					client:   cli,
-					path:     "/api/v1/controlplanes/1/apps",
+					path:     "/api/v1/clusters/1/apps",
 					paging: Pagination{
 						Page:     1,
 						PageSize: 3,

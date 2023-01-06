@@ -27,7 +27,7 @@ type Interface interface {
 	AuthInterface
 	ApplicationInterface
 	APIInterface
-	ControlPlaneInterface
+	ClusterInterface
 	OrganizationInterface
 	RegionInterface
 	CanaryReleaseInterface
@@ -51,7 +51,7 @@ type impl struct {
 	AuthInterface
 	ApplicationInterface
 	APIInterface
-	ControlPlaneInterface
+	ClusterInterface
 	OrganizationInterface
 	RegionInterface
 	CanaryReleaseInterface
@@ -107,7 +107,7 @@ func NewInterface(opts *Options) (Interface, error) {
 		AuthInterface:             newAuth(cli),
 		ApplicationInterface:      newApplication(cli),
 		APIInterface:              newAPI(cli),
-		ControlPlaneInterface:     newControlPlane(cli),
+		ClusterInterface:          newCluster(cli),
 		OrganizationInterface:     newOrganization(cli),
 		RegionInterface:           newRegion(cli),
 		CanaryReleaseInterface:    newCanaryRelease(cli),

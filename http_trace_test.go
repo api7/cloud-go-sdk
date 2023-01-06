@@ -80,7 +80,7 @@ func TestHTTPTrace(t *testing.T) {
   }
 }
 `
-			api7.Expect("/api/v1/controlplanes/123/apps", http.StatusOK, []byte(app))
+			api7.Expect("/api/v1/clusters/123/apps", http.StatusOK, []byte(app))
 
 			sdk, err := NewInterface(&Options{
 				ServerAddr:      api7.Addr(),
@@ -106,7 +106,7 @@ func TestHTTPTrace(t *testing.T) {
 					PathPrefix: "/v1",
 				},
 			}, &ResourceCreateOptions{
-				ControlPlane: &ControlPlane{
+				Cluster: &Cluster{
 					ID: 123,
 				},
 			})
@@ -122,7 +122,7 @@ func TestHTTPTrace(t *testing.T) {
 				assert.Contains(t, seriel.Events[1].Message, "connected to 127.0.0.1:", "check second event")
 				assert.Contains(t, seriel.Events[2].Message, "request sent", "check third event")
 				assert.Equal(t, http.MethodPost, seriel.Request.Method, "check request method")
-				assert.Equal(t, "/api/v1/controlplanes/123/apps", seriel.Request.URL.Path, "check request URI path")
+				assert.Equal(t, "/api/v1/clusters/123/apps", seriel.Request.URL.Path, "check request URI path")
 			case <-time.After(time.Second):
 				if tc.enableTrace {
 					assert.Fail(t, "didn't receive trace series when enable http trace is enabled")

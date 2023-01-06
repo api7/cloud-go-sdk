@@ -48,27 +48,27 @@ type LogCollection struct {
 type LogCollectionInterface interface {
 	// CreateLogCollection creates an API7 Cloud Log Collection in the specified control plane.
 	// The given `lc` parameter should specify the desired LogCollection specification.
-	// Users need to specify the ControlPlane in the `opts`.
+	// Users need to specify the Cluster in the `opts`.
 	// The returned LogCollection will contain the same LogCollection specification plus some
 	// management fields and default values.
 	CreateLogCollection(ctx context.Context, lc *LogCollection, opts *ResourceCreateOptions) (*LogCollection, error)
 	// UpdateLogCollection updates an existing API7 Cloud Log Collection in the specified control plane.
 	// The given `lc` parameter should specify the desired LogCollection specification.
-	// Users need to specify the ControlPlane in the `opts`.
+	// Users need to specify the Cluster in the `opts`.
 	// The returned LogCollection will contain the same LogCollection specification plus some
 	// management fields and default values.
 	UpdateLogCollection(ctx context.Context, lc *LogCollection, opts *ResourceUpdateOptions) (*LogCollection, error)
 	// DeleteLogCollection deletes an existing API7 Cloud Log Collection in the specified control plane.
 	// The given `lcID` parameter should specify the LogCollection that you want to delete.
-	// Users need to specify the ControlPlane in the `opts`.
+	// Users need to specify the Cluster in the `opts`.
 	DeleteLogCollection(ctx context.Context, lcID ID, opts *ResourceDeleteOptions) error
 	// GetLogCollection gets an existing API7 Cloud Log Collection in the specified control plane.
 	// The given `lcID` parameter should specify the LogCollection that you want to get.
-	// Users need to specify the ControlPlane in the `opts`.
+	// Users need to specify the Cluster in the `opts`.
 	GetLogCollection(ctx context.Context, lcID ID, opts *ResourceGetOptions) (*LogCollection, error)
 	// ListLogCollections returns an iterator for listing Log Collections in the specified control plane with the
 	// given list conditions.
-	// Users need to specify the ControlPlane, Paging, Filter conditions (if necessary)
+	// Users need to specify the Cluster, Paging, Filter conditions (if necessary)
 	// in the `opts`.
 	ListLogCollections(ctx context.Context, opts *ResourceListOptions) (LogCollectionIterator, error)
 }
@@ -111,8 +111,8 @@ func newLogCollection(cli httpClient) LogCollectionInterface {
 func (impl *logCollectionImpl) CreateLogCollection(ctx context.Context, lc *LogCollection, opts *ResourceCreateOptions) (*LogCollection, error) {
 	var createdLogCollection LogCollection
 
-	cpID := opts.ControlPlane.ID
-	uri := path.Join(_apiPathPrefix, "controlplanes", cpID.String(), "log_collections")
+	cpID := opts.Cluster.ID
+	uri := path.Join(_apiPathPrefix, "clusters", cpID.String(), "log_collections")
 	err := impl.client.sendPostRequest(ctx, uri, "", lc, jsonPayloadDecodeFactory(&createdLogCollection))
 	if err != nil {
 		return nil, err
@@ -123,8 +123,8 @@ func (impl *logCollectionImpl) CreateLogCollection(ctx context.Context, lc *LogC
 func (impl *logCollectionImpl) UpdateLogCollection(ctx context.Context, lc *LogCollection, opts *ResourceUpdateOptions) (*LogCollection, error) {
 	var createdLogCollection LogCollection
 
-	cpID := opts.ControlPlane.ID
-	uri := path.Join(_apiPathPrefix, "controlplanes", cpID.String(), "log_collections", lc.ID.String())
+	cpID := opts.Cluster.ID
+	uri := path.Join(_apiPathPrefix, "clusters", cpID.String(), "log_collections", lc.ID.String())
 	err := impl.client.sendPutRequest(ctx, uri, "", lc, jsonPayloadDecodeFactory(&createdLogCollection))
 	if err != nil {
 		return nil, err
@@ -133,16 +133,16 @@ func (impl *logCollectionImpl) UpdateLogCollection(ctx context.Context, lc *LogC
 }
 
 func (impl *logCollectionImpl) DeleteLogCollection(ctx context.Context, lcID ID, opts *ResourceDeleteOptions) error {
-	cpID := opts.ControlPlane.ID
-	uri := path.Join(_apiPathPrefix, "controlplanes", cpID.String(), "log_collections", lcID.String())
+	cpID := opts.Cluster.ID
+	uri := path.Join(_apiPathPrefix, "clusters", cpID.String(), "log_collections", lcID.String())
 	return impl.client.sendDeleteRequest(ctx, uri, "", nil)
 }
 
 func (impl *logCollectionImpl) GetLogCollection(ctx context.Context, lcID ID, opts *ResourceGetOptions) (*LogCollection, error) {
 	var logcollection LogCollection
 
-	cpID := opts.ControlPlane.ID
-	uri := path.Join(_apiPathPrefix, "controlplanes", cpID.String(), "log_collections", lcID.String())
+	cpID := opts.Cluster.ID
+	uri := path.Join(_apiPathPrefix, "clusters", cpID.String(), "log_collections", lcID.String())
 	err := impl.client.sendGetRequest(ctx, uri, "", jsonPayloadDecodeFactory(&logcollection))
 	if err != nil {
 		return nil, err
@@ -155,7 +155,7 @@ func (impl *logCollectionImpl) ListLogCollections(ctx context.Context, opts *Res
 		ctx:      ctx,
 		resource: "logcollection",
 		client:   impl.client,
-		path:     path.Join(_apiPathPrefix, "controlplanes", opts.ControlPlane.ID.String(), "log_collections"),
+		path:     path.Join(_apiPathPrefix, "clusters", opts.Cluster.ID.String(), "log_collections"),
 		paging:   mergePagination(opts.Pagination),
 		filter:   opts.Filter,
 	}

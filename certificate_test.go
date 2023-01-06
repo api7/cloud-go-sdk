@@ -56,7 +56,7 @@ func TestCreateCertificate(t *testing.T) {
 			mockFunc: func(t *testing.T) httpClient {
 				ctrl := gomock.NewController(t)
 				cli := NewMockhttpClient(ctrl)
-				cli.EXPECT().sendPostRequest(gomock.Any(), path.Join(_apiPathPrefix, "/controlplanes/1/certificates"), "", gomock.Any(), gomock.Any()).Return(nil)
+				cli.EXPECT().sendPostRequest(gomock.Any(), path.Join(_apiPathPrefix, "/clusters/1/certificates"), "", gomock.Any(), gomock.Any()).Return(nil)
 				return cli
 
 			},
@@ -75,7 +75,7 @@ func TestCreateCertificate(t *testing.T) {
 			mockFunc: func(t *testing.T) httpClient {
 				ctrl := gomock.NewController(t)
 				cli := NewMockhttpClient(ctrl)
-				cli.EXPECT().sendPostRequest(gomock.Any(), path.Join(_apiPathPrefix, "/controlplanes/1/certificates"), "", gomock.Any(), gomock.Any()).Return(errors.New("mock error"))
+				cli.EXPECT().sendPostRequest(gomock.Any(), path.Join(_apiPathPrefix, "/clusters/1/certificates"), "", gomock.Any(), gomock.Any()).Return(errors.New("mock error"))
 				return cli
 
 			},
@@ -88,7 +88,7 @@ func TestCreateCertificate(t *testing.T) {
 		t.Run(tc.name, func(t *testing.T) {
 			cli := tc.mockFunc(t)
 			_, err := newCertificate(cli).CreateCertificate(context.Background(), tc.pendingCert, &ResourceCreateOptions{
-				ControlPlane: &ControlPlane{
+				Cluster: &Cluster{
 					ID: 1,
 				},
 			})
@@ -133,7 +133,7 @@ func TestUpdateCertificate(t *testing.T) {
 			mockFunc: func(t *testing.T) httpClient {
 				ctrl := gomock.NewController(t)
 				cli := NewMockhttpClient(ctrl)
-				cli.EXPECT().sendPutRequest(gomock.Any(), path.Join(_apiPathPrefix, "/controlplanes/1/certificates/12"), "", gomock.Any(), gomock.Any()).Return(nil)
+				cli.EXPECT().sendPutRequest(gomock.Any(), path.Join(_apiPathPrefix, "/clusters/1/certificates/12"), "", gomock.Any(), gomock.Any()).Return(nil)
 				return cli
 
 			},
@@ -153,7 +153,7 @@ func TestUpdateCertificate(t *testing.T) {
 			mockFunc: func(t *testing.T) httpClient {
 				ctrl := gomock.NewController(t)
 				cli := NewMockhttpClient(ctrl)
-				cli.EXPECT().sendPutRequest(gomock.Any(), path.Join(_apiPathPrefix, "/controlplanes/1/certificates/12"), "", gomock.Any(), gomock.Any()).Return(errors.New("mock error"))
+				cli.EXPECT().sendPutRequest(gomock.Any(), path.Join(_apiPathPrefix, "/clusters/1/certificates/12"), "", gomock.Any(), gomock.Any()).Return(errors.New("mock error"))
 				return cli
 
 			},
@@ -166,7 +166,7 @@ func TestUpdateCertificate(t *testing.T) {
 		t.Run(tc.name, func(t *testing.T) {
 			cli := tc.mockFunc(t)
 			_, err := newCertificate(cli).UpdateCertificate(context.Background(), tc.pendingCert, &ResourceUpdateOptions{
-				ControlPlane: &ControlPlane{
+				Cluster: &Cluster{
 					ID: 1,
 				},
 			})
@@ -192,7 +192,7 @@ func TestDeleteCertificate(t *testing.T) {
 			mockFunc: func(t *testing.T) httpClient {
 				ctrl := gomock.NewController(t)
 				cli := NewMockhttpClient(ctrl)
-				cli.EXPECT().sendDeleteRequest(gomock.Any(), path.Join(_apiPathPrefix, "/controlplanes/1/certificates/12"), "", nil).Return(nil)
+				cli.EXPECT().sendDeleteRequest(gomock.Any(), path.Join(_apiPathPrefix, "/clusters/1/certificates/12"), "", nil).Return(nil)
 				return cli
 
 			},
@@ -203,7 +203,7 @@ func TestDeleteCertificate(t *testing.T) {
 			mockFunc: func(t *testing.T) httpClient {
 				ctrl := gomock.NewController(t)
 				cli := NewMockhttpClient(ctrl)
-				cli.EXPECT().sendDeleteRequest(gomock.Any(), path.Join(_apiPathPrefix, "/controlplanes/1/certificates/12"), "", nil).Return(errors.New("mock error"))
+				cli.EXPECT().sendDeleteRequest(gomock.Any(), path.Join(_apiPathPrefix, "/clusters/1/certificates/12"), "", nil).Return(errors.New("mock error"))
 				return cli
 
 			},
@@ -216,7 +216,7 @@ func TestDeleteCertificate(t *testing.T) {
 		t.Run(tc.name, func(t *testing.T) {
 			cli := tc.mockFunc(t)
 			err := newCertificate(cli).DeleteCertificate(context.Background(), 12, &ResourceDeleteOptions{
-				ControlPlane: &ControlPlane{
+				Cluster: &Cluster{
 					ID: 1,
 				},
 			})
@@ -242,7 +242,7 @@ func TestGetCertificate(t *testing.T) {
 			mockFunc: func(t *testing.T) httpClient {
 				ctrl := gomock.NewController(t)
 				cli := NewMockhttpClient(ctrl)
-				cli.EXPECT().sendGetRequest(gomock.Any(), path.Join(_apiPathPrefix, "/controlplanes/1/certificates/12"), "", gomock.Any()).Return(nil)
+				cli.EXPECT().sendGetRequest(gomock.Any(), path.Join(_apiPathPrefix, "/clusters/1/certificates/12"), "", gomock.Any()).Return(nil)
 				return cli
 
 			},
@@ -253,7 +253,7 @@ func TestGetCertificate(t *testing.T) {
 			mockFunc: func(t *testing.T) httpClient {
 				ctrl := gomock.NewController(t)
 				cli := NewMockhttpClient(ctrl)
-				cli.EXPECT().sendGetRequest(gomock.Any(), path.Join(_apiPathPrefix, "/controlplanes/1/certificates/12"), "", gomock.Any()).Return(errors.New("mock error"))
+				cli.EXPECT().sendGetRequest(gomock.Any(), path.Join(_apiPathPrefix, "/clusters/1/certificates/12"), "", gomock.Any()).Return(errors.New("mock error"))
 				return cli
 			},
 			expectedError: "mock error",
@@ -266,7 +266,7 @@ func TestGetCertificate(t *testing.T) {
 			cli := tc.mockFunc(t)
 			// ignore the certificates check since currently we don't mock it, and the certificate is always a zero value.
 			_, err := newCertificate(cli).GetCertificate(context.Background(), 12, &ResourceGetOptions{
-				ControlPlane: &ControlPlane{
+				Cluster: &Cluster{
 					ID: 1,
 				},
 			})
@@ -291,7 +291,7 @@ func TestListCertificates(t *testing.T) {
 			iterator: &certificatesListIterator{
 				iter: listIterator{
 					resource: "certificates",
-					path:     "/api/v1/controlplanes/123/certificates",
+					path:     "/api/v1/clusters/123/certificates",
 					paging: Pagination{
 						Page:     14,
 						PageSize: 25,
@@ -307,7 +307,7 @@ func TestListCertificates(t *testing.T) {
 		t.Run(tc.name, func(t *testing.T) {
 			// ignore the certificates check since currently we don't mock it, and the certificate is always a zero value.
 			raw, err := newCertificate(nil).ListCertificates(context.Background(), &ResourceListOptions{
-				ControlPlane: &ControlPlane{
+				Cluster: &Cluster{
 					ID: 123,
 				},
 				Pagination: &Pagination{

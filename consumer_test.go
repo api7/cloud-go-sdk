@@ -41,7 +41,7 @@ func TestCreateConsumer(t *testing.T) {
 			mockFunc: func(t *testing.T) httpClient {
 				ctrl := gomock.NewController(t)
 				cli := NewMockhttpClient(ctrl)
-				cli.EXPECT().sendPostRequest(gomock.Any(), path.Join(_apiPathPrefix, "/controlplanes/1/consumers"), "", gomock.Any(), gomock.Any()).Return(nil)
+				cli.EXPECT().sendPostRequest(gomock.Any(), path.Join(_apiPathPrefix, "/clusters/1/consumers"), "", gomock.Any(), gomock.Any()).Return(nil)
 				return cli
 
 			},
@@ -55,7 +55,7 @@ func TestCreateConsumer(t *testing.T) {
 			mockFunc: func(t *testing.T) httpClient {
 				ctrl := gomock.NewController(t)
 				cli := NewMockhttpClient(ctrl)
-				cli.EXPECT().sendPostRequest(gomock.Any(), path.Join(_apiPathPrefix, "/controlplanes/1/consumers"), "", gomock.Any(), gomock.Any()).Return(errors.New("mock error"))
+				cli.EXPECT().sendPostRequest(gomock.Any(), path.Join(_apiPathPrefix, "/clusters/1/consumers"), "", gomock.Any(), gomock.Any()).Return(errors.New("mock error"))
 				return cli
 
 			},
@@ -68,7 +68,7 @@ func TestCreateConsumer(t *testing.T) {
 		t.Run(tc.name, func(t *testing.T) {
 			cli := tc.mockFunc(t)
 			_, err := newConsumer(cli).CreateConsumer(context.Background(), tc.pendingConsumer, &ResourceCreateOptions{
-				ControlPlane: &ControlPlane{
+				Cluster: &Cluster{
 					ID: 1,
 				},
 			})
@@ -99,7 +99,7 @@ func TestUpdateConsumer(t *testing.T) {
 			mockFunc: func(t *testing.T) httpClient {
 				ctrl := gomock.NewController(t)
 				cli := NewMockhttpClient(ctrl)
-				cli.EXPECT().sendPutRequest(gomock.Any(), path.Join(_apiPathPrefix, "/controlplanes/1/consumers/12"), "", gomock.Any(), gomock.Any()).Return(nil)
+				cli.EXPECT().sendPutRequest(gomock.Any(), path.Join(_apiPathPrefix, "/clusters/1/consumers/12"), "", gomock.Any(), gomock.Any()).Return(nil)
 				return cli
 
 			},
@@ -114,7 +114,7 @@ func TestUpdateConsumer(t *testing.T) {
 			mockFunc: func(t *testing.T) httpClient {
 				ctrl := gomock.NewController(t)
 				cli := NewMockhttpClient(ctrl)
-				cli.EXPECT().sendPutRequest(gomock.Any(), path.Join(_apiPathPrefix, "/controlplanes/1/consumers/12"), "", gomock.Any(), gomock.Any()).Return(errors.New("mock error"))
+				cli.EXPECT().sendPutRequest(gomock.Any(), path.Join(_apiPathPrefix, "/clusters/1/consumers/12"), "", gomock.Any(), gomock.Any()).Return(errors.New("mock error"))
 				return cli
 
 			},
@@ -127,7 +127,7 @@ func TestUpdateConsumer(t *testing.T) {
 		t.Run(tc.name, func(t *testing.T) {
 			cli := tc.mockFunc(t)
 			_, err := newConsumer(cli).UpdateConsumer(context.Background(), tc.pendingConsumer, &ResourceUpdateOptions{
-				ControlPlane: &ControlPlane{
+				Cluster: &Cluster{
 					ID: 1,
 				},
 			})
@@ -153,7 +153,7 @@ func TestDeleteConsumer(t *testing.T) {
 			mockFunc: func(t *testing.T) httpClient {
 				ctrl := gomock.NewController(t)
 				cli := NewMockhttpClient(ctrl)
-				cli.EXPECT().sendDeleteRequest(gomock.Any(), path.Join(_apiPathPrefix, "/controlplanes/1/consumers/12"), "", nil).Return(nil)
+				cli.EXPECT().sendDeleteRequest(gomock.Any(), path.Join(_apiPathPrefix, "/clusters/1/consumers/12"), "", nil).Return(nil)
 				return cli
 
 			},
@@ -164,7 +164,7 @@ func TestDeleteConsumer(t *testing.T) {
 			mockFunc: func(t *testing.T) httpClient {
 				ctrl := gomock.NewController(t)
 				cli := NewMockhttpClient(ctrl)
-				cli.EXPECT().sendDeleteRequest(gomock.Any(), path.Join(_apiPathPrefix, "/controlplanes/1/consumers/12"), "", nil).Return(errors.New("mock error"))
+				cli.EXPECT().sendDeleteRequest(gomock.Any(), path.Join(_apiPathPrefix, "/clusters/1/consumers/12"), "", nil).Return(errors.New("mock error"))
 				return cli
 
 			},
@@ -177,7 +177,7 @@ func TestDeleteConsumer(t *testing.T) {
 		t.Run(tc.name, func(t *testing.T) {
 			cli := tc.mockFunc(t)
 			err := newConsumer(cli).DeleteConsumer(context.Background(), 12, &ResourceDeleteOptions{
-				ControlPlane: &ControlPlane{
+				Cluster: &Cluster{
 					ID: 1,
 				},
 			})
@@ -203,7 +203,7 @@ func TestGetConsumer(t *testing.T) {
 			mockFunc: func(t *testing.T) httpClient {
 				ctrl := gomock.NewController(t)
 				cli := NewMockhttpClient(ctrl)
-				cli.EXPECT().sendGetRequest(gomock.Any(), path.Join(_apiPathPrefix, "/controlplanes/1/consumers/12"), "", gomock.Any()).Return(nil)
+				cli.EXPECT().sendGetRequest(gomock.Any(), path.Join(_apiPathPrefix, "/clusters/1/consumers/12"), "", gomock.Any()).Return(nil)
 				return cli
 
 			},
@@ -214,7 +214,7 @@ func TestGetConsumer(t *testing.T) {
 			mockFunc: func(t *testing.T) httpClient {
 				ctrl := gomock.NewController(t)
 				cli := NewMockhttpClient(ctrl)
-				cli.EXPECT().sendGetRequest(gomock.Any(), path.Join(_apiPathPrefix, "/controlplanes/1/consumers/12"), "", gomock.Any()).Return(errors.New("mock error"))
+				cli.EXPECT().sendGetRequest(gomock.Any(), path.Join(_apiPathPrefix, "/clusters/1/consumers/12"), "", gomock.Any()).Return(errors.New("mock error"))
 				return cli
 			},
 			expectedError: "mock error",
@@ -227,7 +227,7 @@ func TestGetConsumer(t *testing.T) {
 			cli := tc.mockFunc(t)
 			// ignore the application check since currently we don't mock it, and the app is always a zero value.
 			_, err := newConsumer(cli).GetConsumer(context.Background(), 12, &ResourceGetOptions{
-				ControlPlane: &ControlPlane{
+				Cluster: &Cluster{
 					ID: 1,
 				},
 			})
@@ -252,7 +252,7 @@ func TestListConsumers(t *testing.T) {
 			iterator: &consumerListIterator{
 				iter: listIterator{
 					resource: "consumer",
-					path:     "/api/v1/controlplanes/123/consumers",
+					path:     "/api/v1/clusters/123/consumers",
 					paging: Pagination{
 						Page:     14,
 						PageSize: 25,
@@ -268,7 +268,7 @@ func TestListConsumers(t *testing.T) {
 		t.Run(tc.name, func(t *testing.T) {
 			// ignore the consumer check since currently we don't mock it, and the app is always a zero value.
 			raw, err := newConsumer(nil).ListConsumers(context.Background(), &ResourceListOptions{
-				ControlPlane: &ControlPlane{
+				Cluster: &Cluster{
 					ID: 123,
 				},
 				Pagination: &Pagination{
