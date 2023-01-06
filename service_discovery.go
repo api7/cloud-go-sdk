@@ -90,8 +90,8 @@ type ServiceRegistry struct {
 
 	// ID is the service registry id.
 	ID ID `json:"id" gorm:"column:id"`
-	// ControlPlaneID is id of control plane that current service registry belong with.
-	ControlPlaneID ID `json:"control_plane_id"`
+	// ClusterID is id of control plane that current service registry belong with.
+	ClusterID ID `json:"cluster_id"`
 	// Status is status of service registry.
 	Status EntityStatus `json:"status"`
 	// CreatedAt is the object creation time
@@ -104,27 +104,27 @@ type ServiceRegistry struct {
 type ServiceDiscoveryInterface interface {
 	// CreateServiceRegistry creates an API7 Cloud ServiceRegistry in the specified control plane.
 	// The given `registry` parameter should specify the desired ServiceRegistry specification.
-	// Users need to specify the ControlPlane in the `opts`.
+	// Users need to specify the Cluster in the `opts`.
 	// The returned ServiceRegistry will contain the same ServiceRegistry specification plus some
 	// management fields and default values.
 	CreateServiceRegistry(ctx context.Context, registry *ServiceRegistry, opts *ResourceCreateOptions) (*ServiceRegistry, error)
 	// UpdateServiceRegistry updates an existing API7 Cloud ServiceRegistry in the specified control plane.
 	// The given `registry` parameter should specify the ServiceRegistry that you want to update.
-	// Users need to specify the ControlPlane in the `opts`.
+	// Users need to specify the Cluster in the `opts`.
 	// The returned ServiceRegistry will contain the same ServiceRegistry specification plus some
 	// management fields and default values.
 	UpdateServiceRegistry(ctx context.Context, registry *ServiceRegistry, opts *ResourceUpdateOptions) (*ServiceRegistry, error)
 	// DeleteServiceRegistry deletes an existing API7 Cloud ServiceRegistry in the specified control plane.
 	// The given `appID` parameter should specify the Application that you want to delete.
-	// Users need to specify the ControlPlane in the `opts`.
+	// Users need to specify the Cluster in the `opts`.
 	DeleteServiceRegistry(ctx context.Context, registryID ID, opts *ResourceDeleteOptions) error
 	// GetServiceRegistry gets an existing API7 Cloud ServiceRegistry in the specified control plane.
 	// The given `registryID` parameter should specify the ServiceRegistry that you want to get.
-	// Users need to specify the ControlPlane in the `opts`.
+	// Users need to specify the Cluster in the `opts`.
 	GetServiceRegistry(ctx context.Context, registryID ID, opts *ResourceGetOptions) (*ServiceRegistry, error)
 	// ListServiceRegistries returns an iterator for listing service registries in the specified control plane
 	// with the given list conditions.
-	// Users need to specify the ControlPlane, Paging and Filter conditions (if necessary) in the `opts`.
+	// Users need to specify the Cluster, Paging and Filter conditions (if necessary) in the `opts`.
 	ListServiceRegistries(ctx context.Context, opts *ResourceListOptions) (ServiceRegistryListIterator, error)
 }
 
@@ -166,8 +166,8 @@ func newServiceDiscovery(cli httpClient) ServiceDiscoveryInterface {
 func (impl *serviceRegistryImpl) CreateServiceRegistry(ctx context.Context, registry *ServiceRegistry, opts *ResourceCreateOptions) (*ServiceRegistry, error) {
 	var createdRegistry ServiceRegistry
 
-	cpID := opts.ControlPlane.ID
-	uri := path.Join(_apiPathPrefix, "controlplanes", cpID.String(), "service_registries")
+	cpID := opts.Cluster.ID
+	uri := path.Join(_apiPathPrefix, "clusters", cpID.String(), "service_registries")
 	err := impl.client.sendPostRequest(ctx, uri, "", registry, jsonPayloadDecodeFactory(&createdRegistry))
 	if err != nil {
 		return nil, err
@@ -178,8 +178,8 @@ func (impl *serviceRegistryImpl) CreateServiceRegistry(ctx context.Context, regi
 func (impl *serviceRegistryImpl) UpdateServiceRegistry(ctx context.Context, registry *ServiceRegistry, opts *ResourceUpdateOptions) (*ServiceRegistry, error) {
 	var updatedRegistry ServiceRegistry
 
-	cpID := opts.ControlPlane.ID
-	uri := path.Join(_apiPathPrefix, "controlplanes", cpID.String(), "service_registries", registry.ID.String())
+	cpID := opts.Cluster.ID
+	uri := path.Join(_apiPathPrefix, "clusters", cpID.String(), "service_registries", registry.ID.String())
 	err := impl.client.sendPutRequest(ctx, uri, "", registry, jsonPayloadDecodeFactory(&updatedRegistry))
 	if err != nil {
 		return nil, err
@@ -188,16 +188,16 @@ func (impl *serviceRegistryImpl) UpdateServiceRegistry(ctx context.Context, regi
 }
 
 func (impl *serviceRegistryImpl) DeleteServiceRegistry(ctx context.Context, registryID ID, opts *ResourceDeleteOptions) error {
-	cpID := opts.ControlPlane.ID
-	uri := path.Join(_apiPathPrefix, "controlplanes", cpID.String(), "service_registries", registryID.String())
+	cpID := opts.Cluster.ID
+	uri := path.Join(_apiPathPrefix, "clusters", cpID.String(), "service_registries", registryID.String())
 	return impl.client.sendDeleteRequest(ctx, uri, "", nil)
 }
 
 func (impl *serviceRegistryImpl) GetServiceRegistry(ctx context.Context, registryID ID, opts *ResourceGetOptions) (*ServiceRegistry, error) {
 	var registry ServiceRegistry
 
-	cpID := opts.ControlPlane.ID
-	uri := path.Join(_apiPathPrefix, "controlplanes", cpID.String(), "service_registries", registryID.String())
+	cpID := opts.Cluster.ID
+	uri := path.Join(_apiPathPrefix, "clusters", cpID.String(), "service_registries", registryID.String())
 
 	err := impl.client.sendGetRequest(ctx, uri, "", jsonPayloadDecodeFactory(&registry))
 	if err != nil {
@@ -211,7 +211,7 @@ func (impl *serviceRegistryImpl) ListServiceRegistries(ctx context.Context, opts
 		ctx:      ctx,
 		resource: "service_registry",
 		client:   impl.client,
-		path:     path.Join(_apiPathPrefix, "controlplanes", opts.ControlPlane.ID.String(), "service_registries"),
+		path:     path.Join(_apiPathPrefix, "clusters", opts.Cluster.ID.String(), "service_registries"),
 		paging:   mergePagination(opts.Pagination),
 		filter:   opts.Filter,
 	}

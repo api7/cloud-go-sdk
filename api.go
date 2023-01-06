@@ -133,7 +133,7 @@ type APIInterface interface {
 	ListAPIs(ctx context.Context, opts *ResourceListOptions) (APIListIterator, error)
 	// DebugAPIResources returns the corresponding translated APISIX resources for this API.
 	// The given `apiID` parameter should specify the API that you want to operate.
-	// Users need to specify the ControlPlane.ID in the `opts`.
+	// Users need to specify the Cluster.ID in the `opts`.
 	DebugAPIResources(ctx context.Context, apiID ID, opts *ResourceGetOptions) (string, error)
 }
 
@@ -255,7 +255,7 @@ func (impl *apiImpl) ListAPIs(ctx context.Context, opts *ResourceListOptions) (A
 
 func (impl *apiImpl) DebugAPIResources(ctx context.Context, apiID ID, opts *ResourceGetOptions) (string, error) {
 	var rawData json.RawMessage
-	uri := path.Join(_apiPathPrefix, "debug", "config", "controlplanes", opts.ControlPlane.ID.String(), "api", apiID.String())
+	uri := path.Join(_apiPathPrefix, "debug", "config", "clusters", opts.Cluster.ID.String(), "api", apiID.String())
 	err := impl.client.sendGetRequest(ctx, uri, "", jsonPayloadDecodeFactory(&rawData))
 	if err != nil {
 		return "", err

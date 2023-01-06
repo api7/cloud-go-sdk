@@ -24,19 +24,19 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestListControlPlanes(t *testing.T) {
+func TestListClusters(t *testing.T) {
 	t.Parallel()
 
 	testCases := []struct {
 		name     string
-		iterator *controlPlaneListIterator
+		iterator *clusterListIterator
 	}{
 		{
 			name: "create iterator successfully",
-			iterator: &controlPlaneListIterator{
+			iterator: &clusterListIterator{
 				iter: listIterator{
 					resource: "control plane",
-					path:     "/api/v1/orgs/123/controlplanes",
+					path:     "/api/v1/orgs/123/clusters",
 					paging: Pagination{
 						Page:     14,
 						PageSize: 25,
@@ -51,7 +51,7 @@ func TestListControlPlanes(t *testing.T) {
 		tc := tc
 		t.Run(tc.name, func(t *testing.T) {
 			// ignore the application check since currently we don't mock it, and the app is always a zero value.
-			raw, err := newControlPlane(nil).ListControlPlanes(context.Background(), &ResourceListOptions{
+			raw, err := newCluster(nil).ListClusters(context.Background(), &ResourceListOptions{
 				Organization: &Organization{
 					ID: 123,
 				},
@@ -61,7 +61,7 @@ func TestListControlPlanes(t *testing.T) {
 				},
 			})
 			assert.Nil(t, err, "check list control plane error")
-			iter := raw.(*controlPlaneListIterator)
+			iter := raw.(*clusterListIterator)
 			assert.Equal(t, tc.iterator.iter.resource, iter.iter.resource, "check resource")
 			assert.Equal(t, tc.iterator.iter.path, iter.iter.path, "check path")
 			assert.Equal(t, tc.iterator.iter.paging.Page, iter.iter.paging.Page, "check page")
@@ -83,7 +83,7 @@ func TestListAllGatewayInstances(t *testing.T) {
 			mockFunc: func(t *testing.T) httpClient {
 				ctrl := gomock.NewController(t)
 				cli := NewMockhttpClient(ctrl)
-				cli.EXPECT().sendGetRequest(gomock.Any(), path.Join(_apiPathPrefix, "/controlplanes/12/instances"), "", gomock.Any()).Return(nil)
+				cli.EXPECT().sendGetRequest(gomock.Any(), path.Join(_apiPathPrefix, "/clusters/12/instances"), "", gomock.Any()).Return(nil)
 				return cli
 			},
 		},
@@ -92,7 +92,7 @@ func TestListAllGatewayInstances(t *testing.T) {
 			mockFunc: func(t *testing.T) httpClient {
 				ctrl := gomock.NewController(t)
 				cli := NewMockhttpClient(ctrl)
-				cli.EXPECT().sendGetRequest(gomock.Any(), path.Join(_apiPathPrefix, "/controlplanes/12/instances"), "", gomock.Any()).Return(errors.New("mock error"))
+				cli.EXPECT().sendGetRequest(gomock.Any(), path.Join(_apiPathPrefix, "/clusters/12/instances"), "", gomock.Any()).Return(errors.New("mock error"))
 				return cli
 			},
 			expectedError: "mock error",
@@ -103,7 +103,7 @@ func TestListAllGatewayInstances(t *testing.T) {
 		t.Run(tc.name, func(t *testing.T) {
 			cli := tc.mockFunc(t)
 			// ignore the gateway instances check since currently we don't mock it, and the app is always a zero value.
-			_, err := newControlPlane(cli).ListAllGatewayInstances(context.Background(), 12, nil)
+			_, err := newCluster(cli).ListAllGatewayInstances(context.Background(), 12, nil)
 			if tc.expectedError == "" {
 				assert.Nil(t, err, "check gateway instances get error")
 			} else {
@@ -126,7 +126,7 @@ func TestGenerateGatewaySideCertificate(t *testing.T) {
 			mockFunc: func(t *testing.T) httpClient {
 				ctrl := gomock.NewController(t)
 				cli := NewMockhttpClient(ctrl)
-				cli.EXPECT().sendGetRequest(gomock.Any(), path.Join(_apiPathPrefix, "/controlplanes/1/dp_certificate"), "", gomock.Any()).Return(nil)
+				cli.EXPECT().sendGetRequest(gomock.Any(), path.Join(_apiPathPrefix, "/clusters/1/dp_certificate"), "", gomock.Any()).Return(nil)
 				return cli
 
 			},
@@ -137,7 +137,7 @@ func TestGenerateGatewaySideCertificate(t *testing.T) {
 			mockFunc: func(t *testing.T) httpClient {
 				ctrl := gomock.NewController(t)
 				cli := NewMockhttpClient(ctrl)
-				cli.EXPECT().sendGetRequest(gomock.Any(), path.Join(_apiPathPrefix, "/controlplanes/1/dp_certificate"), "", gomock.Any()).Return(errors.New("mock error"))
+				cli.EXPECT().sendGetRequest(gomock.Any(), path.Join(_apiPathPrefix, "/clusters/1/dp_certificate"), "", gomock.Any()).Return(errors.New("mock error"))
 				return cli
 			},
 			expectedError: "mock error",
@@ -149,7 +149,7 @@ func TestGenerateGatewaySideCertificate(t *testing.T) {
 		t.Run(tc.name, func(t *testing.T) {
 			cli := tc.mockFunc(t)
 			// ignore the application check since currently we don't mock it, and the app is always a zero value.
-			_, err := newControlPlane(cli).GenerateGatewaySideCertificate(context.Background(), 1, nil)
+			_, err := newCluster(cli).GenerateGatewaySideCertificate(context.Background(), 1, nil)
 			if tc.expectedError == "" {
 				assert.Nil(t, err, "check api get error")
 			} else {
@@ -172,7 +172,7 @@ func TestListAllLabels(t *testing.T) {
 			mockFunc: func(t *testing.T) httpClient {
 				ctrl := gomock.NewController(t)
 				cli := NewMockhttpClient(ctrl)
-				cli.EXPECT().sendGetRequest(gomock.Any(), path.Join(_apiPathPrefix, "/controlplanes/1/labels/api"), "", gomock.Any()).Return(nil)
+				cli.EXPECT().sendGetRequest(gomock.Any(), path.Join(_apiPathPrefix, "/clusters/1/labels/api"), "", gomock.Any()).Return(nil)
 				return cli
 
 			},
@@ -183,7 +183,7 @@ func TestListAllLabels(t *testing.T) {
 			mockFunc: func(t *testing.T) httpClient {
 				ctrl := gomock.NewController(t)
 				cli := NewMockhttpClient(ctrl)
-				cli.EXPECT().sendGetRequest(gomock.Any(), path.Join(_apiPathPrefix, "/controlplanes/1/labels/api"), "", gomock.Any()).Return(errors.New("mock error"))
+				cli.EXPECT().sendGetRequest(gomock.Any(), path.Join(_apiPathPrefix, "/clusters/1/labels/api"), "", gomock.Any()).Return(errors.New("mock error"))
 				return cli
 			},
 			expectedError: "mock error",
@@ -195,7 +195,7 @@ func TestListAllLabels(t *testing.T) {
 		t.Run(tc.name, func(t *testing.T) {
 			cli := tc.mockFunc(t)
 			// ignore the application check since currently we don't mock it, and the app is always a zero value.
-			_, err := newControlPlane(cli).ListAllAPILabels(context.Background(), 1, nil)
+			_, err := newCluster(cli).ListAllAPILabels(context.Background(), 1, nil)
 			if tc.expectedError == "" {
 				assert.Nil(t, err, "check api labels get error")
 			} else {
@@ -205,7 +205,7 @@ func TestListAllLabels(t *testing.T) {
 	}
 }
 
-func TestGetControlPlane(t *testing.T) {
+func TestGetCluster(t *testing.T) {
 	t.Parallel()
 
 	testCases := []struct {
@@ -218,7 +218,7 @@ func TestGetControlPlane(t *testing.T) {
 			mockFunc: func(t *testing.T) httpClient {
 				ctrl := gomock.NewController(t)
 				cli := NewMockhttpClient(ctrl)
-				cli.EXPECT().sendGetRequest(gomock.Any(), path.Join(_apiPathPrefix, "/orgs/1/controlplanes/12"), "", gomock.Any()).Return(nil)
+				cli.EXPECT().sendGetRequest(gomock.Any(), path.Join(_apiPathPrefix, "/orgs/1/clusters/12"), "", gomock.Any()).Return(nil)
 				return cli
 
 			},
@@ -229,7 +229,7 @@ func TestGetControlPlane(t *testing.T) {
 			mockFunc: func(t *testing.T) httpClient {
 				ctrl := gomock.NewController(t)
 				cli := NewMockhttpClient(ctrl)
-				cli.EXPECT().sendGetRequest(gomock.Any(), path.Join(_apiPathPrefix, "/orgs/1/controlplanes/12"), "", gomock.Any()).Return(errors.New("mock error"))
+				cli.EXPECT().sendGetRequest(gomock.Any(), path.Join(_apiPathPrefix, "/orgs/1/clusters/12"), "", gomock.Any()).Return(errors.New("mock error"))
 				return cli
 			},
 			expectedError: "mock error",
@@ -241,7 +241,7 @@ func TestGetControlPlane(t *testing.T) {
 		t.Run(tc.name, func(t *testing.T) {
 			cli := tc.mockFunc(t)
 			// ignore the API check since currently we don't mock it, and the app is always a zero value.
-			_, err := newControlPlane(cli).GetControlPlane(context.Background(), 12, &ResourceGetOptions{
+			_, err := newCluster(cli).GetCluster(context.Background(), 12, &ResourceGetOptions{
 				Organization: &Organization{
 					ID: 1,
 				},
@@ -255,7 +255,7 @@ func TestGetControlPlane(t *testing.T) {
 	}
 }
 
-func TestUpdateControlPlaneSettings(t *testing.T) {
+func TestUpdateClusterSettings(t *testing.T) {
 	t.Parallel()
 
 	testCases := []struct {
@@ -268,7 +268,7 @@ func TestUpdateControlPlaneSettings(t *testing.T) {
 			mockFunc: func(t *testing.T) httpClient {
 				ctrl := gomock.NewController(t)
 				cli := NewMockhttpClient(ctrl)
-				cli.EXPECT().sendPatchRequest(gomock.Any(), path.Join(_apiPathPrefix, "/orgs/1/controlplanes/12/config"), "", gomock.Any(), gomock.Any()).Return(nil)
+				cli.EXPECT().sendPatchRequest(gomock.Any(), path.Join(_apiPathPrefix, "/orgs/1/clusters/12/config"), "", gomock.Any(), gomock.Any()).Return(nil)
 				return cli
 
 			},
@@ -279,7 +279,7 @@ func TestUpdateControlPlaneSettings(t *testing.T) {
 			mockFunc: func(t *testing.T) httpClient {
 				ctrl := gomock.NewController(t)
 				cli := NewMockhttpClient(ctrl)
-				cli.EXPECT().sendPatchRequest(gomock.Any(), path.Join(_apiPathPrefix, "/orgs/1/controlplanes/12/config"), "", gomock.Any(), gomock.Any()).Return(errors.New("mock error"))
+				cli.EXPECT().sendPatchRequest(gomock.Any(), path.Join(_apiPathPrefix, "/orgs/1/clusters/12/config"), "", gomock.Any(), gomock.Any()).Return(errors.New("mock error"))
 				return cli
 			},
 			expectedError: "mock error",
@@ -291,8 +291,8 @@ func TestUpdateControlPlaneSettings(t *testing.T) {
 		t.Run(tc.name, func(t *testing.T) {
 			cli := tc.mockFunc(t)
 			// ignore the API check since currently we don't mock it, and the app is always a zero value.
-			err := newControlPlane(cli).UpdateControlPlaneSettings(context.Background(), 12,
-				&ControlPlaneSettings{
+			err := newCluster(cli).UpdateClusterSettings(context.Background(), 12,
+				&ClusterSettings{
 					ClientSettings:        ClientSettings{},
 					ObservabilitySettings: ObservabilitySettings{},
 					APIProxySettings:      APIProxySettings{},
@@ -311,7 +311,7 @@ func TestUpdateControlPlaneSettings(t *testing.T) {
 	}
 }
 
-func TestUpdateControlPlanePlugins(t *testing.T) {
+func TestUpdateClusterPlugins(t *testing.T) {
 	t.Parallel()
 
 	testCases := []struct {
@@ -324,7 +324,7 @@ func TestUpdateControlPlanePlugins(t *testing.T) {
 			mockFunc: func(t *testing.T) httpClient {
 				ctrl := gomock.NewController(t)
 				cli := NewMockhttpClient(ctrl)
-				cli.EXPECT().sendPatchRequest(gomock.Any(), path.Join(_apiPathPrefix, "/orgs/1/controlplanes/12/plugins"), "", gomock.Any(), gomock.Any()).Return(nil)
+				cli.EXPECT().sendPatchRequest(gomock.Any(), path.Join(_apiPathPrefix, "/orgs/1/clusters/12/plugins"), "", gomock.Any(), gomock.Any()).Return(nil)
 				return cli
 			},
 			expectedError: "",
@@ -334,7 +334,7 @@ func TestUpdateControlPlanePlugins(t *testing.T) {
 			mockFunc: func(t *testing.T) httpClient {
 				ctrl := gomock.NewController(t)
 				cli := NewMockhttpClient(ctrl)
-				cli.EXPECT().sendPatchRequest(gomock.Any(), path.Join(_apiPathPrefix, "/orgs/1/controlplanes/12/plugins"), "", gomock.Any(), gomock.Any()).Return(errors.New("mock error"))
+				cli.EXPECT().sendPatchRequest(gomock.Any(), path.Join(_apiPathPrefix, "/orgs/1/clusters/12/plugins"), "", gomock.Any(), gomock.Any()).Return(errors.New("mock error"))
 				return cli
 			},
 			expectedError: "mock error",
@@ -346,7 +346,7 @@ func TestUpdateControlPlanePlugins(t *testing.T) {
 		t.Run(tc.name, func(t *testing.T) {
 			cli := tc.mockFunc(t)
 			// ignore the API check since currently we don't mock it, and the app is always a zero value.
-			err := newControlPlane(cli).UpdateControlPlanePlugins(context.Background(), 12,
+			err := newCluster(cli).UpdateClusterPlugins(context.Background(), 12,
 				Plugins{},
 				&ResourceUpdateOptions{
 					Organization: &Organization{

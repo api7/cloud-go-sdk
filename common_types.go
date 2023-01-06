@@ -155,11 +155,11 @@ type ResourceCreateOptions struct {
 	// in the organization. e.g., when inviting a member, the
 	// Organization.ID should be specified.
 	Organization *Organization
-	// ControlPlane indicates where the resource belongs.
+	// Cluster indicates where the resource belongs.
 	// This field should be specified when users want to create resources
 	// in the control plane. e.g., when creating Application, the
-	// ControlPlane.ID should be specified.
-	ControlPlane *ControlPlane
+	// Cluster.ID should be specified.
+	Cluster *Cluster
 	// Application indicates which Application should this resource belong.
 	// This field should be specified when users want to update sub-resources
 	// in the Application. e.g., when creating API, CanaryRelease, the
@@ -174,11 +174,11 @@ type ResourceUpdateOptions struct {
 	// in the organization. e.g., when re-inviting a member, the
 	// Organization.ID should be specified.
 	Organization *Organization
-	// ControlPlane indicates where the resource belongs.
+	// Cluster indicates where the resource belongs.
 	// This field should be specified when users want to update resources
 	// in the control plane. e.g., when updating Application, the
-	// ControlPlane.ID should be specified.
-	ControlPlane *ControlPlane
+	// Cluster.ID should be specified.
+	Cluster *Cluster
 	// Application indicates which Application should this resource belong.
 	// This field should be specified when users want to update sub-resources
 	// in the Application. e.g., when updating API, the
@@ -193,11 +193,11 @@ type ResourceDeleteOptions struct {
 	// in the organization. e.g., when deleting a member, the
 	// Organization.ID should be specified.
 	Organization *Organization
-	// ControlPlane indicates where the resource is.
+	// Cluster indicates where the resource is.
 	// This field should be specified when users want to delete resources
 	// in the control plane. e.g., when deleting Application, the
-	// ControlPlane.ID should be specified.
-	ControlPlane *ControlPlane
+	// Cluster.ID should be specified.
+	Cluster *Cluster
 	// Application indicates which Application should this resource belong.
 	// This field should be specified when users want to delete sub-resources
 	// in the Application. e.g., when deleting API, the
@@ -212,11 +212,11 @@ type ResourceGetOptions struct {
 	// in the organization. e.g., when getting a member, the
 	// Organization.ID should be specified.
 	Organization *Organization
-	// ControlPlane indicates where the resource is.
+	// Cluster indicates where the resource is.
 	// This field should be specified when users want to get a resource.
 	// in the control plane. e.g., when getting Application, the
-	// ControlPlane.ID should be specified.
-	ControlPlane *ControlPlane
+	// Cluster.ID should be specified.
+	Cluster *Cluster
 	// Application indicates which Application should this resource belong.
 	// This field should be specified when users want to fetch sub-resources
 	// in the Application. e.g., when fetching API, the
@@ -228,14 +228,14 @@ type ResourceGetOptions struct {
 type ResourceListOptions struct {
 	// Organization indicates where the resources are.
 	// This field should be specified when users want to list resources.
-	// in the organization. e.g., when iterating ControlPlane, the
+	// in the organization. e.g., when iterating Cluster, the
 	// Organization.ID should be specified.
 	Organization *Organization
-	// ControlPlane indicates where the resources are.
+	// Cluster indicates where the resources are.
 	// This field should be specified when users want to list resources.
 	// in the control plane. e.g., when iterating Application, the
-	// ControlPlane.ID should be specified.
-	ControlPlane *ControlPlane
+	// Cluster.ID should be specified.
+	Cluster *Cluster
 	// Application indicates which Application should this resource belong.
 	// This field should be specified when users want to list sub-resources
 	// in the Application. e.g., when listing API, the

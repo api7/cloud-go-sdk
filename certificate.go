@@ -28,8 +28,8 @@ type Certificate struct {
 
 	// ID is the unique identify to mark an object.
 	ID ID `json:"id"`
-	// ControlPlaneID is id of control plane that current certificate belong with
-	ControlPlaneID ID `json:"control_plane_id"`
+	// ClusterID is id of control plane that current certificate belong with
+	ClusterID ID `json:"cluster_id"`
 	// Status is status of certificate
 	Status EntityStatus `json:"status"`
 	// CreatedAt is the object creation time.
@@ -68,34 +68,34 @@ type CertificateSpec struct {
 type CertificateInterface interface {
 	// CreateCertificate creates an API7 Cloud Certificate in the specified control plane.
 	// The given `cert` parameter should specify the desired Certificate specification.
-	// Users need to specify the ControlPlane in the `opts`.
+	// Users need to specify the Cluster in the `opts`.
 	// The returned Certificate will contain the same Certificate specification plus some
 	// management fields and default values, the `PrivateKey` field will be empty.
 	CreateCertificate(ctx context.Context, cert *Certificate, opts *ResourceCreateOptions) (*Certificate, error)
 	// UpdateCertificate updates an existing API7 Cloud Certificate in the specified control plane.
 	// The given `cert` parameter should specify the desired Certificate specification.
-	// Users need to specify the ControlPlane in the `opts`.
+	// Users need to specify the Cluster in the `opts`.
 	// The returned Certificate will contain the same Certificate specification plus some
 	// management fields and default values, the `PrivateKey` field will be empty.
 	UpdateCertificate(ctx context.Context, cert *Certificate, opts *ResourceUpdateOptions) (*Certificate, error)
 	// DeleteCertificate deletes an existing API7 Cloud Certificate in the specified control plane.
 	// The given `certID` parameter should specify the Certificate that you want to delete.
-	// Users need to specify the ControlPlane in the `opts`.
+	// Users need to specify the Cluster in the `opts`.
 	DeleteCertificate(ctx context.Context, certID ID, opts *ResourceDeleteOptions) error
 	// GetCertificate gets an existing API7 Cloud Certificate in the specified control plane.
 	// The given `certID` parameter should specify the Certificate that you want to get.
-	// Users need to specify the ControlPlane in the `opts`.
+	// Users need to specify the Cluster in the `opts`.
 	// The `PrivateKey` field will be empty in the returned Certificate.
 	GetCertificate(ctx context.Context, certID ID, opts *ResourceGetOptions) (*Certificate, error)
 	// ListCertificates returns an iterator for listing Certificates in the specified control plane with the
 	// given list conditions.
-	// Users need to specify the ControlPlane, Paging and Filter conditions (if necessary)
+	// Users need to specify the Cluster, Paging and Filter conditions (if necessary)
 	// in the `opts`.
 	// The `PrivateKey` field will be empty in the returned Certificate.
 	ListCertificates(ctx context.Context, opts *ResourceListOptions) (CertificateListIterator, error)
 	// DebugCertificateResources returns the corresponding translated APISIX resources for this Certificate.
 	// The given `certID` parameter should specify the Certificate that you want to operate.
-	// Users need to specify the ControlPlane.ID in the `opts`.
+	// Users need to specify the Cluster.ID in the `opts`.
 	// Note, the private key won't be returned due to the security concerns.
 	DebugCertificateResources(ctx context.Context, appID ID, opts *ResourceGetOptions) (string, error)
 }
@@ -134,8 +134,8 @@ func newCertificate(cli httpClient) CertificateInterface {
 func (impl *certificateImpl) CreateCertificate(ctx context.Context, cert *Certificate, opts *ResourceCreateOptions) (*Certificate, error) {
 	var createdCert Certificate
 
-	cpID := opts.ControlPlane.ID
-	uri := path.Join(_apiPathPrefix, "controlplanes", cpID.String(), "certificates")
+	cpID := opts.Cluster.ID
+	uri := path.Join(_apiPathPrefix, "clusters", cpID.String(), "certificates")
 	err := impl.client.sendPostRequest(ctx, uri, "", cert, jsonPayloadDecodeFactory(&createdCert))
 	if err != nil {
 		return nil, err
@@ -146,8 +146,8 @@ func (impl *certificateImpl) CreateCertificate(ctx context.Context, cert *Certif
 func (impl *certificateImpl) UpdateCertificate(ctx context.Context, cert *Certificate, opts *ResourceUpdateOptions) (*Certificate, error) {
 	var updatedCert Certificate
 
-	cpID := opts.ControlPlane.ID
-	uri := path.Join(_apiPathPrefix, "controlplanes", cpID.String(), "certificates", cert.ID.String())
+	cpID := opts.Cluster.ID
+	uri := path.Join(_apiPathPrefix, "clusters", cpID.String(), "certificates", cert.ID.String())
 	err := impl.client.sendPutRequest(ctx, uri, "", cert, jsonPayloadDecodeFactory(&updatedCert))
 	if err != nil {
 		return nil, err
@@ -156,16 +156,16 @@ func (impl *certificateImpl) UpdateCertificate(ctx context.Context, cert *Certif
 }
 
 func (impl *certificateImpl) DeleteCertificate(ctx context.Context, certID ID, opts *ResourceDeleteOptions) error {
-	cpID := opts.ControlPlane.ID
-	uri := path.Join(_apiPathPrefix, "controlplanes", cpID.String(), "certificates", certID.String())
+	cpID := opts.Cluster.ID
+	uri := path.Join(_apiPathPrefix, "clusters", cpID.String(), "certificates", certID.String())
 	return impl.client.sendDeleteRequest(ctx, uri, "", nil)
 }
 
 func (impl *certificateImpl) GetCertificate(ctx context.Context, certID ID, opts *ResourceGetOptions) (*Certificate, error) {
 	var cert Certificate
 
-	cpID := opts.ControlPlane.ID
-	uri := path.Join(_apiPathPrefix, "controlplanes", cpID.String(), "certificates", certID.String())
+	cpID := opts.Cluster.ID
+	uri := path.Join(_apiPathPrefix, "clusters", cpID.String(), "certificates", certID.String())
 	err := impl.client.sendGetRequest(ctx, uri, "", jsonPayloadDecodeFactory(&cert))
 	if err != nil {
 		return nil, err
@@ -178,7 +178,7 @@ func (impl *certificateImpl) ListCertificates(ctx context.Context, opts *Resourc
 		ctx:      ctx,
 		resource: "certificates",
 		client:   impl.client,
-		path:     path.Join(_apiPathPrefix, "controlplanes", opts.ControlPlane.ID.String(), "certificates"),
+		path:     path.Join(_apiPathPrefix, "clusters", opts.Cluster.ID.String(), "certificates"),
 		paging:   mergePagination(opts.Pagination),
 		filter:   opts.Filter,
 	}
@@ -188,7 +188,7 @@ func (impl *certificateImpl) ListCertificates(ctx context.Context, opts *Resourc
 
 func (impl *certificateImpl) DebugCertificateResources(ctx context.Context, certID ID, opts *ResourceGetOptions) (string, error) {
 	var rawData json.RawMessage
-	uri := path.Join(_apiPathPrefix, "debug", "config", "controlplanes", opts.ControlPlane.ID.String(), "certificate", certID.String())
+	uri := path.Join(_apiPathPrefix, "debug", "config", "clusters", opts.Cluster.ID.String(), "certificate", certID.String())
 	err := impl.client.sendGetRequest(ctx, uri, "", jsonPayloadDecodeFactory(&rawData))
 	if err != nil {
 		return "", err

@@ -66,7 +66,7 @@ cloud.EXPECT().CreateApplication(gomock.Any(), &Application{
 		   Active:                 ActiveStatus,
 	},
 }, &ApplicationCreateOptions{
-	ControlPlane: &ControlPlane{
+	Cluster: &Cluster{
 		ID: 1,
 	},
 }).Return(nil, errors.New("mock error"))

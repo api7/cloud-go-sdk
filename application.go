@@ -28,8 +28,8 @@ type Application struct {
 
 	// ID is the unique identify to mark an object.
 	ID ID `json:"id"`
-	// ControlPlaneID is id of control plane that current app belong with
-	ControlPlaneID ID `json:"control_plane_id"`
+	// ClusterID is id of cluster that current app belong with
+	ClusterID ID `json:"cluster_id"`
 	// Status is status of app
 	Status EntityStatus `json:"status"`
 	// CreatedAt is the object creation time.
@@ -73,44 +73,44 @@ type ApplicationSpec struct {
 type ApplicationInterface interface {
 	// CreateApplication creates an API7 Cloud Application in the specified control plane.
 	// The given `app` parameter should specify the desired Application specification.
-	// Users need to specify the ControlPlane in the `opts`.
+	// Users need to specify the Cluster in the `opts`.
 	// The returned Application will contain the same Application specification plus some
 	// management fields and default values.
 	CreateApplication(ctx context.Context, app *Application, opts *ResourceCreateOptions) (*Application, error)
 	// UpdateApplication updates an existing API7 Cloud Application in the specified control plane.
 	// The given `app` parameter should specify the desired Application specification.
-	// Users need to specify the ControlPlane in the `opts`.
+	// Users need to specify the Cluster in the `opts`.
 	// The returned Application will contain the same Application specification plus some
 	// management fields and default values.
 	UpdateApplication(ctx context.Context, app *Application, opts *ResourceUpdateOptions) (*Application, error)
 	// DeleteApplication deletes an existing API7 Cloud Application in the specified control plane.
 	// The given `appID` parameter should specify the Application that you want to delete.
-	// Users need to specify the ControlPlane in the `opts`.
+	// Users need to specify the Cluster in the `opts`.
 	DeleteApplication(ctx context.Context, appID ID, opts *ResourceDeleteOptions) error
 	// GetApplication gets an existing API7 Cloud Application in the specified control plane.
 	// The given `appID` parameter should specify the Application that you want to get.
-	// Users need to specify the ControlPlane in the `opts`.
+	// Users need to specify the Cluster in the `opts`.
 	GetApplication(ctx context.Context, appID ID, opts *ResourceGetOptions) (*Application, error)
 	// PublishApplication publishes the Application in the specified control plane (which is
 	// a shortcut of UpdateApplication and set ApplicationSpec.Active to ActiveStatus).
 	// The given `appID` parameter should specify the Application that you want to operate.
-	// Users need to specify the ControlPlane in the `opts`.
+	// Users need to specify the Cluster in the `opts`.
 	// The updated Application will be returned and the ApplicationSpec.Active field should be ActiveStatus.
 	PublishApplication(ctx context.Context, appID ID, opts *ResourceUpdateOptions) (*Application, error)
 	// UnpublishApplication publishes the Application in the specified control plane (which is
 	// a shortcut of UpdateApplication and set ApplicationSpec.Active to InactiveStatus).
 	// The given `appID` parameter should specify the Application that you want to operate.
-	// Users need to specify the ControlPlane in the `opts`.
+	// Users need to specify the Cluster in the `opts`.
 	// The updated Application will be returned and the ApplicationSpec.Active field should be InactiveStatus.
 	UnpublishApplication(ctx context.Context, appID ID, opts *ResourceUpdateOptions) (*Application, error)
 	// ListApplications returns an iterator for listing Applications in the specified control plane with the
 	// given list conditions.
-	// Users need to specify the ControlPlane, Paging and Filter conditions (if necessary)
+	// Users need to specify the Cluster, Paging and Filter conditions (if necessary)
 	// in the `opts`.
 	ListApplications(ctx context.Context, opts *ResourceListOptions) (ApplicationListIterator, error)
 	// DebugApplicationResources returns the corresponding translated APISIX resources for this Application.
 	// The given `appID` parameter should specify the Application that you want to operate.
-	// Users need to specify the ControlPlane.ID in the `opts`.
+	// Users need to specify the Cluster.ID in the `opts`.
 	DebugApplicationResources(ctx context.Context, appID ID, opts *ResourceGetOptions) (string, error)
 }
 
@@ -152,8 +152,8 @@ func newApplication(cli httpClient) ApplicationInterface {
 func (impl *applicationImpl) CreateApplication(ctx context.Context, app *Application, opts *ResourceCreateOptions) (*Application, error) {
 	var createdApp Application
 
-	cpID := opts.ControlPlane.ID
-	uri := path.Join(_apiPathPrefix, "controlplanes", cpID.String(), "apps")
+	cpID := opts.Cluster.ID
+	uri := path.Join(_apiPathPrefix, "clusters", cpID.String(), "apps")
 	err := impl.client.sendPostRequest(ctx, uri, "", app, jsonPayloadDecodeFactory(&createdApp))
 	if err != nil {
 		return nil, err
@@ -164,8 +164,8 @@ func (impl *applicationImpl) CreateApplication(ctx context.Context, app *Applica
 func (impl *applicationImpl) UpdateApplication(ctx context.Context, app *Application, opts *ResourceUpdateOptions) (*Application, error) {
 	var updatedApp Application
 
-	cpID := opts.ControlPlane.ID
-	uri := path.Join(_apiPathPrefix, "controlplanes", cpID.String(), "apps", app.ID.String())
+	cpID := opts.Cluster.ID
+	uri := path.Join(_apiPathPrefix, "clusters", cpID.String(), "apps", app.ID.String())
 	err := impl.client.sendPutRequest(ctx, uri, "", app, jsonPayloadDecodeFactory(&updatedApp))
 	if err != nil {
 		return nil, err
@@ -174,16 +174,16 @@ func (impl *applicationImpl) UpdateApplication(ctx context.Context, app *Applica
 }
 
 func (impl *applicationImpl) DeleteApplication(ctx context.Context, appID ID, opts *ResourceDeleteOptions) error {
-	cpID := opts.ControlPlane.ID
-	uri := path.Join(_apiPathPrefix, "controlplanes", cpID.String(), "apps", appID.String())
+	cpID := opts.Cluster.ID
+	uri := path.Join(_apiPathPrefix, "clusters", cpID.String(), "apps", appID.String())
 	return impl.client.sendDeleteRequest(ctx, uri, "", nil)
 }
 
 func (impl *applicationImpl) GetApplication(ctx context.Context, appID ID, opts *ResourceGetOptions) (*Application, error) {
 	var app Application
 
-	cpID := opts.ControlPlane.ID
-	uri := path.Join(_apiPathPrefix, "controlplanes", cpID.String(), "apps", appID.String())
+	cpID := opts.Cluster.ID
+	uri := path.Join(_apiPathPrefix, "clusters", cpID.String(), "apps", appID.String())
 	err := impl.client.sendGetRequest(ctx, uri, "", jsonPayloadDecodeFactory(&app))
 	if err != nil {
 		return nil, err
@@ -194,8 +194,8 @@ func (impl *applicationImpl) GetApplication(ctx context.Context, appID ID, opts 
 func (impl *applicationImpl) PublishApplication(ctx context.Context, appID ID, opts *ResourceUpdateOptions) (*Application, error) {
 	var app Application
 
-	cpID := opts.ControlPlane.ID
-	uri := path.Join(_apiPathPrefix, "controlplanes", cpID.String(), "apps", appID.String())
+	cpID := opts.Cluster.ID
+	uri := path.Join(_apiPathPrefix, "clusters", cpID.String(), "apps", appID.String())
 	body := []byte(`{"active":0}`)
 	err := impl.client.sendPatchRequest(ctx, uri, "", body, jsonPayloadDecodeFactory(&app))
 	if err != nil {
@@ -207,8 +207,8 @@ func (impl *applicationImpl) PublishApplication(ctx context.Context, appID ID, o
 func (impl *applicationImpl) UnpublishApplication(ctx context.Context, appID ID, opts *ResourceUpdateOptions) (*Application, error) {
 	var app Application
 
-	cpID := opts.ControlPlane.ID
-	uri := path.Join(_apiPathPrefix, "controlplanes", cpID.String(), "apps", appID.String())
+	cpID := opts.Cluster.ID
+	uri := path.Join(_apiPathPrefix, "clusters", cpID.String(), "apps", appID.String())
 	body := []byte(`{"active":1}`)
 	err := impl.client.sendPatchRequest(ctx, uri, "", body, jsonPayloadDecodeFactory(&app))
 	if err != nil {
@@ -222,7 +222,7 @@ func (impl *applicationImpl) ListApplications(ctx context.Context, opts *Resourc
 		ctx:      ctx,
 		resource: "application",
 		client:   impl.client,
-		path:     path.Join(_apiPathPrefix, "controlplanes", opts.ControlPlane.ID.String(), "apps"),
+		path:     path.Join(_apiPathPrefix, "clusters", opts.Cluster.ID.String(), "apps"),
 		paging:   mergePagination(opts.Pagination),
 		filter:   opts.Filter,
 	}
@@ -232,7 +232,7 @@ func (impl *applicationImpl) ListApplications(ctx context.Context, opts *Resourc
 
 func (impl *applicationImpl) DebugApplicationResources(ctx context.Context, appID ID, opts *ResourceGetOptions) (string, error) {
 	var rawData json.RawMessage
-	uri := path.Join(_apiPathPrefix, "debug", "config", "controlplanes", opts.ControlPlane.ID.String(), "application", appID.String())
+	uri := path.Join(_apiPathPrefix, "debug", "config", "clusters", opts.Cluster.ID.String(), "application", appID.String())
 	err := impl.client.sendGetRequest(ctx, uri, "", jsonPayloadDecodeFactory(&rawData))
 	if err != nil {
 		return "", err

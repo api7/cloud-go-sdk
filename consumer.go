@@ -39,32 +39,32 @@ type Consumer struct {
 type ConsumerInterface interface {
 	// CreateConsumer creates an API7 Cloud Consumer in the specified control plane.
 	// The given `consumer` parameter should specify the desired Consumer specification.
-	// Users need to specify the ControlPlane in the `opts`.
+	// Users need to specify the cluster in the `opts`.
 	// The returned Consumer will contain the same Consumer specification plus some
 	// management fields and default values.
 	CreateConsumer(ctx context.Context, consumer *Consumer, opts *ResourceCreateOptions) (*Consumer, error)
 	// UpdateConsumer updates an existing API7 Cloud Consumer in the specified control plane.
 	// The given `consumer` parameter should specify the desired Consumer specification.
-	// Users need to specify the ControlPlane in the `opts`.
+	// Users need to specify the cluster in the `opts`.
 	// The returned Consumer will contain the same Consumer specification plus some
 	// management fields and default values.
 	UpdateConsumer(ctx context.Context, consumer *Consumer, opts *ResourceUpdateOptions) (*Consumer, error)
 	// DeleteConsumer deletes an existing API7 Cloud Consumer in the specified control plane.
 	// The given `consumerID` parameter should specify the Consumer that you want to delete.
-	// Users need to specify the ControlPlane in the `opts`.
+	// Users need to specify the cluster in the `opts`.
 	DeleteConsumer(ctx context.Context, consumerID ID, opts *ResourceDeleteOptions) error
 	// GetConsumer gets an existing API7 Cloud Consumer in the specified control plane.
 	// The given `consumerID` parameter should specify the Consumer that you want to get.
-	// Users need to specify the ControlPlane in the `opts`.
+	// Users need to specify the cluster in the `opts`.
 	GetConsumer(ctx context.Context, consumerID ID, opts *ResourceGetOptions) (*Consumer, error)
 	// ListConsumers returns an iterator for listing Consumers in the specified control plane with the
 	// given list conditions.
-	// Users need to specify the ControlPlane, Paging and Filter conditions (if necessary)
+	// Users need to specify the cluster, Paging and Filter conditions (if necessary)
 	// in the `opts`.
 	ListConsumers(ctx context.Context, opts *ResourceListOptions) (ConsumerListIterator, error)
 	// DebugConsumerResources returns the corresponding translated APISIX resources for this Consumer.
 	// The given `consumerID` parameter should specify the Consumer that you want to operate.
-	// Users need to specify the ControlPlane.ID in the `opts`.
+	// Users need to specify the cluster.ID in the `opts`.
 	DebugConsumerResources(ctx context.Context, consumerID ID, opts *ResourceGetOptions) (string, error)
 }
 
@@ -106,8 +106,8 @@ func newConsumer(cli httpClient) ConsumerInterface {
 func (impl *consumerImpl) CreateConsumer(ctx context.Context, consumer *Consumer, opts *ResourceCreateOptions) (*Consumer, error) {
 	var createdConsumer Consumer
 
-	cpID := opts.ControlPlane.ID
-	uri := path.Join(_apiPathPrefix, "controlplanes", cpID.String(), "consumers")
+	cpID := opts.Cluster.ID
+	uri := path.Join(_apiPathPrefix, "clusters", cpID.String(), "consumers")
 	err := impl.client.sendPostRequest(ctx, uri, "", consumer, jsonPayloadDecodeFactory(&createdConsumer))
 	if err != nil {
 		return nil, err
@@ -118,8 +118,8 @@ func (impl *consumerImpl) CreateConsumer(ctx context.Context, consumer *Consumer
 func (impl *consumerImpl) UpdateConsumer(ctx context.Context, consumer *Consumer, opts *ResourceUpdateOptions) (*Consumer, error) {
 	var updatedConsumer Consumer
 
-	cpID := opts.ControlPlane.ID
-	uri := path.Join(_apiPathPrefix, "controlplanes", cpID.String(), "consumers", consumer.ID.String())
+	cpID := opts.Cluster.ID
+	uri := path.Join(_apiPathPrefix, "clusters", cpID.String(), "consumers", consumer.ID.String())
 	err := impl.client.sendPutRequest(ctx, uri, "", consumer, jsonPayloadDecodeFactory(&updatedConsumer))
 	if err != nil {
 		return nil, err
@@ -128,16 +128,16 @@ func (impl *consumerImpl) UpdateConsumer(ctx context.Context, consumer *Consumer
 }
 
 func (impl *consumerImpl) DeleteConsumer(ctx context.Context, consumerID ID, opts *ResourceDeleteOptions) error {
-	cpID := opts.ControlPlane.ID
-	uri := path.Join(_apiPathPrefix, "controlplanes", cpID.String(), "consumers", consumerID.String())
+	cpID := opts.Cluster.ID
+	uri := path.Join(_apiPathPrefix, "clusters", cpID.String(), "consumers", consumerID.String())
 	return impl.client.sendDeleteRequest(ctx, uri, "", nil)
 }
 
 func (impl *consumerImpl) GetConsumer(ctx context.Context, consumerID ID, opts *ResourceGetOptions) (*Consumer, error) {
 	var consumer Consumer
 
-	cpID := opts.ControlPlane.ID
-	uri := path.Join(_apiPathPrefix, "controlplanes", cpID.String(), "consumers", consumerID.String())
+	cpID := opts.Cluster.ID
+	uri := path.Join(_apiPathPrefix, "clusters", cpID.String(), "consumers", consumerID.String())
 	err := impl.client.sendGetRequest(ctx, uri, "", jsonPayloadDecodeFactory(&consumer))
 	if err != nil {
 		return nil, err
@@ -150,7 +150,7 @@ func (impl *consumerImpl) ListConsumers(ctx context.Context, opts *ResourceListO
 		ctx:      ctx,
 		resource: "consumer",
 		client:   impl.client,
-		path:     path.Join(_apiPathPrefix, "controlplanes", opts.ControlPlane.ID.String(), "consumers"),
+		path:     path.Join(_apiPathPrefix, "clusters", opts.Cluster.ID.String(), "consumers"),
 		paging:   mergePagination(opts.Pagination),
 	}
 
@@ -159,7 +159,7 @@ func (impl *consumerImpl) ListConsumers(ctx context.Context, opts *ResourceListO
 
 func (impl *consumerImpl) DebugConsumerResources(ctx context.Context, consumerID ID, opts *ResourceGetOptions) (string, error) {
 	var rawData json.RawMessage
-	uri := path.Join(_apiPathPrefix, "debug", "config", "controlplanes", opts.ControlPlane.ID.String(), "consumer", consumerID.String())
+	uri := path.Join(_apiPathPrefix, "debug", "config", "clusters", opts.Cluster.ID.String(), "consumer", consumerID.String())
 	err := impl.client.sendGetRequest(ctx, uri, "", jsonPayloadDecodeFactory(&rawData))
 	if err != nil {
 		return "", err
