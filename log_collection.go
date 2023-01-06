@@ -111,8 +111,8 @@ func newLogCollection(cli httpClient) LogCollectionInterface {
 func (impl *logCollectionImpl) CreateLogCollection(ctx context.Context, lc *LogCollection, opts *ResourceCreateOptions) (*LogCollection, error) {
 	var createdLogCollection LogCollection
 
-	cpID := opts.Cluster.ID
-	uri := path.Join(_apiPathPrefix, "clusters", cpID.String(), "log_collections")
+	clusterID := opts.Cluster.ID
+	uri := path.Join(_apiPathPrefix, "clusters", clusterID.String(), "log_collections")
 	err := impl.client.sendPostRequest(ctx, uri, "", lc, jsonPayloadDecodeFactory(&createdLogCollection))
 	if err != nil {
 		return nil, err
@@ -123,8 +123,8 @@ func (impl *logCollectionImpl) CreateLogCollection(ctx context.Context, lc *LogC
 func (impl *logCollectionImpl) UpdateLogCollection(ctx context.Context, lc *LogCollection, opts *ResourceUpdateOptions) (*LogCollection, error) {
 	var createdLogCollection LogCollection
 
-	cpID := opts.Cluster.ID
-	uri := path.Join(_apiPathPrefix, "clusters", cpID.String(), "log_collections", lc.ID.String())
+	clusterID := opts.Cluster.ID
+	uri := path.Join(_apiPathPrefix, "clusters", clusterID.String(), "log_collections", lc.ID.String())
 	err := impl.client.sendPutRequest(ctx, uri, "", lc, jsonPayloadDecodeFactory(&createdLogCollection))
 	if err != nil {
 		return nil, err
@@ -133,16 +133,16 @@ func (impl *logCollectionImpl) UpdateLogCollection(ctx context.Context, lc *LogC
 }
 
 func (impl *logCollectionImpl) DeleteLogCollection(ctx context.Context, lcID ID, opts *ResourceDeleteOptions) error {
-	cpID := opts.Cluster.ID
-	uri := path.Join(_apiPathPrefix, "clusters", cpID.String(), "log_collections", lcID.String())
+	clusterID := opts.Cluster.ID
+	uri := path.Join(_apiPathPrefix, "clusters", clusterID.String(), "log_collections", lcID.String())
 	return impl.client.sendDeleteRequest(ctx, uri, "", nil)
 }
 
 func (impl *logCollectionImpl) GetLogCollection(ctx context.Context, lcID ID, opts *ResourceGetOptions) (*LogCollection, error) {
 	var logcollection LogCollection
 
-	cpID := opts.Cluster.ID
-	uri := path.Join(_apiPathPrefix, "clusters", cpID.String(), "log_collections", lcID.String())
+	clusterID := opts.Cluster.ID
+	uri := path.Join(_apiPathPrefix, "clusters", clusterID.String(), "log_collections", lcID.String())
 	err := impl.client.sendGetRequest(ctx, uri, "", jsonPayloadDecodeFactory(&logcollection))
 	if err != nil {
 		return nil, err

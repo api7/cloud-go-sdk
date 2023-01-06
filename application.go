@@ -152,8 +152,8 @@ func newApplication(cli httpClient) ApplicationInterface {
 func (impl *applicationImpl) CreateApplication(ctx context.Context, app *Application, opts *ResourceCreateOptions) (*Application, error) {
 	var createdApp Application
 
-	cpID := opts.Cluster.ID
-	uri := path.Join(_apiPathPrefix, "clusters", cpID.String(), "apps")
+	clusterID := opts.Cluster.ID
+	uri := path.Join(_apiPathPrefix, "clusters", clusterID.String(), "apps")
 	err := impl.client.sendPostRequest(ctx, uri, "", app, jsonPayloadDecodeFactory(&createdApp))
 	if err != nil {
 		return nil, err
@@ -164,8 +164,8 @@ func (impl *applicationImpl) CreateApplication(ctx context.Context, app *Applica
 func (impl *applicationImpl) UpdateApplication(ctx context.Context, app *Application, opts *ResourceUpdateOptions) (*Application, error) {
 	var updatedApp Application
 
-	cpID := opts.Cluster.ID
-	uri := path.Join(_apiPathPrefix, "clusters", cpID.String(), "apps", app.ID.String())
+	clusterID := opts.Cluster.ID
+	uri := path.Join(_apiPathPrefix, "clusters", clusterID.String(), "apps", app.ID.String())
 	err := impl.client.sendPutRequest(ctx, uri, "", app, jsonPayloadDecodeFactory(&updatedApp))
 	if err != nil {
 		return nil, err
@@ -174,16 +174,16 @@ func (impl *applicationImpl) UpdateApplication(ctx context.Context, app *Applica
 }
 
 func (impl *applicationImpl) DeleteApplication(ctx context.Context, appID ID, opts *ResourceDeleteOptions) error {
-	cpID := opts.Cluster.ID
-	uri := path.Join(_apiPathPrefix, "clusters", cpID.String(), "apps", appID.String())
+	clusterID := opts.Cluster.ID
+	uri := path.Join(_apiPathPrefix, "clusters", clusterID.String(), "apps", appID.String())
 	return impl.client.sendDeleteRequest(ctx, uri, "", nil)
 }
 
 func (impl *applicationImpl) GetApplication(ctx context.Context, appID ID, opts *ResourceGetOptions) (*Application, error) {
 	var app Application
 
-	cpID := opts.Cluster.ID
-	uri := path.Join(_apiPathPrefix, "clusters", cpID.String(), "apps", appID.String())
+	clusterID := opts.Cluster.ID
+	uri := path.Join(_apiPathPrefix, "clusters", clusterID.String(), "apps", appID.String())
 	err := impl.client.sendGetRequest(ctx, uri, "", jsonPayloadDecodeFactory(&app))
 	if err != nil {
 		return nil, err
