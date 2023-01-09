@@ -157,7 +157,7 @@ type ResourceCreateOptions struct {
 	Organization *Organization
 	// Cluster indicates where the resource belongs.
 	// This field should be specified when users want to create resources
-	// in the control plane. e.g., when creating Application, the
+	// in the cluster. e.g., when creating Application, the
 	// Cluster.ID should be specified.
 	Cluster *Cluster
 	// Application indicates which Application should this resource belong.
@@ -176,7 +176,7 @@ type ResourceUpdateOptions struct {
 	Organization *Organization
 	// Cluster indicates where the resource belongs.
 	// This field should be specified when users want to update resources
-	// in the control plane. e.g., when updating Application, the
+	// in the cluster. e.g., when updating Application, the
 	// Cluster.ID should be specified.
 	Cluster *Cluster
 	// Application indicates which Application should this resource belong.
@@ -195,7 +195,7 @@ type ResourceDeleteOptions struct {
 	Organization *Organization
 	// Cluster indicates where the resource is.
 	// This field should be specified when users want to delete resources
-	// in the control plane. e.g., when deleting Application, the
+	// in the cluster. e.g., when deleting Application, the
 	// Cluster.ID should be specified.
 	Cluster *Cluster
 	// Application indicates which Application should this resource belong.
@@ -214,7 +214,7 @@ type ResourceGetOptions struct {
 	Organization *Organization
 	// Cluster indicates where the resource is.
 	// This field should be specified when users want to get a resource.
-	// in the control plane. e.g., when getting Application, the
+	// in the cluster. e.g., when getting Application, the
 	// Cluster.ID should be specified.
 	Cluster *Cluster
 	// Application indicates which Application should this resource belong.
@@ -233,7 +233,7 @@ type ResourceListOptions struct {
 	Organization *Organization
 	// Cluster indicates where the resources are.
 	// This field should be specified when users want to list resources.
-	// in the control plane. e.g., when iterating Application, the
+	// in the cluster. e.g., when iterating Application, the
 	// Cluster.ID should be specified.
 	Cluster *Cluster
 	// Application indicates which Application should this resource belong.

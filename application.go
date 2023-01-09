@@ -71,39 +71,39 @@ type ApplicationSpec struct {
 
 // ApplicationInterface is the interface for manipulating Applications.
 type ApplicationInterface interface {
-	// CreateApplication creates an API7 Cloud Application in the specified control plane.
+	// CreateApplication creates an API7 Cloud Application in the specified cluster.
 	// The given `app` parameter should specify the desired Application specification.
 	// Users need to specify the Cluster in the `opts`.
 	// The returned Application will contain the same Application specification plus some
 	// management fields and default values.
 	CreateApplication(ctx context.Context, app *Application, opts *ResourceCreateOptions) (*Application, error)
-	// UpdateApplication updates an existing API7 Cloud Application in the specified control plane.
+	// UpdateApplication updates an existing API7 Cloud Application in the specified cluster.
 	// The given `app` parameter should specify the desired Application specification.
 	// Users need to specify the Cluster in the `opts`.
 	// The returned Application will contain the same Application specification plus some
 	// management fields and default values.
 	UpdateApplication(ctx context.Context, app *Application, opts *ResourceUpdateOptions) (*Application, error)
-	// DeleteApplication deletes an existing API7 Cloud Application in the specified control plane.
+	// DeleteApplication deletes an existing API7 Cloud Application in the specified cluster.
 	// The given `appID` parameter should specify the Application that you want to delete.
 	// Users need to specify the Cluster in the `opts`.
 	DeleteApplication(ctx context.Context, appID ID, opts *ResourceDeleteOptions) error
-	// GetApplication gets an existing API7 Cloud Application in the specified control plane.
+	// GetApplication gets an existing API7 Cloud Application in the specified cluster.
 	// The given `appID` parameter should specify the Application that you want to get.
 	// Users need to specify the Cluster in the `opts`.
 	GetApplication(ctx context.Context, appID ID, opts *ResourceGetOptions) (*Application, error)
-	// PublishApplication publishes the Application in the specified control plane (which is
+	// PublishApplication publishes the Application in the specified cluster (which is
 	// a shortcut of UpdateApplication and set ApplicationSpec.Active to ActiveStatus).
 	// The given `appID` parameter should specify the Application that you want to operate.
 	// Users need to specify the Cluster in the `opts`.
 	// The updated Application will be returned and the ApplicationSpec.Active field should be ActiveStatus.
 	PublishApplication(ctx context.Context, appID ID, opts *ResourceUpdateOptions) (*Application, error)
-	// UnpublishApplication publishes the Application in the specified control plane (which is
+	// UnpublishApplication publishes the Application in the specified cluster (which is
 	// a shortcut of UpdateApplication and set ApplicationSpec.Active to InactiveStatus).
 	// The given `appID` parameter should specify the Application that you want to operate.
 	// Users need to specify the Cluster in the `opts`.
 	// The updated Application will be returned and the ApplicationSpec.Active field should be InactiveStatus.
 	UnpublishApplication(ctx context.Context, appID ID, opts *ResourceUpdateOptions) (*Application, error)
-	// ListApplications returns an iterator for listing Applications in the specified control plane with the
+	// ListApplications returns an iterator for listing Applications in the specified cluster with the
 	// given list conditions.
 	// Users need to specify the Cluster, Paging and Filter conditions (if necessary)
 	// in the `opts`.

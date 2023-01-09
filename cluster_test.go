@@ -35,7 +35,7 @@ func TestListClusters(t *testing.T) {
 			name: "create iterator successfully",
 			iterator: &clusterListIterator{
 				iter: listIterator{
-					resource: "control plane",
+					resource: "cluster",
 					path:     "/api/v1/orgs/123/clusters",
 					paging: Pagination{
 						Page:     14,
@@ -60,7 +60,7 @@ func TestListClusters(t *testing.T) {
 					PageSize: 25,
 				},
 			})
-			assert.Nil(t, err, "check list control plane error")
+			assert.Nil(t, err, "check list cluster error")
 			iter := raw.(*clusterListIterator)
 			assert.Equal(t, tc.iterator.iter.resource, iter.iter.resource, "check resource")
 			assert.Equal(t, tc.iterator.iter.path, iter.iter.path, "check path")

@@ -22,7 +22,7 @@ import (
 	"time"
 )
 
-// ClusterStage is used to depict different control plane lifecycles.
+// ClusterStage is used to depict different cluster lifecycles.
 type ClusterStage int
 
 func (cs ClusterStage) String() string {
@@ -45,17 +45,17 @@ func (cs ClusterStage) String() string {
 }
 
 const (
-	// ClusterPending means a control plane is not created yet.
+	// ClusterPending means a cluster is not created yet.
 	ClusterPending = ClusterStage(iota + 1)
-	// ClusterCreating means a control plane is being created.
+	// ClusterCreating means a cluster is being created.
 	ClusterCreating
-	// ClusterNormal means a control plane was created, and now it's normal.
+	// ClusterNormal means a cluster was created, and now it's normal.
 	ClusterNormal
-	// ClusterCreateFailed means a control plane was not created successfully.
+	// ClusterCreateFailed means a cluster was not created successfully.
 	ClusterCreateFailed
-	// ClusterDeleting means a control plane is being deleted.
+	// ClusterDeleting means a cluster is being deleted.
 	ClusterDeleting
-	// ClusterDeleted means a control plane was deleted.
+	// ClusterDeleted means a cluster was deleted.
 	ClusterDeleted
 )
 
@@ -98,13 +98,13 @@ const (
 	GatewayInstanceOffline = GatewayInstanceStatus("Offline")
 )
 
-// Cluster contains the control plane specification and management fields.
+// Cluster contains the cluster specification and management fields.
 type Cluster struct {
 	ClusterSpec
 
-	// ID is the unique identify of this control plane.
+	// ID is the unique identify of this cluster.
 	ID ID `json:"id,inline"`
-	// Name is the control plane name.
+	// Name is the cluster name.
 	Name string `json:"name"`
 	// CreatedAt is the creation time.
 	CreatedAt time.Time `json:"created_at"`
@@ -112,36 +112,36 @@ type Cluster struct {
 	UpdatedAt time.Time `json:"updated_at"`
 }
 
-// ClusterSpec is the specification of control plane.
+// ClusterSpec is the specification of cluster.
 type ClusterSpec struct {
 	// OrganizationID refers to an Organization object, which
-	// indicates the belonged organization for this control plane.
+	// indicates the belonged organization for this cluster.
 	OrganizationID ID `json:"org_id"`
 	// RegionID refers to a Region object, which indicates the
 	// region that the Cloud Plane resides.
 	RegionID ID `json:"region_id"`
-	// Status indicates the control plane status, candidate values are:
-	// * ClusterBuildInProgress: the control plane is being created.
-	// * ClusterCreating means a control plane is being created.
-	// * ClusterNormal: the control plane is built, and can be used normally.
-	// * ClusterCreateFailed means a control plane was not created successfully.
-	// * ClusterDeleting means a control plane is being deleted.
-	// * ClusterDeleted means a control plane was deleted.
+	// Status indicates the cluster status, candidate values are:
+	// * ClusterBuildInProgress: the cluster is being created.
+	// * ClusterCreating means a cluster is being created.
+	// * ClusterNormal: the cluster is built, and can be used normally.
+	// * ClusterCreateFailed means a cluster was not created successfully.
+	// * ClusterDeleting means a cluster is being deleted.
+	// * ClusterDeleted means a cluster was deleted.
 	Status ClusterStage `json:"status"`
 	// Domain is the domain assigned by APISEVEN Cloud and has correct
 	// records so that DP instances can access APISEVEN Cloud by it.
 	Domain string `json:"domain"`
-	// ConfigPayload is the customized data plane config for specific control plane
+	// ConfigPayload is the customized data plane config for specific cluster
 	ConfigPayload string `json:"-"`
-	// Settings is the settings for the control plane.
+	// Settings is the settings for the cluster.
 	Settings ClusterSettings `json:"settings"`
-	// Plugins settings on Control Plane level
+	// Plugins settings on cluster level
 	Plugins Plugins `json:"policies,omitempty"`
-	// ConfigVersion is the version for the control plane.
+	// ConfigVersion is the version for the cluster.
 	ConfigVersion int `json:"config_version"`
 }
 
-// ClusterSettings is control plane settings
+// ClusterSettings is cluster settings
 type ClusterSettings struct {
 	// ClientSettings is the client settings config that used in apisix
 	ClientSettings ClientSettings `json:"client_settings"`
@@ -279,7 +279,7 @@ type GatewayInstance struct {
 	Status GatewayInstanceStatus `json:"status"`
 }
 
-// ClusterInterface is the interface for manipulating Control Plane.
+// ClusterInterface is the interface for manipulating cluster.
 type ClusterInterface interface {
 	// GetCluster gets an existing API7 Cloud Cluster.
 	// The given `clusterID` parameter should specify the Cluster that you want to get.
@@ -295,44 +295,44 @@ type ClusterInterface interface {
 	// The given `plugins` parameter should specify the new plugins you want to bind.
 	// Users need to specify the Organization.ID in the `opts`.
 	UpdateClusterPlugins(ctx context.Context, clusterID ID, plugins Plugins, opts *ResourceUpdateOptions) error
-	// ListClusters returns an iterator for listing Control Planes in the specified Organization with the
+	// ListClusters returns an iterator for listing clusters in the specified Organization with the
 	// given list conditions.
 	// Users need to specify the Organization, Paging, and Filter conditions (if necessary)
 	// in the `opts`.
 	ListClusters(ctx context.Context, opts *ResourceListOptions) (ClusterListIterator, error)
 	// GenerateGatewaySideCertificate generates the tls bundle for gateway instances to communicate with
-	// the specified Control Plane on API7 Cloud.
-	// The `clusterID` parameter specifies the Control Plane ID.
+	// the specified cluster on API7 Cloud.
+	// The `clusterID` parameter specifies the cluster ID.
 	// Note currently users don't need to pass the `opts` parameter. Just pass `nil` is OK.
 	GenerateGatewaySideCertificate(ctx context.Context, clusterID ID, opts *ResourceCreateOptions) (*TLSBundle, error)
-	// ListAllGatewayInstances returns all the gateway instances (ever) connected to the given Control Plane.
+	// ListAllGatewayInstances returns all the gateway instances (ever) connected to the given cluster.
 	// Note currently users don't need to pass the `opts` parameter. Just pass `nil` is OK.
 	ListAllGatewayInstances(ctx context.Context, clusterID ID, opts *ResourceListOptions) ([]GatewayInstance, error)
 	// ListAllAPILabels lists all labels for API.
-	// The `clusterID` parameter specifies the Control Plane ID.
+	// The `clusterID` parameter specifies the cluster ID.
 	// Note currently users don't need to pass the `opts` parameter. Just pass `nil` is OK.
 	// The returned label slice will be `nil` if there is no any labels for API.
 	ListAllAPILabels(ctx context.Context, clusterID ID, opts *ResourceListOptions) ([]string, error)
 	// ListAllApplicationLabels lists all labels for Application.
-	// The `clusterID` parameter specifies the Control Plane ID.
+	// The `clusterID` parameter specifies the cluster ID.
 	// Note currently users don't need to pass the `opts` parameter. Just pass `nil` is OK.
 	// The returned label slice will be `nil` if there is no any labels for Application.
 	ListAllApplicationLabels(ctx context.Context, clusterID ID, opts *ResourceListOptions) ([]string, error)
 	// ListAllCertificateLabels lists all labels for Certificate.
-	// The `clusterID` parameter specifies the Control Plane ID.
+	// The `clusterID` parameter specifies the cluster ID.
 	// Note currently users don't need to pass the `opts` parameter. Just pass `nil` is OK.
 	// The returned label slice will be `nil` if there is no any labels for Certificate.
 	ListAllCertificateLabels(ctx context.Context, clusterID ID, opts *ResourceListOptions) ([]string, error)
 	// ListAllConsumerLabels lists all labels for Consumer.
-	// The `clusterID` parameter specifies the Control Plane ID.
+	// The `clusterID` parameter specifies the cluster ID.
 	// Note currently users don't need to pass the `opts` parameter. Just pass `nil` is OK.
 	// The returned label slice will be `nil` if there is no any labels for Consumer.
 	ListAllConsumerLabels(ctx context.Context, clusterID ID, opts *ResourceListOptions) ([]string, error)
 }
 
-// ClusterListIterator is an iterator for listing Control Planes.
+// ClusterListIterator is an iterator for listing clusters.
 type ClusterListIterator interface {
-	// Next returns the next Control Plane according to the filter conditions.
+	// Next returns the next cluster according to the filter conditions.
 	Next() (*Cluster, error)
 }
 
@@ -394,7 +394,7 @@ func (impl *clusterImpl) UpdateClusterPlugins(ctx context.Context, clusterID ID,
 func (impl *clusterImpl) ListClusters(ctx context.Context, opts *ResourceListOptions) (ClusterListIterator, error) {
 	iter := listIterator{
 		ctx:      ctx,
-		resource: "control plane",
+		resource: "cluster",
 		client:   impl.client,
 		path:     path.Join(_apiPathPrefix, "orgs", opts.Organization.ID.String(), "clusters"),
 		paging:   mergePagination(opts.Pagination),
