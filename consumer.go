@@ -24,7 +24,7 @@ import (
 type Consumer struct {
 	// ID is the unique identify to mark an object.
 	ID ID `json:"id"`
-	// Name of the consumer, should be unique among all applications in the same control plane.
+	// Name of the consumer, should be unique among all applications in the same cluster.
 	Name string `json:"name" gorm:"column:name"`
 	// Description for this consumer.
 	Description string                 `json:"description"` // Certificates are used to authenticate the consumer.
@@ -37,27 +37,27 @@ type Consumer struct {
 
 // ConsumerInterface is the interface for manipulating Consumers.
 type ConsumerInterface interface {
-	// CreateConsumer creates an API7 Cloud Consumer in the specified control plane.
+	// CreateConsumer creates an API7 Cloud Consumer in the specified cluster.
 	// The given `consumer` parameter should specify the desired Consumer specification.
 	// Users need to specify the cluster in the `opts`.
 	// The returned Consumer will contain the same Consumer specification plus some
 	// management fields and default values.
 	CreateConsumer(ctx context.Context, consumer *Consumer, opts *ResourceCreateOptions) (*Consumer, error)
-	// UpdateConsumer updates an existing API7 Cloud Consumer in the specified control plane.
+	// UpdateConsumer updates an existing API7 Cloud Consumer in the specified cluster.
 	// The given `consumer` parameter should specify the desired Consumer specification.
 	// Users need to specify the cluster in the `opts`.
 	// The returned Consumer will contain the same Consumer specification plus some
 	// management fields and default values.
 	UpdateConsumer(ctx context.Context, consumer *Consumer, opts *ResourceUpdateOptions) (*Consumer, error)
-	// DeleteConsumer deletes an existing API7 Cloud Consumer in the specified control plane.
+	// DeleteConsumer deletes an existing API7 Cloud Consumer in the specified cluster.
 	// The given `consumerID` parameter should specify the Consumer that you want to delete.
 	// Users need to specify the cluster in the `opts`.
 	DeleteConsumer(ctx context.Context, consumerID ID, opts *ResourceDeleteOptions) error
-	// GetConsumer gets an existing API7 Cloud Consumer in the specified control plane.
+	// GetConsumer gets an existing API7 Cloud Consumer in the specified cluster.
 	// The given `consumerID` parameter should specify the Consumer that you want to get.
 	// Users need to specify the cluster in the `opts`.
 	GetConsumer(ctx context.Context, consumerID ID, opts *ResourceGetOptions) (*Consumer, error)
-	// ListConsumers returns an iterator for listing Consumers in the specified control plane with the
+	// ListConsumers returns an iterator for listing Consumers in the specified cluster with the
 	// given list conditions.
 	// Users need to specify the cluster, Paging and Filter conditions (if necessary)
 	// in the `opts`.

@@ -142,7 +142,7 @@ type Role struct {
 type RoleBinding struct {
 	// RoleID is the id of role
 	RoleID ID `json:"role_id"`
-	// ClusterID is the id of control plane
+	// ClusterID is the id of cluster
 	// This field is used only if the role is not
 	// organization scoped.
 	ClusterID ID `json:"cluster_id"`
