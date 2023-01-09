@@ -90,7 +90,7 @@ type ServiceRegistry struct {
 
 	// ID is the service registry id.
 	ID ID `json:"id" gorm:"column:id"`
-	// ClusterID is id of control plane that current service registry belong with.
+	// ClusterID is id of cluster that current service registry belong with.
 	ClusterID ID `json:"cluster_id"`
 	// Status is status of service registry.
 	Status EntityStatus `json:"status"`
@@ -102,27 +102,27 @@ type ServiceRegistry struct {
 
 // ServiceDiscoveryInterface is the interface for manipulating API7 Cloud service discovery features.
 type ServiceDiscoveryInterface interface {
-	// CreateServiceRegistry creates an API7 Cloud ServiceRegistry in the specified control plane.
+	// CreateServiceRegistry creates an API7 Cloud ServiceRegistry in the specified cluster.
 	// The given `registry` parameter should specify the desired ServiceRegistry specification.
 	// Users need to specify the Cluster in the `opts`.
 	// The returned ServiceRegistry will contain the same ServiceRegistry specification plus some
 	// management fields and default values.
 	CreateServiceRegistry(ctx context.Context, registry *ServiceRegistry, opts *ResourceCreateOptions) (*ServiceRegistry, error)
-	// UpdateServiceRegistry updates an existing API7 Cloud ServiceRegistry in the specified control plane.
+	// UpdateServiceRegistry updates an existing API7 Cloud ServiceRegistry in the specified cluster.
 	// The given `registry` parameter should specify the ServiceRegistry that you want to update.
 	// Users need to specify the Cluster in the `opts`.
 	// The returned ServiceRegistry will contain the same ServiceRegistry specification plus some
 	// management fields and default values.
 	UpdateServiceRegistry(ctx context.Context, registry *ServiceRegistry, opts *ResourceUpdateOptions) (*ServiceRegistry, error)
-	// DeleteServiceRegistry deletes an existing API7 Cloud ServiceRegistry in the specified control plane.
+	// DeleteServiceRegistry deletes an existing API7 Cloud ServiceRegistry in the specified cluster.
 	// The given `appID` parameter should specify the Application that you want to delete.
 	// Users need to specify the Cluster in the `opts`.
 	DeleteServiceRegistry(ctx context.Context, registryID ID, opts *ResourceDeleteOptions) error
-	// GetServiceRegistry gets an existing API7 Cloud ServiceRegistry in the specified control plane.
+	// GetServiceRegistry gets an existing API7 Cloud ServiceRegistry in the specified cluster.
 	// The given `registryID` parameter should specify the ServiceRegistry that you want to get.
 	// Users need to specify the Cluster in the `opts`.
 	GetServiceRegistry(ctx context.Context, registryID ID, opts *ResourceGetOptions) (*ServiceRegistry, error)
-	// ListServiceRegistries returns an iterator for listing service registries in the specified control plane
+	// ListServiceRegistries returns an iterator for listing service registries in the specified cluster
 	// with the given list conditions.
 	// Users need to specify the Cluster, Paging and Filter conditions (if necessary) in the `opts`.
 	ListServiceRegistries(ctx context.Context, opts *ResourceListOptions) (ServiceRegistryListIterator, error)

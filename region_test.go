@@ -49,7 +49,7 @@ func TestListRegions(t *testing.T) {
 		t.Run(tc.name, func(t *testing.T) {
 			// ignore the application check since currently we don't mock it, and the app is always a zero value.
 			raw, err := newRegion(nil).ListRegions(context.Background(), nil)
-			assert.Nil(t, err, "check list control plane error")
+			assert.Nil(t, err, "check list cluster error")
 			iter := raw.(*regionListIterator)
 			assert.Equal(t, tc.iterator.iter.resource, iter.iter.resource, "check resource")
 			assert.Equal(t, tc.iterator.iter.path, iter.iter.path, "check path")
