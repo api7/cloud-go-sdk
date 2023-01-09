@@ -131,7 +131,7 @@ type ClusterSpec struct {
 	// Domain is the domain assigned by APISEVEN Cloud and has correct
 	// records so that DP instances can access APISEVEN Cloud by it.
 	Domain string `json:"domain"`
-	// ConfigPayload is the customized data plane config for specific control plane
+	// ConfigPayload is the customized  gateway config for specific control plane
 	ConfigPayload string `json:"-"`
 	// Settings is the settings for the control plane.
 	Settings ClusterSettings `json:"settings"`
@@ -157,7 +157,7 @@ type APIProxySettings struct {
 	EnableRequestBuffering bool `json:"enable_request_buffering"`
 	// ServerHeaderCustomization is the server header customization settings
 	ServerHeaderCustomization *ServerHeaderCustomization `json:"server_header_customization,omitempty"`
-	// URLHandlingOptions is the url handling options using in data plane
+	// URLHandlingOptions is the url handling options using in  gateway
 	// Optional values are:
 	// * DeleteURITailSlash
 	URLHandlingOptions []string `json:"url_handling_options"`
@@ -258,11 +258,11 @@ type GatewayInstancePayload struct {
 	Domain string `json:"domain"`
 	// APICalls is the number of HTTP requests counted in the reporting period
 	APICalls uint64 `json:"api_calls"`
-	// Version is the version of the data plane
+	// Version is the version of the  gateway
 	Version string `json:"version"`
 	// EtcdReachable indicates whether the instance can reach the etcd.
 	EtcdReachable bool `json:"etcd_reachable"`
-	// ConfigVersion is the version of the config currently in use on the data plane
+	// ConfigVersion is the version of the config currently in use on the  gateway
 	ConfigVersion uint64 `json:"config_version"`
 }
 
