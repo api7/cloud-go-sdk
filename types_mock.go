@@ -445,6 +445,21 @@ func (mr *MockInterfaceMockRecorder) GetConsumer(ctx, consumerID, opts interface
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetConsumer", reflect.TypeOf((*MockInterface)(nil).GetConsumer), ctx, consumerID, opts)
 }
 
+// GetGatewayInstanceStartupConfigTemplate mocks base method.
+func (m *MockInterface) GetGatewayInstanceStartupConfigTemplate(ctx context.Context, clusterID ID, configType string, opts *ResourceGetOptions) (string, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetGatewayInstanceStartupConfigTemplate", ctx, clusterID, configType, opts)
+	ret0, _ := ret[0].(string)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetGatewayInstanceStartupConfigTemplate indicates an expected call of GetGatewayInstanceStartupConfigTemplate.
+func (mr *MockInterfaceMockRecorder) GetGatewayInstanceStartupConfigTemplate(ctx, clusterID, configType, opts interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetGatewayInstanceStartupConfigTemplate", reflect.TypeOf((*MockInterface)(nil).GetGatewayInstanceStartupConfigTemplate), ctx, clusterID, configType, opts)
+}
+
 // GetLogCollection mocks base method.
 func (m *MockInterface) GetLogCollection(ctx context.Context, lcID ID, opts *ResourceGetOptions) (*LogCollection, error) {
 	m.ctrl.T.Helper()

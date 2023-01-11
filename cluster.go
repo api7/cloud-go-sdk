@@ -305,6 +305,12 @@ type ClusterInterface interface {
 	// The `clusterID` parameter specifies the cluster ID.
 	// Note currently users don't need to pass the `opts` parameter. Just pass `nil` is OK.
 	GenerateGatewaySideCertificate(ctx context.Context, clusterID ID, opts *ResourceCreateOptions) (*TLSBundle, error)
+	// GetGatewayInstanceStartupConfigTemplate returns the startup configuration template (Apache APISIX config.yaml)
+	// for starting a gateway instance.
+	// The configType specifies the configuration type for this call. Optional values can be:
+	// * apisix: indicates the original APISIX config.yaml
+	// * helm: indicates the APISIX helm chart values.yaml
+	GetGatewayInstanceStartupConfigTemplate(ctx context.Context, clusterID ID, configType string, opts *ResourceGetOptions) (string, error)
 	// ListAllGatewayInstances returns all the gateway instances (ever) connected to the given cluster.
 	// Note currently users don't need to pass the `opts` parameter. Just pass `nil` is OK.
 	ListAllGatewayInstances(ctx context.Context, clusterID ID, opts *ResourceListOptions) ([]GatewayInstance, error)
@@ -413,6 +419,17 @@ func (impl *clusterImpl) GenerateGatewaySideCertificate(ctx context.Context, clu
 		return nil, err
 	}
 	return &bundle, nil
+}
+
+func (impl *clusterImpl) GetGatewayInstanceStartupConfigTemplate(ctx context.Context, clusterID ID, configType string, _ *ResourceGetOptions) (string, error) {
+	var configTpl string
+
+	uri := path.Join(_apiPathPrefix, "clusters", clusterID.String(), "startup_config_tpl", configType)
+	err := impl.client.sendGetRequest(ctx, uri, "", jsonPayloadDecodeFactory(&configTpl))
+	if err != nil {
+		return "", err
+	}
+	return configTpl, nil
 }
 
 func (impl *clusterImpl) ListAllGatewayInstances(ctx context.Context, clusterID ID, _ *ResourceListOptions) ([]GatewayInstance, error) {
