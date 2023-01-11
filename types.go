@@ -31,6 +31,7 @@ type Interface interface {
 	OrganizationInterface
 	RegionInterface
 	CanaryReleaseInterface
+	CertificateInterface
 	ConsumerInterface
 	LogCollectionInterface
 	ServiceDiscoveryInterface
@@ -55,6 +56,7 @@ type impl struct {
 	OrganizationInterface
 	RegionInterface
 	CanaryReleaseInterface
+	CertificateInterface
 	ConsumerInterface
 	LogCollectionInterface
 	ServiceDiscoveryInterface
@@ -111,6 +113,7 @@ func NewInterface(opts *Options) (Interface, error) {
 		OrganizationInterface:     newOrganization(cli),
 		RegionInterface:           newRegion(cli),
 		CanaryReleaseInterface:    newCanaryRelease(cli),
+		CertificateInterface:      newCertificate(cli),
 		ConsumerInterface:         newConsumer(cli),
 		LogCollectionInterface:    newLogCollection(cli),
 		ServiceDiscoveryInterface: newServiceDiscovery(cli),

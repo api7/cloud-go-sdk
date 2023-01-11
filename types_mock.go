@@ -93,6 +93,21 @@ func (mr *MockInterfaceMockRecorder) CreateCanaryRelease(ctx, cr, opts interface
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateCanaryRelease", reflect.TypeOf((*MockInterface)(nil).CreateCanaryRelease), ctx, cr, opts)
 }
 
+// CreateCertificate mocks base method.
+func (m *MockInterface) CreateCertificate(ctx context.Context, cert *Certificate, opts *ResourceCreateOptions) (*Certificate, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "CreateCertificate", ctx, cert, opts)
+	ret0, _ := ret[0].(*Certificate)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// CreateCertificate indicates an expected call of CreateCertificate.
+func (mr *MockInterfaceMockRecorder) CreateCertificate(ctx, cert, opts interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateCertificate", reflect.TypeOf((*MockInterface)(nil).CreateCertificate), ctx, cert, opts)
+}
+
 // CreateConsumer mocks base method.
 func (m *MockInterface) CreateConsumer(ctx context.Context, consumer *Consumer, opts *ResourceCreateOptions) (*Consumer, error) {
 	m.ctrl.T.Helper()
@@ -168,6 +183,21 @@ func (mr *MockInterfaceMockRecorder) DebugApplicationResources(ctx, appID, opts 
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DebugApplicationResources", reflect.TypeOf((*MockInterface)(nil).DebugApplicationResources), ctx, appID, opts)
 }
 
+// DebugCertificateResources mocks base method.
+func (m *MockInterface) DebugCertificateResources(ctx context.Context, appID ID, opts *ResourceGetOptions) (string, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "DebugCertificateResources", ctx, appID, opts)
+	ret0, _ := ret[0].(string)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// DebugCertificateResources indicates an expected call of DebugCertificateResources.
+func (mr *MockInterfaceMockRecorder) DebugCertificateResources(ctx, appID, opts interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DebugCertificateResources", reflect.TypeOf((*MockInterface)(nil).DebugCertificateResources), ctx, appID, opts)
+}
+
 // DebugConsumerResources mocks base method.
 func (m *MockInterface) DebugConsumerResources(ctx context.Context, consumerID ID, opts *ResourceGetOptions) (string, error) {
 	m.ctrl.T.Helper()
@@ -237,6 +267,20 @@ func (m *MockInterface) DeleteCanaryRelease(ctx context.Context, crID ID, opts *
 func (mr *MockInterfaceMockRecorder) DeleteCanaryRelease(ctx, crID, opts interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteCanaryRelease", reflect.TypeOf((*MockInterface)(nil).DeleteCanaryRelease), ctx, crID, opts)
+}
+
+// DeleteCertificate mocks base method.
+func (m *MockInterface) DeleteCertificate(ctx context.Context, certID ID, opts *ResourceDeleteOptions) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "DeleteCertificate", ctx, certID, opts)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// DeleteCertificate indicates an expected call of DeleteCertificate.
+func (mr *MockInterfaceMockRecorder) DeleteCertificate(ctx, certID, opts interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteCertificate", reflect.TypeOf((*MockInterface)(nil).DeleteCertificate), ctx, certID, opts)
 }
 
 // DeleteConsumer mocks base method.
@@ -354,6 +398,21 @@ func (m *MockInterface) GetCanaryRelease(ctx context.Context, crID ID, opts *Res
 func (mr *MockInterfaceMockRecorder) GetCanaryRelease(ctx, crID, opts interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetCanaryRelease", reflect.TypeOf((*MockInterface)(nil).GetCanaryRelease), ctx, crID, opts)
+}
+
+// GetCertificate mocks base method.
+func (m *MockInterface) GetCertificate(ctx context.Context, certID ID, opts *ResourceGetOptions) (*Certificate, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetCertificate", ctx, certID, opts)
+	ret0, _ := ret[0].(*Certificate)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetCertificate indicates an expected call of GetCertificate.
+func (mr *MockInterfaceMockRecorder) GetCertificate(ctx, certID, opts interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetCertificate", reflect.TypeOf((*MockInterface)(nil).GetCertificate), ctx, certID, opts)
 }
 
 // GetCluster mocks base method.
@@ -579,6 +638,21 @@ func (m *MockInterface) ListCanaryReleases(ctx context.Context, opts *ResourceLi
 func (mr *MockInterfaceMockRecorder) ListCanaryReleases(ctx, opts interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListCanaryReleases", reflect.TypeOf((*MockInterface)(nil).ListCanaryReleases), ctx, opts)
+}
+
+// ListCertificates mocks base method.
+func (m *MockInterface) ListCertificates(ctx context.Context, opts *ResourceListOptions) (CertificateListIterator, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "ListCertificates", ctx, opts)
+	ret0, _ := ret[0].(CertificateListIterator)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// ListCertificates indicates an expected call of ListCertificates.
+func (mr *MockInterfaceMockRecorder) ListCertificates(ctx, opts interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListCertificates", reflect.TypeOf((*MockInterface)(nil).ListCertificates), ctx, opts)
 }
 
 // ListClusters mocks base method.
@@ -891,6 +965,21 @@ func (m *MockInterface) UpdateCanaryRelease(ctx context.Context, cr *CanaryRelea
 func (mr *MockInterfaceMockRecorder) UpdateCanaryRelease(ctx, cr, opts interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateCanaryRelease", reflect.TypeOf((*MockInterface)(nil).UpdateCanaryRelease), ctx, cr, opts)
+}
+
+// UpdateCertificate mocks base method.
+func (m *MockInterface) UpdateCertificate(ctx context.Context, cert *Certificate, opts *ResourceUpdateOptions) (*Certificate, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "UpdateCertificate", ctx, cert, opts)
+	ret0, _ := ret[0].(*Certificate)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// UpdateCertificate indicates an expected call of UpdateCertificate.
+func (mr *MockInterfaceMockRecorder) UpdateCertificate(ctx, cert, opts interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateCertificate", reflect.TypeOf((*MockInterface)(nil).UpdateCertificate), ctx, cert, opts)
 }
 
 // UpdateClusterPlugins mocks base method.

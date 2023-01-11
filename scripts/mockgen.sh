@@ -24,6 +24,7 @@ aux_files=(
   github.com/api7/cloud-go-sdk=application.go
   github.com/api7/cloud-go-sdk=api.go
   github.com/api7/cloud-go-sdk=consumer.go
+  github.com/api7/cloud-go-sdk=certificate.go
   github.com/api7/cloud-go-sdk=cluster.go
   github.com/api7/cloud-go-sdk=organization.go
   github.com/api7/cloud-go-sdk=region.go
