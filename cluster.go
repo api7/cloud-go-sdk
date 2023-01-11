@@ -422,14 +422,16 @@ func (impl *clusterImpl) GenerateGatewaySideCertificate(ctx context.Context, clu
 }
 
 func (impl *clusterImpl) GetGatewayInstanceStartupConfigTemplate(ctx context.Context, clusterID ID, configType string, _ *ResourceGetOptions) (string, error) {
-	var configTpl string
+	var configPayload struct {
+		Configuration string `json:"configuration"`
+	}
 
 	uri := path.Join(_apiPathPrefix, "clusters", clusterID.String(), "startup_config_tpl", configType)
-	err := impl.client.sendGetRequest(ctx, uri, "", jsonPayloadDecodeFactory(&configTpl))
+	err := impl.client.sendGetRequest(ctx, uri, "", jsonPayloadDecodeFactory(&configPayload))
 	if err != nil {
 		return "", err
 	}
-	return configTpl, nil
+	return configPayload.Configuration, nil
 }
 
 func (impl *clusterImpl) ListAllGatewayInstances(ctx context.Context, clusterID ID, _ *ResourceListOptions) ([]GatewayInstance, error) {
