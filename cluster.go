@@ -128,8 +128,8 @@ type ClusterSpec struct {
 	// * ClusterDeleting means a cluster is being deleted.
 	// * ClusterDeleted means a cluster was deleted.
 	Status ClusterStage `json:"status"`
-	// Domain is the domain assigned by APISEVEN Cloud and has correct
-	// records so that DP instances can access APISEVEN Cloud by it.
+	// Domain is the domain assigned by API7 Cloud and has correct
+	// records so that gateway instances can access API7 Cloud by it.
 	Domain string `json:"domain"`
 	// ConfigPayload is the customized gateway config for specific cluster
 	ConfigPayload string `json:"-"`
@@ -245,16 +245,16 @@ type TLSBundle struct {
 
 // GatewayInstancePayload contains basic information for a gateway instance.
 type GatewayInstancePayload struct {
-	// ID is the unique identity for the APISEVEN instance.
+	// ID is the unique identity for the gateway instance.
 	ID string `json:"id"`
-	// Hostname is the name for the VM or container that the APISEVEN
+	// Hostname is the name for the VM or container that the gateway
 	// instance resides.
 	Hostname string `json:"hostname"`
-	// IP is the IP address of the VM or container that the APISEVEN
+	// IP is the IP address of the VM or container that the gateway
 	// instance resides.
 	IP string `json:"ip"`
-	// Domain is the domain assigned by APISEVEN Cloud for the owner
-	// (organization) of the APISEVEN instance.
+	// Domain is the domain assigned by API7 Cloud for the owner
+	// (organization) of the gateway instance.
 	Domain string `json:"domain"`
 	// APICalls is the number of HTTP requests counted in the reporting period
 	APICalls uint64 `json:"api_calls"`
@@ -413,7 +413,7 @@ func (impl *clusterImpl) ListClusters(ctx context.Context, opts *ResourceListOpt
 func (impl *clusterImpl) GenerateGatewaySideCertificate(ctx context.Context, clusterID ID, _ *ResourceCreateOptions) (*TLSBundle, error) {
 	var bundle TLSBundle
 
-	uri := path.Join(_apiPathPrefix, "clusters", clusterID.String(), "dp_certificate")
+	uri := path.Join(_apiPathPrefix, "clusters", clusterID.String(), "gateway_certificate")
 	err := impl.client.sendGetRequest(ctx, uri, "", jsonPayloadDecodeFactory(&bundle))
 	if err != nil {
 		return nil, err
