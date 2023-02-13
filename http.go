@@ -75,7 +75,7 @@ type httpClient interface {
 	sendPutRequest(ctx context.Context, path, query string, body interface{}, payloadDecodeFunc payloadDecodeFunc) error
 	sendPatchRequest(ctx context.Context, path, query string, body interface{}, payloadDecodeFunc payloadDecodeFunc) error
 	sendDeleteRequest(ctx context.Context, path, query string, payloadDecodeFunc payloadDecodeFunc) error
-	sendRequest(req *http.Request, payloadDecodeFunc payloadDecodeFunc) error
+	sendRequest(req *http.Request, payloadDecodeFunc payloadDecodeFunc, series *TraceSeries) error
 }
 
 type httpClientImpl struct {
@@ -175,19 +175,19 @@ func (impl *httpClientImpl) sendGetRequest(ctx context.Context, path, query stri
 		return errors.Wrap(err, "construct http request")
 	}
 
+	var series *TraceSeries
 	if impl.enableHTTPTrace {
-		series := &TraceSeries{
+		series = &TraceSeries{
 			ID:      impl.idGenerator.NextID(),
 			Request: req.Clone(context.TODO()),
 		}
-		req = req.WithContext(context.WithValue(req.Context(), TraceSeriesKey{}, series))
 		req = req.WithContext(httptrace.WithClientTrace(req.Context(), newClientTrace(series)))
 		defer func() {
 			impl.tracer.sendSeries(series)
 		}()
 	}
 
-	return impl.sendRequest(req, payloadDecodeFunc)
+	return impl.sendRequest(req, payloadDecodeFunc, series)
 }
 
 func (impl *httpClientImpl) sendPostRequest(ctx context.Context, path, query string, body interface{}, payloadDecodeFunc payloadDecodeFunc) error {
@@ -205,13 +205,13 @@ func (impl *httpClientImpl) sendPostRequest(ctx context.Context, path, query str
 		return errors.Wrap(err, "construct http request")
 	}
 
+	var series *TraceSeries
 	if impl.enableHTTPTrace {
-		series := &TraceSeries{
+		series = &TraceSeries{
 			ID:          impl.idGenerator.NextID(),
 			Request:     req.Clone(context.TODO()),
 			RequestBody: data,
 		}
-		req = req.WithContext(context.WithValue(req.Context(), TraceSeriesKey{}, series))
 		req = req.WithContext(httptrace.WithClientTrace(req.Context(), newClientTrace(series)))
 		defer func() {
 			impl.tracer.sendSeries(series)
@@ -219,7 +219,7 @@ func (impl *httpClientImpl) sendPostRequest(ctx context.Context, path, query str
 	}
 
 	req.Header.Set("Content-Type", "application/json")
-	return impl.sendRequest(req, payloadDecodeFunc)
+	return impl.sendRequest(req, payloadDecodeFunc, series)
 }
 
 func (impl *httpClientImpl) sendPutRequest(ctx context.Context, path, query string, body interface{}, payloadDecodeFunc payloadDecodeFunc) error {
@@ -246,13 +246,13 @@ func (impl *httpClientImpl) sendPutRequest(ctx context.Context, path, query stri
 		return errors.Wrap(err, "construct http request")
 	}
 
+	var series *TraceSeries
 	if impl.enableHTTPTrace {
-		series := &TraceSeries{
+		series = &TraceSeries{
 			ID:          impl.idGenerator.NextID(),
 			Request:     req.Clone(context.TODO()),
 			RequestBody: data,
 		}
-		req = req.WithContext(context.WithValue(req.Context(), TraceSeriesKey{}, series))
 		req = req.WithContext(httptrace.WithClientTrace(req.Context(), newClientTrace(series)))
 		defer func() {
 			impl.tracer.sendSeries(series)
@@ -260,7 +260,7 @@ func (impl *httpClientImpl) sendPutRequest(ctx context.Context, path, query stri
 	}
 
 	req.Header.Set("Content-Type", "application/json")
-	return impl.sendRequest(req, payloadDecodeFunc)
+	return impl.sendRequest(req, payloadDecodeFunc, series)
 }
 
 func (impl *httpClientImpl) sendPatchRequest(ctx context.Context, path, query string, body interface{}, payloadDecodeFunc payloadDecodeFunc) error {
@@ -278,13 +278,13 @@ func (impl *httpClientImpl) sendPatchRequest(ctx context.Context, path, query st
 		return errors.Wrap(err, "construct http request")
 	}
 
+	var series *TraceSeries
 	if impl.enableHTTPTrace {
-		series := &TraceSeries{
+		series = &TraceSeries{
 			ID:          impl.idGenerator.NextID(),
 			Request:     req.Clone(context.TODO()),
 			RequestBody: data,
 		}
-		req = req.WithContext(context.WithValue(req.Context(), TraceSeriesKey{}, series))
 		req = req.WithContext(httptrace.WithClientTrace(req.Context(), newClientTrace(series)))
 		defer func() {
 			impl.tracer.sendSeries(series)
@@ -292,7 +292,7 @@ func (impl *httpClientImpl) sendPatchRequest(ctx context.Context, path, query st
 	}
 
 	req.Header.Set("Content-Type", "application/json")
-	return impl.sendRequest(req, payloadDecodeFunc)
+	return impl.sendRequest(req, payloadDecodeFunc, series)
 }
 
 func (impl *httpClientImpl) sendDeleteRequest(ctx context.Context, path, query string, payloadDecodeFunc payloadDecodeFunc) error {
@@ -305,8 +305,9 @@ func (impl *httpClientImpl) sendDeleteRequest(ctx context.Context, path, query s
 		return errors.Wrap(err, "construct http request")
 	}
 
+	var series *TraceSeries
 	if impl.enableHTTPTrace {
-		series := &TraceSeries{
+		series = &TraceSeries{
 			ID:      impl.idGenerator.NextID(),
 			Request: req.Clone(context.TODO()),
 		}
@@ -317,10 +318,10 @@ func (impl *httpClientImpl) sendDeleteRequest(ctx context.Context, path, query s
 		}()
 	}
 
-	return impl.sendRequest(req, payloadDecodeFunc)
+	return impl.sendRequest(req, payloadDecodeFunc, series)
 }
 
-func (impl *httpClientImpl) sendRequest(req *http.Request, payloadDecodeFunc payloadDecodeFunc) error {
+func (impl *httpClientImpl) sendRequest(req *http.Request, payloadDecodeFunc payloadDecodeFunc, series *TraceSeries) error {
 	var (
 		rw       responseWrapper
 		errTrace error
@@ -335,8 +336,7 @@ func (impl *httpClientImpl) sendRequest(req *http.Request, payloadDecodeFunc pay
 		req.Header.Set("X-Request-ID", impl.idGenerator.NextID().String())
 	}
 
-	if impl.enableHTTPTrace {
-		series, ok := req.Context().Value(TraceSeriesKey{}).(*TraceSeries)
+	if impl.enableHTTPTrace && series != nil {
 		deferFunc := func() {
 			series.Response = resp
 			series.ResponseBody = body
@@ -347,9 +347,8 @@ func (impl *httpClientImpl) sendRequest(req *http.Request, payloadDecodeFunc pay
 			ev := generateEvent("response error %s", errTrace)
 			series.appendEvent(ev)
 		}
-		if ok {
-			defer deferFunc()
-		}
+		defer deferFunc()
+
 	}
 
 	resp, err := impl.client.Do(req)

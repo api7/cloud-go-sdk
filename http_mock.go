@@ -8,6 +8,7 @@ import (
 	http "net/http"
 	reflect "reflect"
 
+	cloud_go_sdk "github.com/api7/cloud-go-sdk"
 	gomock "github.com/golang/mock/gomock"
 )
 
@@ -105,15 +106,15 @@ func (mr *MockhttpClientMockRecorder) sendPutRequest(ctx, path, query, body, pay
 }
 
 // sendRequest mocks base method.
-func (m *MockhttpClient) sendRequest(req *http.Request, payloadDecodeFunc payloadDecodeFunc) error {
+func (m *MockhttpClient) sendRequest(req *http.Request, payloadDecodeFunc payloadDecodeFunc, series *cloud_go_sdk.TraceSeries) error {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "sendRequest", req, payloadDecodeFunc)
+	ret := m.ctrl.Call(m, "sendRequest", req, payloadDecodeFunc, series)
 	ret0, _ := ret[0].(error)
 	return ret0
 }
 
 // sendRequest indicates an expected call of sendRequest.
-func (mr *MockhttpClientMockRecorder) sendRequest(req, payloadDecodeFunc interface{}) *gomock.Call {
+func (mr *MockhttpClientMockRecorder) sendRequest(req, payloadDecodeFunc, series interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "sendRequest", reflect.TypeOf((*MockhttpClient)(nil).sendRequest), req, payloadDecodeFunc)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "sendRequest", reflect.TypeOf((*MockhttpClient)(nil).sendRequest), req, payloadDecodeFunc, series)
 }
