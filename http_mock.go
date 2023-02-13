@@ -8,7 +8,6 @@ import (
 	http "net/http"
 	reflect "reflect"
 
-	cloud_go_sdk "github.com/api7/cloud-go-sdk"
 	gomock "github.com/golang/mock/gomock"
 )
 
@@ -106,7 +105,7 @@ func (mr *MockhttpClientMockRecorder) sendPutRequest(ctx, path, query, body, pay
 }
 
 // sendRequest mocks base method.
-func (m *MockhttpClient) sendRequest(req *http.Request, payloadDecodeFunc payloadDecodeFunc, series *cloud_go_sdk.TraceSeries) error {
+func (m *MockhttpClient) sendRequest(req *http.Request, payloadDecodeFunc payloadDecodeFunc, series *TraceSeries) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "sendRequest", req, payloadDecodeFunc, series)
 	ret0, _ := ret[0].(error)

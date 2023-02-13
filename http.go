@@ -311,7 +311,6 @@ func (impl *httpClientImpl) sendDeleteRequest(ctx context.Context, path, query s
 			ID:      impl.idGenerator.NextID(),
 			Request: req.Clone(context.TODO()),
 		}
-		req = req.WithContext(context.WithValue(req.Context(), TraceSeriesKey{}, series))
 		req = req.WithContext(httptrace.WithClientTrace(req.Context(), newClientTrace(series)))
 		defer func() {
 			impl.tracer.sendSeries(series)

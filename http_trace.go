@@ -20,8 +20,6 @@ import (
 	"time"
 )
 
-type TraceSeriesKey struct{}
-
 // TraceSeries contains a series of events (ordered by their happening time).
 type TraceSeries struct {
 	// ID indicates this series.
