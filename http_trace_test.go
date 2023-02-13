@@ -121,6 +121,7 @@ func TestHTTPTrace(t *testing.T) {
 				assert.Contains(t, seriel.Events[0].Message, "plan to connect to 127.0.0.1:", "check first event")
 				assert.Contains(t, seriel.Events[1].Message, "connected to 127.0.0.1:", "check second event")
 				assert.Contains(t, seriel.Events[2].Message, "request sent", "check third event")
+				assert.NotEmpty(t, seriel.ResponseBody, "response body not be empty")
 				assert.Equal(t, http.MethodPost, seriel.Request.Method, "check request method")
 				assert.Equal(t, "/api/v1/clusters/123/apps", seriel.Request.URL.Path, "check request URI path")
 			case <-time.After(time.Second):

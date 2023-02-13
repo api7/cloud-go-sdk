@@ -32,6 +32,11 @@ type TraceSeries struct {
 	Request *http.Request
 	// RequestBody contains a copy of the outgoing HTTP request body.
 	RequestBody []byte
+	// Response indicates the response that will receive from API7 Cloud.
+	// It's the context of the trace series.
+	Response *http.Response
+	// ResponseBody contains a copy of the incoming HTTP response body.
+	ResponseBody []byte
 	// Events contains a series of trace events.
 	Events []*TraceEvent
 }

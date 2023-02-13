@@ -75,7 +75,7 @@ type httpClient interface {
 	sendPutRequest(ctx context.Context, path, query string, body interface{}, payloadDecodeFunc payloadDecodeFunc) error
 	sendPatchRequest(ctx context.Context, path, query string, body interface{}, payloadDecodeFunc payloadDecodeFunc) error
 	sendDeleteRequest(ctx context.Context, path, query string, payloadDecodeFunc payloadDecodeFunc) error
-	sendRequest(req *http.Request, payloadDecodeFunc payloadDecodeFunc) error
+	sendRequest(req *http.Request, payloadDecodeFunc payloadDecodeFunc, series *TraceSeries) error
 }
 
 type httpClientImpl struct {
@@ -175,8 +175,9 @@ func (impl *httpClientImpl) sendGetRequest(ctx context.Context, path, query stri
 		return errors.Wrap(err, "construct http request")
 	}
 
+	var series *TraceSeries
 	if impl.enableHTTPTrace {
-		series := &TraceSeries{
+		series = &TraceSeries{
 			ID:      impl.idGenerator.NextID(),
 			Request: req.Clone(context.TODO()),
 		}
@@ -186,7 +187,7 @@ func (impl *httpClientImpl) sendGetRequest(ctx context.Context, path, query stri
 		}()
 	}
 
-	return impl.sendRequest(req, payloadDecodeFunc)
+	return impl.sendRequest(req, payloadDecodeFunc, series)
 }
 
 func (impl *httpClientImpl) sendPostRequest(ctx context.Context, path, query string, body interface{}, payloadDecodeFunc payloadDecodeFunc) error {
@@ -204,8 +205,9 @@ func (impl *httpClientImpl) sendPostRequest(ctx context.Context, path, query str
 		return errors.Wrap(err, "construct http request")
 	}
 
+	var series *TraceSeries
 	if impl.enableHTTPTrace {
-		series := &TraceSeries{
+		series = &TraceSeries{
 			ID:          impl.idGenerator.NextID(),
 			Request:     req.Clone(context.TODO()),
 			RequestBody: data,
@@ -217,7 +219,7 @@ func (impl *httpClientImpl) sendPostRequest(ctx context.Context, path, query str
 	}
 
 	req.Header.Set("Content-Type", "application/json")
-	return impl.sendRequest(req, payloadDecodeFunc)
+	return impl.sendRequest(req, payloadDecodeFunc, series)
 }
 
 func (impl *httpClientImpl) sendPutRequest(ctx context.Context, path, query string, body interface{}, payloadDecodeFunc payloadDecodeFunc) error {
@@ -244,8 +246,9 @@ func (impl *httpClientImpl) sendPutRequest(ctx context.Context, path, query stri
 		return errors.Wrap(err, "construct http request")
 	}
 
+	var series *TraceSeries
 	if impl.enableHTTPTrace {
-		series := &TraceSeries{
+		series = &TraceSeries{
 			ID:          impl.idGenerator.NextID(),
 			Request:     req.Clone(context.TODO()),
 			RequestBody: data,
@@ -257,7 +260,7 @@ func (impl *httpClientImpl) sendPutRequest(ctx context.Context, path, query stri
 	}
 
 	req.Header.Set("Content-Type", "application/json")
-	return impl.sendRequest(req, payloadDecodeFunc)
+	return impl.sendRequest(req, payloadDecodeFunc, series)
 }
 
 func (impl *httpClientImpl) sendPatchRequest(ctx context.Context, path, query string, body interface{}, payloadDecodeFunc payloadDecodeFunc) error {
@@ -275,8 +278,9 @@ func (impl *httpClientImpl) sendPatchRequest(ctx context.Context, path, query st
 		return errors.Wrap(err, "construct http request")
 	}
 
+	var series *TraceSeries
 	if impl.enableHTTPTrace {
-		series := &TraceSeries{
+		series = &TraceSeries{
 			ID:          impl.idGenerator.NextID(),
 			Request:     req.Clone(context.TODO()),
 			RequestBody: data,
@@ -288,7 +292,7 @@ func (impl *httpClientImpl) sendPatchRequest(ctx context.Context, path, query st
 	}
 
 	req.Header.Set("Content-Type", "application/json")
-	return impl.sendRequest(req, payloadDecodeFunc)
+	return impl.sendRequest(req, payloadDecodeFunc, series)
 }
 
 func (impl *httpClientImpl) sendDeleteRequest(ctx context.Context, path, query string, payloadDecodeFunc payloadDecodeFunc) error {
@@ -301,8 +305,9 @@ func (impl *httpClientImpl) sendDeleteRequest(ctx context.Context, path, query s
 		return errors.Wrap(err, "construct http request")
 	}
 
+	var series *TraceSeries
 	if impl.enableHTTPTrace {
-		series := &TraceSeries{
+		series = &TraceSeries{
 			ID:      impl.idGenerator.NextID(),
 			Request: req.Clone(context.TODO()),
 		}
@@ -312,12 +317,15 @@ func (impl *httpClientImpl) sendDeleteRequest(ctx context.Context, path, query s
 		}()
 	}
 
-	return impl.sendRequest(req, payloadDecodeFunc)
+	return impl.sendRequest(req, payloadDecodeFunc, series)
 }
 
-func (impl *httpClientImpl) sendRequest(req *http.Request, payloadDecodeFunc payloadDecodeFunc) error {
+func (impl *httpClientImpl) sendRequest(req *http.Request, payloadDecodeFunc payloadDecodeFunc, series *TraceSeries) error {
 	var (
-		rw responseWrapper
+		rw       responseWrapper
+		errTrace error
+		resp     *http.Response
+		body     []byte
 	)
 
 	token := "Bearer " + impl.token.Token
@@ -327,32 +335,53 @@ func (impl *httpClientImpl) sendRequest(req *http.Request, payloadDecodeFunc pay
 		req.Header.Set("X-Request-ID", impl.idGenerator.NextID().String())
 	}
 
-	resp, err := impl.client.Do(req)
-	if err != nil {
-		return errors.Wrap(err, "send http request")
-	}
-	body, err := io.ReadAll(resp.Body)
-	if err != nil {
-		return errors.Wrap(err, "read http response body")
+	if impl.enableHTTPTrace && series != nil {
+		deferFunc := func() {
+			series.Response = resp
+			series.ResponseBody = body
+			if errTrace == nil {
+				return
+			}
+
+			ev := generateEvent("response error %s", errTrace)
+			series.appendEvent(ev)
+		}
+		defer deferFunc()
+
 	}
 
+	resp, err := impl.client.Do(req)
+	if err != nil {
+		errTrace = errors.Wrap(err, "send http request")
+		return errTrace
+	}
+
+	body, err = io.ReadAll(resp.Body)
+	if err != nil {
+		errTrace = errors.Wrap(err, "read http response body")
+		return errTrace
+	}
 	// API7 Cloud won't encapsulate response body into the ResponseWrapper,
 	// so for these responses, we handle it alone.
 	if resp.StatusCode >= 500 {
-		return fmt.Errorf("status code: %d, message: %s", resp.StatusCode, string(body))
+		errTrace = fmt.Errorf("status code: %d, message: %s", resp.StatusCode, string(body))
+		return errTrace
 	}
 
 	if err = json.Unmarshal(body, &rw); err != nil {
-		return errors.Wrap(err, "decode response body")
+		errTrace = errors.Wrap(err, "decode response body")
+		return errTrace
 	}
 
 	if resp.StatusCode != 200 {
-		return fmt.Errorf("status code: %d, error code: %d, error reason: %s, details: %s", resp.StatusCode, rw.Status.Code, rw.Status.Message, rw.ErrorReason)
+		errTrace = fmt.Errorf("status code: %d, error code: %d, error reason: %s, details: %s", resp.StatusCode, rw.Status.Code, rw.Status.Message, rw.ErrorReason)
+		return errTrace
 	}
 
 	if payloadDecodeFunc != nil {
 		if err = payloadDecodeFunc(rw.Payload); err != nil {
-			return err
+			errTrace = err
+			return errTrace
 		}
 	}
 	return nil

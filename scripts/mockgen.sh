@@ -35,7 +35,11 @@ aux_files=(
 
 elems=${aux_files[*]}
 
-mockgen -write_package_comment=false -source=./http.go -package=cloud > ./http_mock.go
+mockgen -write_package_comment=false \
+  -source=./http.go \
+  -self_package=github.com/api7/cloud-go-sdk \
+  -package=cloud > ./http_mock.go
+
 mockgen -write_package_comment=false \
   -source=./types.go \
   -aux_files ${elems// /,} \
