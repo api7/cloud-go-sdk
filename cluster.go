@@ -17,9 +17,10 @@ package cloud
 import (
 	"context"
 	"encoding/json"
-	"github.com/pkg/errors"
 	"path"
 	"time"
+
+	"github.com/pkg/errors"
 )
 
 // ClusterStage is used to depict different cluster lifecycles.
@@ -374,7 +375,7 @@ func newCluster(cli httpClient) ClusterInterface {
 func (impl *clusterImpl) GetCluster(ctx context.Context, clusterID ID, opts *ResourceGetOptions) (*Cluster, error) {
 	var cluster Cluster
 
-	uri := path.Join(_apiPathPrefix, "orgs", opts.Organization.ID.String(), "clusters", clusterID.String())
+	uri := path.Join(_apiPathPrefix, "clusters", clusterID.String())
 	if err := impl.client.sendGetRequest(ctx, uri, "", jsonPayloadDecodeFactory(&cluster)); err != nil {
 		return nil, err
 	}
@@ -382,7 +383,7 @@ func (impl *clusterImpl) GetCluster(ctx context.Context, clusterID ID, opts *Res
 }
 
 func (impl *clusterImpl) UpdateClusterSettings(ctx context.Context, clusterID ID, settings *ClusterSettings, opts *ResourceUpdateOptions) error {
-	uri := path.Join(_apiPathPrefix, "orgs", opts.Organization.ID.String(), "clusters", clusterID.String(), "config")
+	uri := path.Join(_apiPathPrefix, "clusters", clusterID.String(), "config")
 	if err := impl.client.sendPatchRequest(ctx, uri, "", settings, nil); err != nil {
 		return err
 	}
@@ -390,7 +391,7 @@ func (impl *clusterImpl) UpdateClusterSettings(ctx context.Context, clusterID ID
 }
 
 func (impl *clusterImpl) UpdateClusterPlugins(ctx context.Context, clusterID ID, plugins Plugins, opts *ResourceUpdateOptions) error {
-	uri := path.Join(_apiPathPrefix, "orgs", opts.Organization.ID.String(), "clusters", clusterID.String(), "plugins")
+	uri := path.Join(_apiPathPrefix, "clusters", clusterID.String(), "plugins")
 	if err := impl.client.sendPatchRequest(ctx, uri, "", plugins, nil); err != nil {
 		return err
 	}
