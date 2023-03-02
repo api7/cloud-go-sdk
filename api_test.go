@@ -71,7 +71,7 @@ func TestCreateAPI(t *testing.T) {
 		tc := tc
 		t.Run(tc.name, func(t *testing.T) {
 			cli := tc.mockFunc(t)
-			_, err := newAPI(cli, &store{}).CreateAPI(context.Background(), tc.pendingAPI, &ResourceCreateOptions{
+			_, err := newAPI(cli).CreateAPI(context.Background(), tc.pendingAPI, &ResourceCreateOptions{
 				Cluster: &Cluster{ID: 123},
 				Application: &Application{
 					ID: 1,
@@ -135,7 +135,7 @@ func TestUpdateAPI(t *testing.T) {
 		tc := tc
 		t.Run(tc.name, func(t *testing.T) {
 			cli := tc.mockFunc(t)
-			_, err := newAPI(cli, &store{}).UpdateAPI(context.Background(), tc.pendingAPI, &ResourceUpdateOptions{
+			_, err := newAPI(cli).UpdateAPI(context.Background(), tc.pendingAPI, &ResourceUpdateOptions{
 				Cluster: &Cluster{ID: 123},
 				Application: &Application{
 					ID: 1,
@@ -186,7 +186,7 @@ func TestDeleteAPI(t *testing.T) {
 		tc := tc
 		t.Run(tc.name, func(t *testing.T) {
 			cli := tc.mockFunc(t)
-			err := newAPI(cli, &store{}).DeleteAPI(context.Background(), 12, &ResourceDeleteOptions{
+			err := newAPI(cli).DeleteAPI(context.Background(), 12, &ResourceDeleteOptions{
 				Cluster: &Cluster{ID: 123},
 				Application: &Application{
 					ID: 1,
@@ -237,7 +237,7 @@ func TestGetAPI(t *testing.T) {
 		t.Run(tc.name, func(t *testing.T) {
 			cli := tc.mockFunc(t)
 			// ignore the API check since currently we don't mock it, and the app is always a zero value.
-			_, err := newAPI(cli, &store{}).GetAPI(context.Background(), 12, &ResourceGetOptions{
+			_, err := newAPI(cli).GetAPI(context.Background(), 12, &ResourceGetOptions{
 				Cluster: &Cluster{ID: 123},
 				Application: &Application{
 					ID: 1,
@@ -288,7 +288,7 @@ func TestPublishAPI(t *testing.T) {
 		t.Run(tc.name, func(t *testing.T) {
 			cli := tc.mockFunc(t)
 			// ignore the api check since currently we don't mock it, and the app is always a zero value.
-			_, err := newAPI(cli, &store{}).PublishAPI(context.Background(), 12, &ResourceUpdateOptions{
+			_, err := newAPI(cli).PublishAPI(context.Background(), 12, &ResourceUpdateOptions{
 				Cluster: &Cluster{ID: 123},
 				Application: &Application{
 					ID: 1,
@@ -339,7 +339,7 @@ func TestUnpublishAPI(t *testing.T) {
 		t.Run(tc.name, func(t *testing.T) {
 			cli := tc.mockFunc(t)
 			// ignore the api check since currently we don't mock it, and the app is always a zero value.
-			_, err := newAPI(cli, &store{}).UnpublishAPI(context.Background(), 12, &ResourceUpdateOptions{
+			_, err := newAPI(cli).UnpublishAPI(context.Background(), 12, &ResourceUpdateOptions{
 				Cluster: &Cluster{ID: 123},
 				Application: &Application{
 					ID: 1,
@@ -381,7 +381,7 @@ func TestListAPIs(t *testing.T) {
 		tc := tc
 		t.Run(tc.name, func(t *testing.T) {
 			// ignore the application check since currently we don't mock it, and the api is always a zero value.
-			raw, err := newAPI(nil, &store{}).ListAPIs(context.Background(), &ResourceListOptions{
+			raw, err := newAPI(nil).ListAPIs(context.Background(), &ResourceListOptions{
 				Cluster: &Cluster{ID: 123},
 				Application: &Application{
 					ID: 123,

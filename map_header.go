@@ -16,14 +16,14 @@ func appendHeader(fs ...*mapHeader) map[string]string {
 	return header
 }
 
-func mapClusterIdFromStore(s StoreInterface) (ret *mapHeader) {
-	if s == nil || s.GetGlobalClusterID() <= 0 {
+func mapClusterIdFromHttpClient(h httpClient) (ret *mapHeader) {
+	if h == nil || h.getClusterID() <= 0 {
 		return
 	}
 
 	ret = &mapHeader{
 		Name:  ClusterHeaderName,
-		Value: s.GetGlobalClusterID().String(),
+		Value: h.getClusterID().String(),
 	}
 
 	return

@@ -29,11 +29,10 @@ type AuthInterface interface {
 
 type auth struct {
 	client httpClient
-	store  StoreInterface
 }
 
-func newAuth(client httpClient, store StoreInterface) AuthInterface {
-	return &auth{client: client, store: store}
+func newAuth(client httpClient) AuthInterface {
+	return &auth{client: client}
 }
 
 func (auth *auth) CreateAccessToken(ctx context.Context, token *AccessToken) (*AccessToken, error) {

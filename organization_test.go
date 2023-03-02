@@ -59,7 +59,7 @@ func TestGetOrganization(t *testing.T) {
 		t.Run(tc.name, func(t *testing.T) {
 			cli := tc.mockFunc(t)
 			// ignore the application check since currently we don't mock it, and the app is always a zero value.
-			_, err := newOrganization(cli, &store{}).GetOrganization(context.Background(), 12, nil)
+			_, err := newOrganization(cli).GetOrganization(context.Background(), 12, nil)
 			if tc.expectedError == "" {
 				assert.Nil(t, err, "check api get error")
 			} else {
@@ -96,7 +96,7 @@ func TestListMembers(t *testing.T) {
 		tc := tc
 		t.Run(tc.name, func(t *testing.T) {
 			// ignore the application check since currently we don't mock it, and the api is always a zero value.
-			raw, err := newOrganization(nil, &store{}).ListMembers(context.Background(), &ResourceListOptions{
+			raw, err := newOrganization(nil).ListMembers(context.Background(), &ResourceListOptions{
 				Organization: &Organization{
 					ID: 123,
 				},
@@ -142,7 +142,7 @@ func TestListRoles(t *testing.T) {
 		tc := tc
 		t.Run(tc.name, func(t *testing.T) {
 			// ignore the application check since currently we don't mock it, and the api is always a zero value.
-			raw, err := newOrganization(nil, &store{}).ListRoles(context.Background(), &ResourceListOptions{
+			raw, err := newOrganization(nil).ListRoles(context.Background(), &ResourceListOptions{
 				Organization: &Organization{
 					ID: 123,
 				},
@@ -197,7 +197,7 @@ func TestInviteMember(t *testing.T) {
 		tc := tc
 		t.Run(tc.name, func(t *testing.T) {
 			cli := tc.mockFunc(t)
-			_, err := newOrganization(cli, &store{}).InviteMember(context.Background(), "foo@test.org", &Role{}, &ResourceCreateOptions{
+			_, err := newOrganization(cli).InviteMember(context.Background(), "foo@test.org", &Role{}, &ResourceCreateOptions{
 				Organization: &Organization{
 					ID: 1,
 				},
@@ -247,7 +247,7 @@ func TestReInviteMember(t *testing.T) {
 		tc := tc
 		t.Run(tc.name, func(t *testing.T) {
 			cli := tc.mockFunc(t)
-			_, err := newOrganization(cli, &store{}).ReInviteMember(context.Background(), 1, &ResourceUpdateOptions{
+			_, err := newOrganization(cli).ReInviteMember(context.Background(), 1, &ResourceUpdateOptions{
 				Organization: &Organization{
 					ID: 1,
 				},
@@ -297,7 +297,7 @@ func TestGetMember(t *testing.T) {
 		t.Run(tc.name, func(t *testing.T) {
 			cli := tc.mockFunc(t)
 			// ignore the API check since currently we don't mock it, and the app is always a zero value.
-			_, err := newOrganization(cli, &store{}).GetMember(context.Background(), 12, &ResourceGetOptions{
+			_, err := newOrganization(cli).GetMember(context.Background(), 12, &ResourceGetOptions{
 				Organization: &Organization{
 					ID: 1,
 				},
@@ -347,7 +347,7 @@ func TestUpdateMemberRoles(t *testing.T) {
 		tc := tc
 		t.Run(tc.name, func(t *testing.T) {
 			cli := tc.mockFunc(t)
-			err := newOrganization(cli, &store{}).UpdateMemberRoles(context.Background(), 12, []RoleBinding{
+			err := newOrganization(cli).UpdateMemberRoles(context.Background(), 12, []RoleBinding{
 				{
 					RoleID: 1,
 				},
@@ -402,7 +402,7 @@ func TestDeleteMember(t *testing.T) {
 		tc := tc
 		t.Run(tc.name, func(t *testing.T) {
 			cli := tc.mockFunc(t)
-			err := newOrganization(cli, &store{}).RemoveMember(context.Background(), 12, &ResourceDeleteOptions{
+			err := newOrganization(cli).RemoveMember(context.Background(), 12, &ResourceDeleteOptions{
 				Organization: &Organization{
 					ID: 1,
 				},
@@ -452,7 +452,7 @@ func TestTransferOwnership(t *testing.T) {
 		tc := tc
 		t.Run(tc.name, func(t *testing.T) {
 			cli := tc.mockFunc(t)
-			err := newOrganization(cli, &store{}).TransferOwnership(context.Background(), 12, &ResourceUpdateOptions{
+			err := newOrganization(cli).TransferOwnership(context.Background(), 12, &ResourceUpdateOptions{
 				Organization: &Organization{
 					ID: 1,
 				},

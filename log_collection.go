@@ -85,7 +85,6 @@ type logCollectionIterator struct {
 
 type logCollectionImpl struct {
 	client httpClient
-	store  StoreInterface
 }
 
 func (iter *logCollectionIterator) Next() (*LogCollection, error) {
@@ -103,10 +102,9 @@ func (iter *logCollectionIterator) Next() (*LogCollection, error) {
 	return &lc, nil
 }
 
-func newLogCollection(cli httpClient, store StoreInterface) LogCollectionInterface {
+func newLogCollection(cli httpClient) LogCollectionInterface {
 	return &logCollectionImpl{
 		client: cli,
-		store:  store,
 	}
 }
 
@@ -115,7 +113,7 @@ func (impl *logCollectionImpl) CreateLogCollection(ctx context.Context, lc *LogC
 
 	clusterID := opts.Cluster.ID
 	uri := path.Join(_apiPathPrefix, "clusters", clusterID.String(), "log_collections")
-	err := impl.client.sendPostRequest(ctx, uri, "", lc, jsonPayloadDecodeFactory(&createdLogCollection), appendHeader(mapClusterIdFromStore(impl.store), mapClusterIdFromOpts(opts)))
+	err := impl.client.sendPostRequest(ctx, uri, "", lc, jsonPayloadDecodeFactory(&createdLogCollection), appendHeader(mapClusterIdFromHttpClient(impl.client), mapClusterIdFromOpts(opts)))
 	if err != nil {
 		return nil, err
 	}
@@ -127,7 +125,7 @@ func (impl *logCollectionImpl) UpdateLogCollection(ctx context.Context, lc *LogC
 
 	clusterID := opts.Cluster.ID
 	uri := path.Join(_apiPathPrefix, "clusters", clusterID.String(), "log_collections", lc.ID.String())
-	err := impl.client.sendPutRequest(ctx, uri, "", lc, jsonPayloadDecodeFactory(&createdLogCollection), appendHeader(mapClusterIdFromStore(impl.store), mapClusterIdFromOpts(opts)))
+	err := impl.client.sendPutRequest(ctx, uri, "", lc, jsonPayloadDecodeFactory(&createdLogCollection), appendHeader(mapClusterIdFromHttpClient(impl.client), mapClusterIdFromOpts(opts)))
 	if err != nil {
 		return nil, err
 	}
@@ -137,7 +135,7 @@ func (impl *logCollectionImpl) UpdateLogCollection(ctx context.Context, lc *LogC
 func (impl *logCollectionImpl) DeleteLogCollection(ctx context.Context, lcID ID, opts *ResourceDeleteOptions) error {
 	clusterID := opts.Cluster.ID
 	uri := path.Join(_apiPathPrefix, "clusters", clusterID.String(), "log_collections", lcID.String())
-	return impl.client.sendDeleteRequest(ctx, uri, "", nil, appendHeader(mapClusterIdFromStore(impl.store), mapClusterIdFromOpts(opts)))
+	return impl.client.sendDeleteRequest(ctx, uri, "", nil, appendHeader(mapClusterIdFromHttpClient(impl.client), mapClusterIdFromOpts(opts)))
 }
 
 func (impl *logCollectionImpl) GetLogCollection(ctx context.Context, lcID ID, opts *ResourceGetOptions) (*LogCollection, error) {
@@ -145,7 +143,7 @@ func (impl *logCollectionImpl) GetLogCollection(ctx context.Context, lcID ID, op
 
 	clusterID := opts.Cluster.ID
 	uri := path.Join(_apiPathPrefix, "clusters", clusterID.String(), "log_collections", lcID.String())
-	err := impl.client.sendGetRequest(ctx, uri, "", jsonPayloadDecodeFactory(&logcollection), appendHeader(mapClusterIdFromStore(impl.store), mapClusterIdFromOpts(opts)))
+	err := impl.client.sendGetRequest(ctx, uri, "", jsonPayloadDecodeFactory(&logcollection), appendHeader(mapClusterIdFromHttpClient(impl.client), mapClusterIdFromOpts(opts)))
 	if err != nil {
 		return nil, err
 	}
@@ -160,7 +158,7 @@ func (impl *logCollectionImpl) ListLogCollections(ctx context.Context, opts *Res
 		path:     path.Join(_apiPathPrefix, "clusters", opts.Cluster.ID.String(), "log_collections"),
 		paging:   mergePagination(opts.Pagination),
 		filter:   opts.Filter,
-		headers:  appendHeader(mapClusterIdFromStore(impl.store), mapClusterIdFromOpts(opts)),
+		headers:  appendHeader(mapClusterIdFromHttpClient(impl.client), mapClusterIdFromOpts(opts)),
 	}
 
 	return &logCollectionIterator{iter: iter}, nil

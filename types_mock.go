@@ -460,20 +460,6 @@ func (mr *MockInterfaceMockRecorder) GetGatewayInstanceStartupConfigTemplate(ctx
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetGatewayInstanceStartupConfigTemplate", reflect.TypeOf((*MockInterface)(nil).GetGatewayInstanceStartupConfigTemplate), ctx, clusterID, configType, opts)
 }
 
-// GetGlobalClusterID mocks base method.
-func (m *MockInterface) GetGlobalClusterID() ID {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "GetGlobalClusterID")
-	ret0, _ := ret[0].(ID)
-	return ret0
-}
-
-// GetGlobalClusterID indicates an expected call of GetGlobalClusterID.
-func (mr *MockInterfaceMockRecorder) GetGlobalClusterID() *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetGlobalClusterID", reflect.TypeOf((*MockInterface)(nil).GetGlobalClusterID))
-}
-
 // GetLogCollection mocks base method.
 func (m *MockInterface) GetLogCollection(ctx context.Context, lcID ID, opts *ResourceGetOptions) (*LogCollection, error) {
 	m.ctrl.T.Helper()

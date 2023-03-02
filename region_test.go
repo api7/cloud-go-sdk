@@ -48,7 +48,7 @@ func TestListRegions(t *testing.T) {
 		tc := tc
 		t.Run(tc.name, func(t *testing.T) {
 			// ignore the application check since currently we don't mock it, and the app is always a zero value.
-			raw, err := newRegion(nil, &store{}).ListRegions(context.Background(), nil)
+			raw, err := newRegion(nil).ListRegions(context.Background(), nil)
 			assert.Nil(t, err, "check list cluster error")
 			iter := raw.(*regionListIterator)
 			assert.Equal(t, tc.iterator.iter.resource, iter.iter.resource, "check resource")

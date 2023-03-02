@@ -136,7 +136,6 @@ type ServiceRegistryListIterator interface {
 
 type serviceRegistryImpl struct {
 	client httpClient
-	store  StoreInterface
 }
 
 type serviceRegistryListIterator struct {
@@ -158,10 +157,9 @@ func (iter *serviceRegistryListIterator) Next() (*ServiceRegistry, error) {
 	return &registry, nil
 }
 
-func newServiceDiscovery(cli httpClient, store StoreInterface) ServiceDiscoveryInterface {
+func newServiceDiscovery(cli httpClient) ServiceDiscoveryInterface {
 	return &serviceRegistryImpl{
 		client: cli,
-		store:  store,
 	}
 }
 
@@ -170,7 +168,7 @@ func (impl *serviceRegistryImpl) CreateServiceRegistry(ctx context.Context, regi
 
 	clusterID := opts.Cluster.ID
 	uri := path.Join(_apiPathPrefix, "clusters", clusterID.String(), "service_registries")
-	err := impl.client.sendPostRequest(ctx, uri, "", registry, jsonPayloadDecodeFactory(&createdRegistry), appendHeader(mapClusterIdFromStore(impl.store), mapClusterIdFromOpts(opts)))
+	err := impl.client.sendPostRequest(ctx, uri, "", registry, jsonPayloadDecodeFactory(&createdRegistry), appendHeader(mapClusterIdFromHttpClient(impl.client), mapClusterIdFromOpts(opts)))
 	if err != nil {
 		return nil, err
 	}
@@ -182,7 +180,7 @@ func (impl *serviceRegistryImpl) UpdateServiceRegistry(ctx context.Context, regi
 
 	clusterID := opts.Cluster.ID
 	uri := path.Join(_apiPathPrefix, "clusters", clusterID.String(), "service_registries", registry.ID.String())
-	err := impl.client.sendPutRequest(ctx, uri, "", registry, jsonPayloadDecodeFactory(&updatedRegistry), appendHeader(mapClusterIdFromStore(impl.store), mapClusterIdFromOpts(opts)))
+	err := impl.client.sendPutRequest(ctx, uri, "", registry, jsonPayloadDecodeFactory(&updatedRegistry), appendHeader(mapClusterIdFromHttpClient(impl.client), mapClusterIdFromOpts(opts)))
 	if err != nil {
 		return nil, err
 	}
@@ -192,7 +190,7 @@ func (impl *serviceRegistryImpl) UpdateServiceRegistry(ctx context.Context, regi
 func (impl *serviceRegistryImpl) DeleteServiceRegistry(ctx context.Context, registryID ID, opts *ResourceDeleteOptions) error {
 	clusterID := opts.Cluster.ID
 	uri := path.Join(_apiPathPrefix, "clusters", clusterID.String(), "service_registries", registryID.String())
-	return impl.client.sendDeleteRequest(ctx, uri, "", nil, appendHeader(mapClusterIdFromStore(impl.store), mapClusterIdFromOpts(opts)))
+	return impl.client.sendDeleteRequest(ctx, uri, "", nil, appendHeader(mapClusterIdFromHttpClient(impl.client), mapClusterIdFromOpts(opts)))
 }
 
 func (impl *serviceRegistryImpl) GetServiceRegistry(ctx context.Context, registryID ID, opts *ResourceGetOptions) (*ServiceRegistry, error) {
@@ -201,7 +199,7 @@ func (impl *serviceRegistryImpl) GetServiceRegistry(ctx context.Context, registr
 	clusterID := opts.Cluster.ID
 	uri := path.Join(_apiPathPrefix, "clusters", clusterID.String(), "service_registries", registryID.String())
 
-	err := impl.client.sendGetRequest(ctx, uri, "", jsonPayloadDecodeFactory(&registry), appendHeader(mapClusterIdFromStore(impl.store), mapClusterIdFromOpts(opts)))
+	err := impl.client.sendGetRequest(ctx, uri, "", jsonPayloadDecodeFactory(&registry), appendHeader(mapClusterIdFromHttpClient(impl.client), mapClusterIdFromOpts(opts)))
 	if err != nil {
 		return nil, err
 	}
@@ -216,7 +214,7 @@ func (impl *serviceRegistryImpl) ListServiceRegistries(ctx context.Context, opts
 		path:     path.Join(_apiPathPrefix, "clusters", opts.Cluster.ID.String(), "service_registries"),
 		paging:   mergePagination(opts.Pagination),
 		filter:   opts.Filter,
-		headers:  appendHeader(mapClusterIdFromStore(impl.store), mapClusterIdFromOpts(opts)),
+		headers:  appendHeader(mapClusterIdFromHttpClient(impl.client), mapClusterIdFromOpts(opts)),
 	}
 
 	return &serviceRegistryListIterator{iter: iter}, nil

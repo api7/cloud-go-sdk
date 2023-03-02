@@ -65,7 +65,7 @@ func TestCreateLogCollection(t *testing.T) {
 		tc := tc
 		t.Run(tc.name, func(t *testing.T) {
 			cli := tc.mockFunc(t)
-			_, err := newLogCollection(cli, &store{}).CreateLogCollection(context.Background(), tc.pendingLogCollection, &ResourceCreateOptions{
+			_, err := newLogCollection(cli).CreateLogCollection(context.Background(), tc.pendingLogCollection, &ResourceCreateOptions{
 				Cluster: &Cluster{
 					ID: 1,
 				},
@@ -113,7 +113,7 @@ func TestDeleteLogCollection(t *testing.T) {
 		tc := tc
 		t.Run(tc.name, func(t *testing.T) {
 			cli := tc.mockFunc(t)
-			err := newLogCollection(cli, &store{}).DeleteLogCollection(context.Background(), 2, &ResourceDeleteOptions{
+			err := newLogCollection(cli).DeleteLogCollection(context.Background(), 2, &ResourceDeleteOptions{
 				Cluster: &Cluster{
 					ID: 1,
 				},
@@ -163,7 +163,7 @@ func TestGetLogCollection(t *testing.T) {
 		t.Run(tc.name, func(t *testing.T) {
 			cli := tc.mockFunc(t)
 			// ignore the application check since currently we don't mock it, and the app is always a zero value.
-			_, err := newLogCollection(cli, &store{}).GetLogCollection(context.Background(), 2, &ResourceGetOptions{
+			_, err := newLogCollection(cli).GetLogCollection(context.Background(), 2, &ResourceGetOptions{
 				Cluster: &Cluster{
 					ID: 1,
 				},
@@ -203,7 +203,7 @@ func TestListLogCollection(t *testing.T) {
 	for _, tc := range testCases {
 		tc := tc
 		t.Run(tc.name, func(t *testing.T) {
-			raw, err := newLogCollection(nil, &store{}).ListLogCollections(context.Background(), &ResourceListOptions{
+			raw, err := newLogCollection(nil).ListLogCollections(context.Background(), &ResourceListOptions{
 				Cluster: &Cluster{
 					ID: 1,
 				},
@@ -265,7 +265,7 @@ func TestUpdateLogCollection(t *testing.T) {
 		tc := tc
 		t.Run(tc.name, func(t *testing.T) {
 			cli := tc.mockFunc(t)
-			_, err := newLogCollection(cli, &store{}).UpdateLogCollection(context.Background(), tc.pendingLogCollection, &ResourceUpdateOptions{
+			_, err := newLogCollection(cli).UpdateLogCollection(context.Background(), tc.pendingLogCollection, &ResourceUpdateOptions{
 				Cluster: &Cluster{
 					ID: 1,
 				},

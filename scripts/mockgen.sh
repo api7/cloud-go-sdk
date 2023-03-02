@@ -31,7 +31,6 @@ aux_files=(
   github.com/api7/cloud-go-sdk=canary_release.go
   github.com/api7/cloud-go-sdk=log_collection.go
   github.com/api7/cloud-go-sdk=service_discovery.go
-  github.com/api7/cloud-go-sdk=store.go
 )
 
 elems=${aux_files[*]}

@@ -34,6 +34,20 @@ func (m *MockhttpClient) EXPECT() *MockhttpClientMockRecorder {
 	return m.recorder
 }
 
+// getClusterID mocks base method.
+func (m *MockhttpClient) getClusterID() ID {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "getClusterID")
+	ret0, _ := ret[0].(ID)
+	return ret0
+}
+
+// getClusterID indicates an expected call of getClusterID.
+func (mr *MockhttpClientMockRecorder) getClusterID() *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "getClusterID", reflect.TypeOf((*MockhttpClient)(nil).getClusterID))
+}
+
 // sendDeleteRequest mocks base method.
 func (m *MockhttpClient) sendDeleteRequest(ctx context.Context, path, query string, payloadDecodeFunc payloadDecodeFunc, headers map[string]string) error {
 	m.ctrl.T.Helper()
@@ -116,4 +130,16 @@ func (m *MockhttpClient) sendRequest(req *http.Request, payloadDecodeFunc payloa
 func (mr *MockhttpClientMockRecorder) sendRequest(req, payloadDecodeFunc, series interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "sendRequest", reflect.TypeOf((*MockhttpClient)(nil).sendRequest), req, payloadDecodeFunc, series)
+}
+
+// setClusterID mocks base method.
+func (m *MockhttpClient) setClusterID(id ID) {
+	m.ctrl.T.Helper()
+	m.ctrl.Call(m, "setClusterID", id)
+}
+
+// setClusterID indicates an expected call of setClusterID.
+func (mr *MockhttpClientMockRecorder) setClusterID(id interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "setClusterID", reflect.TypeOf((*MockhttpClient)(nil).setClusterID), id)
 }

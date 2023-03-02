@@ -77,7 +77,7 @@ func TestCreateApplication(t *testing.T) {
 		tc := tc
 		t.Run(tc.name, func(t *testing.T) {
 			cli := tc.mockFunc(t)
-			_, err := newApplication(cli, &store{}).CreateApplication(context.Background(), tc.pendingApp, &ResourceCreateOptions{
+			_, err := newApplication(cli).CreateApplication(context.Background(), tc.pendingApp, &ResourceCreateOptions{
 				Cluster: &Cluster{
 					ID: 1,
 				},
@@ -146,7 +146,7 @@ func TestUpdateApplication(t *testing.T) {
 		tc := tc
 		t.Run(tc.name, func(t *testing.T) {
 			cli := tc.mockFunc(t)
-			_, err := newApplication(cli, &store{}).UpdateApplication(context.Background(), tc.pendingApp, &ResourceUpdateOptions{
+			_, err := newApplication(cli).UpdateApplication(context.Background(), tc.pendingApp, &ResourceUpdateOptions{
 				Cluster: &Cluster{
 					ID: 1,
 				},
@@ -196,7 +196,7 @@ func TestDeleteApplication(t *testing.T) {
 		tc := tc
 		t.Run(tc.name, func(t *testing.T) {
 			cli := tc.mockFunc(t)
-			err := newApplication(cli, &store{}).DeleteApplication(context.Background(), 12, &ResourceDeleteOptions{
+			err := newApplication(cli).DeleteApplication(context.Background(), 12, &ResourceDeleteOptions{
 				Cluster: &Cluster{
 					ID: 1,
 				},
@@ -246,7 +246,7 @@ func TestGetApplication(t *testing.T) {
 		t.Run(tc.name, func(t *testing.T) {
 			cli := tc.mockFunc(t)
 			// ignore the application check since currently we don't mock it, and the app is always a zero value.
-			_, err := newApplication(cli, &store{}).GetApplication(context.Background(), 12, &ResourceGetOptions{
+			_, err := newApplication(cli).GetApplication(context.Background(), 12, &ResourceGetOptions{
 				Cluster: &Cluster{
 					ID: 1,
 				},
@@ -296,7 +296,7 @@ func TestPublishApplication(t *testing.T) {
 		t.Run(tc.name, func(t *testing.T) {
 			cli := tc.mockFunc(t)
 			// ignore the application check since currently we don't mock it, and the app is always a zero value.
-			_, err := newApplication(cli, &store{}).PublishApplication(context.Background(), 12, &ResourceUpdateOptions{
+			_, err := newApplication(cli).PublishApplication(context.Background(), 12, &ResourceUpdateOptions{
 				Cluster: &Cluster{
 					ID: 1,
 				},
@@ -346,7 +346,7 @@ func TestUnpublishApplication(t *testing.T) {
 		t.Run(tc.name, func(t *testing.T) {
 			cli := tc.mockFunc(t)
 			// ignore the application check since currently we don't mock it, and the app is always a zero value.
-			_, err := newApplication(cli, &store{}).UnpublishApplication(context.Background(), 12, &ResourceUpdateOptions{
+			_, err := newApplication(cli).UnpublishApplication(context.Background(), 12, &ResourceUpdateOptions{
 				Cluster: &Cluster{
 					ID: 1,
 				},
@@ -387,7 +387,7 @@ func TestListApplications(t *testing.T) {
 		tc := tc
 		t.Run(tc.name, func(t *testing.T) {
 			// ignore the application check since currently we don't mock it, and the app is always a zero value.
-			raw, err := newApplication(nil, &store{}).ListApplications(context.Background(), &ResourceListOptions{
+			raw, err := newApplication(nil).ListApplications(context.Background(), &ResourceListOptions{
 				Cluster: &Cluster{
 					ID: 123,
 				},

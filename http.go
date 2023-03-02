@@ -76,6 +76,8 @@ type httpClient interface {
 	sendPatchRequest(ctx context.Context, path, query string, body interface{}, payloadDecodeFunc payloadDecodeFunc, headers map[string]string) error
 	sendDeleteRequest(ctx context.Context, path, query string, payloadDecodeFunc payloadDecodeFunc, headers map[string]string) error
 	sendRequest(req *http.Request, payloadDecodeFunc payloadDecodeFunc, series *TraceSeries) error
+	getClusterID() ID
+	setClusterID(id ID)
 }
 
 type httpClientImpl struct {
@@ -86,6 +88,7 @@ type httpClientImpl struct {
 	idGenerator     IDGenerator
 	genIDForCalls   bool
 	enableHTTPTrace bool
+	clusterID       ID
 }
 
 type httpClientConstructOptions struct {
@@ -401,4 +404,12 @@ func (impl *httpClientImpl) sendRequest(req *http.Request, payloadDecodeFunc pay
 		}
 	}
 	return nil
+}
+
+func (impl *httpClientImpl) getClusterID() ID {
+	return impl.clusterID
+}
+
+func (impl *httpClientImpl) setClusterID(id ID) {
+	impl.clusterID = id
 }

@@ -67,7 +67,7 @@ func TestCreateConsumer(t *testing.T) {
 		tc := tc
 		t.Run(tc.name, func(t *testing.T) {
 			cli := tc.mockFunc(t)
-			_, err := newConsumer(cli, &store{}).CreateConsumer(context.Background(), tc.pendingConsumer, &ResourceCreateOptions{
+			_, err := newConsumer(cli).CreateConsumer(context.Background(), tc.pendingConsumer, &ResourceCreateOptions{
 				Cluster: &Cluster{
 					ID: 1,
 				},
@@ -126,7 +126,7 @@ func TestUpdateConsumer(t *testing.T) {
 		tc := tc
 		t.Run(tc.name, func(t *testing.T) {
 			cli := tc.mockFunc(t)
-			_, err := newConsumer(cli, &store{}).UpdateConsumer(context.Background(), tc.pendingConsumer, &ResourceUpdateOptions{
+			_, err := newConsumer(cli).UpdateConsumer(context.Background(), tc.pendingConsumer, &ResourceUpdateOptions{
 				Cluster: &Cluster{
 					ID: 1,
 				},
@@ -176,7 +176,7 @@ func TestDeleteConsumer(t *testing.T) {
 		tc := tc
 		t.Run(tc.name, func(t *testing.T) {
 			cli := tc.mockFunc(t)
-			err := newConsumer(cli, &store{}).DeleteConsumer(context.Background(), 12, &ResourceDeleteOptions{
+			err := newConsumer(cli).DeleteConsumer(context.Background(), 12, &ResourceDeleteOptions{
 				Cluster: &Cluster{
 					ID: 1,
 				},
@@ -226,7 +226,7 @@ func TestGetConsumer(t *testing.T) {
 		t.Run(tc.name, func(t *testing.T) {
 			cli := tc.mockFunc(t)
 			// ignore the application check since currently we don't mock it, and the app is always a zero value.
-			_, err := newConsumer(cli, &store{}).GetConsumer(context.Background(), 12, &ResourceGetOptions{
+			_, err := newConsumer(cli).GetConsumer(context.Background(), 12, &ResourceGetOptions{
 				Cluster: &Cluster{
 					ID: 1,
 				},
@@ -267,7 +267,7 @@ func TestListConsumers(t *testing.T) {
 		tc := tc
 		t.Run(tc.name, func(t *testing.T) {
 			// ignore the consumer check since currently we don't mock it, and the app is always a zero value.
-			raw, err := newConsumer(nil, &store{}).ListConsumers(context.Background(), &ResourceListOptions{
+			raw, err := newConsumer(nil).ListConsumers(context.Background(), &ResourceListOptions{
 				Cluster: &Cluster{
 					ID: 123,
 				},

@@ -76,7 +76,7 @@ func TestCreateCanaryRelease(t *testing.T) {
 		tc := tc
 		t.Run(tc.name, func(t *testing.T) {
 			cli := tc.mockFunc(t)
-			_, err := newCanaryRelease(cli, &store{}).CreateCanaryRelease(context.Background(), tc.pendingCr, &ResourceCreateOptions{
+			_, err := newCanaryRelease(cli).CreateCanaryRelease(context.Background(), tc.pendingCr, &ResourceCreateOptions{
 				Cluster: &Cluster{ID: 123},
 				Application: &Application{
 					ID: 1,
@@ -140,7 +140,7 @@ func TestUpdateCanaryRelease(t *testing.T) {
 		tc := tc
 		t.Run(tc.name, func(t *testing.T) {
 			cli := tc.mockFunc(t)
-			_, err := newCanaryRelease(cli, &store{}).UpdateCanaryRelease(context.Background(), tc.pendingCr, &ResourceUpdateOptions{
+			_, err := newCanaryRelease(cli).UpdateCanaryRelease(context.Background(), tc.pendingCr, &ResourceUpdateOptions{
 				Cluster: &Cluster{ID: 123},
 				Application: &Application{
 					ID: 1,
@@ -201,7 +201,7 @@ func TestStartCanaryRelease(t *testing.T) {
 		t.Run(tc.name, func(t *testing.T) {
 			cli := tc.mockFunc(t)
 			// ignore the canary release check since currently we don't mock it, and the app is always a zero value.
-			_, err := newCanaryRelease(cli, &store{}).StartCanaryRelease(context.Background(), &CanaryRelease{
+			_, err := newCanaryRelease(cli).StartCanaryRelease(context.Background(), &CanaryRelease{
 				ID: 12,
 			}, &ResourceUpdateOptions{
 				Cluster: &Cluster{ID: 123},
@@ -264,7 +264,7 @@ func TestPauseCanaryRelease(t *testing.T) {
 		t.Run(tc.name, func(t *testing.T) {
 			cli := tc.mockFunc(t)
 			// ignore the canary release check since currently we don't mock it, and the app is always a zero value.
-			_, err := newCanaryRelease(cli, &store{}).PauseCanaryRelease(context.Background(), &CanaryRelease{
+			_, err := newCanaryRelease(cli).PauseCanaryRelease(context.Background(), &CanaryRelease{
 				ID: 12,
 			}, &ResourceUpdateOptions{
 				Cluster: &Cluster{ID: 123},
@@ -326,7 +326,7 @@ func TestFinishCanaryRelease(t *testing.T) {
 		t.Run(tc.name, func(t *testing.T) {
 			cli := tc.mockFunc(t)
 			// ignore the canary release check since currently we don't mock it, and the app is always a zero value.
-			_, err := newCanaryRelease(cli, &store{}).FinishCanaryRelease(context.Background(), &CanaryRelease{
+			_, err := newCanaryRelease(cli).FinishCanaryRelease(context.Background(), &CanaryRelease{
 				ID: 12,
 			}, &ResourceUpdateOptions{
 				Cluster: &Cluster{ID: 123},
@@ -377,7 +377,7 @@ func TestDeleteCanaryRelease(t *testing.T) {
 		tc := tc
 		t.Run(tc.name, func(t *testing.T) {
 			cli := tc.mockFunc(t)
-			err := newCanaryRelease(cli, &store{}).DeleteCanaryRelease(context.Background(), 1, &ResourceDeleteOptions{
+			err := newCanaryRelease(cli).DeleteCanaryRelease(context.Background(), 1, &ResourceDeleteOptions{
 				Cluster: &Cluster{ID: 123},
 				Application: &Application{
 					ID: 1,
@@ -427,7 +427,7 @@ func TestGetCanaryRelease(t *testing.T) {
 		tc := tc
 		t.Run(tc.name, func(t *testing.T) {
 			cli := tc.mockFunc(t)
-			_, err := newCanaryRelease(cli, &store{}).GetCanaryRelease(context.Background(), 1, &ResourceGetOptions{
+			_, err := newCanaryRelease(cli).GetCanaryRelease(context.Background(), 1, &ResourceGetOptions{
 				Cluster: &Cluster{ID: 123},
 				Application: &Application{
 					ID: 1,
@@ -468,7 +468,7 @@ func TestListCanaryReleases(t *testing.T) {
 	for _, tc := range testCases {
 		tc := tc
 		t.Run(tc.name, func(t *testing.T) {
-			raw, err := newCanaryRelease(nil, &store{}).ListCanaryReleases(context.Background(), &ResourceListOptions{
+			raw, err := newCanaryRelease(nil).ListCanaryReleases(context.Background(), &ResourceListOptions{
 				Cluster: &Cluster{ID: 123},
 				Application: &Application{
 					ID: 1,

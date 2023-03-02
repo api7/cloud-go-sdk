@@ -131,8 +131,8 @@ func FormatTraceSeries(data *TraceSeries) string {
 	return output.String()
 }
 
-func ensureClusterID(s StoreInterface, opts ResourceCommonOpts) bool {
-	if s != nil && s.GetGlobalClusterID() > 0 {
+func ensureClusterID(h httpClient, opts ResourceCommonOpts) bool {
+	if h != nil && h.getClusterID() > 0 {
 		return true
 	}
 

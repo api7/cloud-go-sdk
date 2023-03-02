@@ -47,13 +47,11 @@ type UserInterface interface {
 
 type userImpl struct {
 	client httpClient
-	store  StoreInterface
 }
 
-func newUser(cli httpClient, store StoreInterface) UserInterface {
+func newUser(cli httpClient) UserInterface {
 	return &userImpl{
 		client: cli,
-		store:  store,
 	}
 }
 

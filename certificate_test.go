@@ -87,7 +87,7 @@ func TestCreateCertificate(t *testing.T) {
 		tc := tc
 		t.Run(tc.name, func(t *testing.T) {
 			cli := tc.mockFunc(t)
-			_, err := newCertificate(cli, &store{}).CreateCertificate(context.Background(), tc.pendingCert, &ResourceCreateOptions{
+			_, err := newCertificate(cli).CreateCertificate(context.Background(), tc.pendingCert, &ResourceCreateOptions{
 				Cluster: &Cluster{
 					ID: 1,
 				},
@@ -165,7 +165,7 @@ func TestUpdateCertificate(t *testing.T) {
 		tc := tc
 		t.Run(tc.name, func(t *testing.T) {
 			cli := tc.mockFunc(t)
-			_, err := newCertificate(cli, &store{}).UpdateCertificate(context.Background(), tc.pendingCert, &ResourceUpdateOptions{
+			_, err := newCertificate(cli).UpdateCertificate(context.Background(), tc.pendingCert, &ResourceUpdateOptions{
 				Cluster: &Cluster{
 					ID: 1,
 				},
@@ -215,7 +215,7 @@ func TestDeleteCertificate(t *testing.T) {
 		tc := tc
 		t.Run(tc.name, func(t *testing.T) {
 			cli := tc.mockFunc(t)
-			err := newCertificate(cli, &store{}).DeleteCertificate(context.Background(), 12, &ResourceDeleteOptions{
+			err := newCertificate(cli).DeleteCertificate(context.Background(), 12, &ResourceDeleteOptions{
 				Cluster: &Cluster{
 					ID: 1,
 				},
@@ -265,7 +265,7 @@ func TestGetCertificate(t *testing.T) {
 		t.Run(tc.name, func(t *testing.T) {
 			cli := tc.mockFunc(t)
 			// ignore the certificates check since currently we don't mock it, and the certificate is always a zero value.
-			_, err := newCertificate(cli, &store{}).GetCertificate(context.Background(), 12, &ResourceGetOptions{
+			_, err := newCertificate(cli).GetCertificate(context.Background(), 12, &ResourceGetOptions{
 				Cluster: &Cluster{
 					ID: 1,
 				},
@@ -306,7 +306,7 @@ func TestListCertificates(t *testing.T) {
 		tc := tc
 		t.Run(tc.name, func(t *testing.T) {
 			// ignore the certificates check since currently we don't mock it, and the certificate is always a zero value.
-			raw, err := newCertificate(nil, &store{}).ListCertificates(context.Background(), &ResourceListOptions{
+			raw, err := newCertificate(nil).ListCertificates(context.Background(), &ResourceListOptions{
 				Cluster: &Cluster{
 					ID: 123,
 				},

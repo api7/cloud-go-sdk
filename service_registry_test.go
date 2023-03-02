@@ -77,7 +77,7 @@ func TestCreateServiceRegistry(t *testing.T) {
 		tc := tc
 		t.Run(tc.name, func(t *testing.T) {
 			cli := tc.mockFunc(t)
-			_, err := newServiceDiscovery(cli, &store{}).CreateServiceRegistry(context.Background(), tc.pendingRegistry, &ResourceCreateOptions{
+			_, err := newServiceDiscovery(cli).CreateServiceRegistry(context.Background(), tc.pendingRegistry, &ResourceCreateOptions{
 				Cluster: &Cluster{
 					ID: 1,
 				},
@@ -146,7 +146,7 @@ func TestUpdateServiceRegistry(t *testing.T) {
 		tc := tc
 		t.Run(tc.name, func(t *testing.T) {
 			cli := tc.mockFunc(t)
-			_, err := newServiceDiscovery(cli, &store{}).UpdateServiceRegistry(context.Background(), tc.pendingRegistry, &ResourceUpdateOptions{
+			_, err := newServiceDiscovery(cli).UpdateServiceRegistry(context.Background(), tc.pendingRegistry, &ResourceUpdateOptions{
 				Cluster: &Cluster{
 					ID: 1,
 				},
@@ -196,7 +196,7 @@ func TestDeleteServiceRegistry(t *testing.T) {
 		tc := tc
 		t.Run(tc.name, func(t *testing.T) {
 			cli := tc.mockFunc(t)
-			err := newServiceDiscovery(cli, &store{}).DeleteServiceRegistry(context.Background(), 12, &ResourceDeleteOptions{
+			err := newServiceDiscovery(cli).DeleteServiceRegistry(context.Background(), 12, &ResourceDeleteOptions{
 				Cluster: &Cluster{
 					ID: 1,
 				},
@@ -246,7 +246,7 @@ func TestGetServiceRegistry(t *testing.T) {
 		t.Run(tc.name, func(t *testing.T) {
 			cli := tc.mockFunc(t)
 			// ignore the application check since currently we don't mock it, and the app is always a zero value.
-			_, err := newServiceDiscovery(cli, &store{}).GetServiceRegistry(context.Background(), 12, &ResourceGetOptions{
+			_, err := newServiceDiscovery(cli).GetServiceRegistry(context.Background(), 12, &ResourceGetOptions{
 				Cluster: &Cluster{
 					ID: 1,
 				},
@@ -287,7 +287,7 @@ func TestListServiceRegistries(t *testing.T) {
 		tc := tc
 		t.Run(tc.name, func(t *testing.T) {
 			// ignore the service registry check since currently we don't mock it, and the app is always a zero value.
-			raw, err := newServiceDiscovery(nil, &store{}).ListServiceRegistries(context.Background(), &ResourceListOptions{
+			raw, err := newServiceDiscovery(nil).ListServiceRegistries(context.Background(), &ResourceListOptions{
 				Cluster: &Cluster{
 					ID: 123,
 				},

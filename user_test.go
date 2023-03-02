@@ -62,7 +62,7 @@ func TestUserMe(t *testing.T) {
 		t.Run(tc.name, func(t *testing.T) {
 			t.Parallel()
 
-			user, err := newUser(tc.mockFunc(t), &store{}).Me(context.Background())
+			user, err := newUser(tc.mockFunc(t)).Me(context.Background())
 			if tc.expectedError != "" {
 				assert.EqualError(t, err, tc.expectedError, "check error")
 			} else {
