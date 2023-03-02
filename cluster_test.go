@@ -51,7 +51,7 @@ func TestListClusters(t *testing.T) {
 		tc := tc
 		t.Run(tc.name, func(t *testing.T) {
 			// ignore the application check since currently we don't mock it, and the app is always a zero value.
-			raw, err := newCluster(nil).ListClusters(context.Background(), &ResourceListOptions{
+			raw, err := newCluster(nil, &store{}).ListClusters(context.Background(), &ResourceListOptions{
 				Organization: &Organization{
 					ID: 123,
 				},
@@ -83,7 +83,7 @@ func TestListAllGatewayInstances(t *testing.T) {
 			mockFunc: func(t *testing.T) httpClient {
 				ctrl := gomock.NewController(t)
 				cli := NewMockhttpClient(ctrl)
-				cli.EXPECT().sendGetRequest(gomock.Any(), path.Join(_apiPathPrefix, "/clusters/12/instances"), "", gomock.Any()).Return(nil)
+				cli.EXPECT().sendGetRequest(gomock.Any(), path.Join(_apiPathPrefix, "/clusters/12/instances"), "", gomock.Any(), gomock.Any()).Return(nil)
 				return cli
 			},
 		},
@@ -92,7 +92,7 @@ func TestListAllGatewayInstances(t *testing.T) {
 			mockFunc: func(t *testing.T) httpClient {
 				ctrl := gomock.NewController(t)
 				cli := NewMockhttpClient(ctrl)
-				cli.EXPECT().sendGetRequest(gomock.Any(), path.Join(_apiPathPrefix, "/clusters/12/instances"), "", gomock.Any()).Return(errors.New("mock error"))
+				cli.EXPECT().sendGetRequest(gomock.Any(), path.Join(_apiPathPrefix, "/clusters/12/instances"), "", gomock.Any(), gomock.Any()).Return(errors.New("mock error"))
 				return cli
 			},
 			expectedError: "mock error",
@@ -103,7 +103,7 @@ func TestListAllGatewayInstances(t *testing.T) {
 		t.Run(tc.name, func(t *testing.T) {
 			cli := tc.mockFunc(t)
 			// ignore the gateway instances check since currently we don't mock it, and the app is always a zero value.
-			_, err := newCluster(cli).ListAllGatewayInstances(context.Background(), 12, nil)
+			_, err := newCluster(cli, &store{}).ListAllGatewayInstances(context.Background(), 12, nil)
 			if tc.expectedError == "" {
 				assert.Nil(t, err, "check gateway instances get error")
 			} else {
@@ -126,7 +126,7 @@ func TestGenerateGatewaySideCertificate(t *testing.T) {
 			mockFunc: func(t *testing.T) httpClient {
 				ctrl := gomock.NewController(t)
 				cli := NewMockhttpClient(ctrl)
-				cli.EXPECT().sendGetRequest(gomock.Any(), path.Join(_apiPathPrefix, "/clusters/1/gateway_certificate"), "", gomock.Any()).Return(nil)
+				cli.EXPECT().sendGetRequest(gomock.Any(), path.Join(_apiPathPrefix, "/clusters/1/gateway_certificate"), "", gomock.Any(), gomock.Any()).Return(nil)
 				return cli
 
 			},
@@ -137,7 +137,7 @@ func TestGenerateGatewaySideCertificate(t *testing.T) {
 			mockFunc: func(t *testing.T) httpClient {
 				ctrl := gomock.NewController(t)
 				cli := NewMockhttpClient(ctrl)
-				cli.EXPECT().sendGetRequest(gomock.Any(), path.Join(_apiPathPrefix, "/clusters/1/gateway_certificate"), "", gomock.Any()).Return(errors.New("mock error"))
+				cli.EXPECT().sendGetRequest(gomock.Any(), path.Join(_apiPathPrefix, "/clusters/1/gateway_certificate"), "", gomock.Any(), gomock.Any()).Return(errors.New("mock error"))
 				return cli
 			},
 			expectedError: "mock error",
@@ -149,7 +149,7 @@ func TestGenerateGatewaySideCertificate(t *testing.T) {
 		t.Run(tc.name, func(t *testing.T) {
 			cli := tc.mockFunc(t)
 			// ignore the application check since currently we don't mock it, and the app is always a zero value.
-			_, err := newCluster(cli).GenerateGatewaySideCertificate(context.Background(), 1, nil)
+			_, err := newCluster(cli, &store{}).GenerateGatewaySideCertificate(context.Background(), 1, nil)
 			if tc.expectedError == "" {
 				assert.Nil(t, err, "check api get error")
 			} else {
@@ -172,7 +172,7 @@ func TestListAllLabels(t *testing.T) {
 			mockFunc: func(t *testing.T) httpClient {
 				ctrl := gomock.NewController(t)
 				cli := NewMockhttpClient(ctrl)
-				cli.EXPECT().sendGetRequest(gomock.Any(), path.Join(_apiPathPrefix, "/clusters/1/labels/api"), "", gomock.Any()).Return(nil)
+				cli.EXPECT().sendGetRequest(gomock.Any(), path.Join(_apiPathPrefix, "/clusters/1/labels/api"), "", gomock.Any(), gomock.Any()).Return(nil)
 				return cli
 
 			},
@@ -183,7 +183,7 @@ func TestListAllLabels(t *testing.T) {
 			mockFunc: func(t *testing.T) httpClient {
 				ctrl := gomock.NewController(t)
 				cli := NewMockhttpClient(ctrl)
-				cli.EXPECT().sendGetRequest(gomock.Any(), path.Join(_apiPathPrefix, "/clusters/1/labels/api"), "", gomock.Any()).Return(errors.New("mock error"))
+				cli.EXPECT().sendGetRequest(gomock.Any(), path.Join(_apiPathPrefix, "/clusters/1/labels/api"), "", gomock.Any(), gomock.Any()).Return(errors.New("mock error"))
 				return cli
 			},
 			expectedError: "mock error",
@@ -195,7 +195,7 @@ func TestListAllLabels(t *testing.T) {
 		t.Run(tc.name, func(t *testing.T) {
 			cli := tc.mockFunc(t)
 			// ignore the application check since currently we don't mock it, and the app is always a zero value.
-			_, err := newCluster(cli).ListAllAPILabels(context.Background(), 1, nil)
+			_, err := newCluster(cli, &store{}).ListAllAPILabels(context.Background(), 1, nil)
 			if tc.expectedError == "" {
 				assert.Nil(t, err, "check api labels get error")
 			} else {
@@ -218,7 +218,7 @@ func TestGetCluster(t *testing.T) {
 			mockFunc: func(t *testing.T) httpClient {
 				ctrl := gomock.NewController(t)
 				cli := NewMockhttpClient(ctrl)
-				cli.EXPECT().sendGetRequest(gomock.Any(), path.Join(_apiPathPrefix, "/clusters/12"), "", gomock.Any()).Return(nil)
+				cli.EXPECT().sendGetRequest(gomock.Any(), path.Join(_apiPathPrefix, "/clusters/12"), "", gomock.Any(), gomock.Any()).Return(nil)
 				return cli
 
 			},
@@ -229,7 +229,7 @@ func TestGetCluster(t *testing.T) {
 			mockFunc: func(t *testing.T) httpClient {
 				ctrl := gomock.NewController(t)
 				cli := NewMockhttpClient(ctrl)
-				cli.EXPECT().sendGetRequest(gomock.Any(), path.Join(_apiPathPrefix, "/clusters/12"), "", gomock.Any()).Return(errors.New("mock error"))
+				cli.EXPECT().sendGetRequest(gomock.Any(), path.Join(_apiPathPrefix, "/clusters/12"), "", gomock.Any(), gomock.Any()).Return(errors.New("mock error"))
 				return cli
 			},
 			expectedError: "mock error",
@@ -241,7 +241,7 @@ func TestGetCluster(t *testing.T) {
 		t.Run(tc.name, func(t *testing.T) {
 			cli := tc.mockFunc(t)
 			// ignore the API check since currently we don't mock it, and the app is always a zero value.
-			_, err := newCluster(cli).GetCluster(context.Background(), 12, nil)
+			_, err := newCluster(cli, &store{}).GetCluster(context.Background(), 12, nil)
 			if tc.expectedError == "" {
 				assert.Nil(t, err, "check cluster get error")
 			} else {
@@ -264,7 +264,7 @@ func TestUpdateClusterSettings(t *testing.T) {
 			mockFunc: func(t *testing.T) httpClient {
 				ctrl := gomock.NewController(t)
 				cli := NewMockhttpClient(ctrl)
-				cli.EXPECT().sendPatchRequest(gomock.Any(), path.Join(_apiPathPrefix, "/clusters/12/config"), "", gomock.Any(), gomock.Any()).Return(nil)
+				cli.EXPECT().sendPatchRequest(gomock.Any(), path.Join(_apiPathPrefix, "/clusters/12/config"), "", gomock.Any(), gomock.Any(), gomock.Any()).Return(nil)
 				return cli
 
 			},
@@ -275,7 +275,7 @@ func TestUpdateClusterSettings(t *testing.T) {
 			mockFunc: func(t *testing.T) httpClient {
 				ctrl := gomock.NewController(t)
 				cli := NewMockhttpClient(ctrl)
-				cli.EXPECT().sendPatchRequest(gomock.Any(), path.Join(_apiPathPrefix, "/clusters/12/config"), "", gomock.Any(), gomock.Any()).Return(errors.New("mock error"))
+				cli.EXPECT().sendPatchRequest(gomock.Any(), path.Join(_apiPathPrefix, "/clusters/12/config"), "", gomock.Any(), gomock.Any(), gomock.Any()).Return(errors.New("mock error"))
 				return cli
 			},
 			expectedError: "mock error",
@@ -287,7 +287,7 @@ func TestUpdateClusterSettings(t *testing.T) {
 		t.Run(tc.name, func(t *testing.T) {
 			cli := tc.mockFunc(t)
 			// ignore the API check since currently we don't mock it, and the app is always a zero value.
-			err := newCluster(cli).UpdateClusterSettings(context.Background(), 12,
+			err := newCluster(cli, &store{}).UpdateClusterSettings(context.Background(), 12,
 				&ClusterSettings{
 					ClientSettings:        ClientSettings{},
 					ObservabilitySettings: ObservabilitySettings{},
@@ -315,7 +315,7 @@ func TestUpdateClusterPlugins(t *testing.T) {
 			mockFunc: func(t *testing.T) httpClient {
 				ctrl := gomock.NewController(t)
 				cli := NewMockhttpClient(ctrl)
-				cli.EXPECT().sendPatchRequest(gomock.Any(), path.Join(_apiPathPrefix, "/clusters/12/plugins"), "", gomock.Any(), gomock.Any()).Return(nil)
+				cli.EXPECT().sendPatchRequest(gomock.Any(), path.Join(_apiPathPrefix, "/clusters/12/plugins"), "", gomock.Any(), gomock.Any(), gomock.Any()).Return(nil)
 				return cli
 			},
 			expectedError: "",
@@ -325,7 +325,7 @@ func TestUpdateClusterPlugins(t *testing.T) {
 			mockFunc: func(t *testing.T) httpClient {
 				ctrl := gomock.NewController(t)
 				cli := NewMockhttpClient(ctrl)
-				cli.EXPECT().sendPatchRequest(gomock.Any(), path.Join(_apiPathPrefix, "/clusters/12/plugins"), "", gomock.Any(), gomock.Any()).Return(errors.New("mock error"))
+				cli.EXPECT().sendPatchRequest(gomock.Any(), path.Join(_apiPathPrefix, "/clusters/12/plugins"), "", gomock.Any(), gomock.Any(), gomock.Any()).Return(errors.New("mock error"))
 				return cli
 			},
 			expectedError: "mock error",
@@ -337,7 +337,7 @@ func TestUpdateClusterPlugins(t *testing.T) {
 		t.Run(tc.name, func(t *testing.T) {
 			cli := tc.mockFunc(t)
 			// ignore the API check since currently we don't mock it, and the app is always a zero value.
-			err := newCluster(cli).UpdateClusterPlugins(context.Background(), 12, Plugins{}, nil)
+			err := newCluster(cli, &store{}).UpdateClusterPlugins(context.Background(), 12, Plugins{}, nil)
 			if tc.expectedError == "" {
 				assert.Nil(t, err, "check update cluster settings error")
 			} else {
@@ -360,7 +360,7 @@ func TestGetGatewayInstanceStartupConfigTemplate(t *testing.T) {
 			mockFunc: func(t *testing.T) httpClient {
 				ctrl := gomock.NewController(t)
 				cli := NewMockhttpClient(ctrl)
-				cli.EXPECT().sendGetRequest(gomock.Any(), path.Join(_apiPathPrefix, "/clusters/1/startup_config_tpl/helm"), "", gomock.Any()).Return(nil)
+				cli.EXPECT().sendGetRequest(gomock.Any(), path.Join(_apiPathPrefix, "/clusters/1/startup_config_tpl/helm"), "", gomock.Any(), gomock.Any()).Return(nil)
 				return cli
 
 			},
@@ -371,7 +371,7 @@ func TestGetGatewayInstanceStartupConfigTemplate(t *testing.T) {
 			mockFunc: func(t *testing.T) httpClient {
 				ctrl := gomock.NewController(t)
 				cli := NewMockhttpClient(ctrl)
-				cli.EXPECT().sendGetRequest(gomock.Any(), path.Join(_apiPathPrefix, "/clusters/1/startup_config_tpl/helm"), "", gomock.Any()).Return(errors.New("mock error"))
+				cli.EXPECT().sendGetRequest(gomock.Any(), path.Join(_apiPathPrefix, "/clusters/1/startup_config_tpl/helm"), "", gomock.Any(), gomock.Any()).Return(errors.New("mock error"))
 				return cli
 			},
 			expectedError: "mock error",
@@ -383,7 +383,7 @@ func TestGetGatewayInstanceStartupConfigTemplate(t *testing.T) {
 		t.Run(tc.name, func(t *testing.T) {
 			cli := tc.mockFunc(t)
 			// ignore the application check since currently we don't mock it, and the app is always a zero value.
-			_, err := newCluster(cli).GetGatewayInstanceStartupConfigTemplate(context.Background(), 1, "helm", nil)
+			_, err := newCluster(cli, &store{}).GetGatewayInstanceStartupConfigTemplate(context.Background(), 1, "helm", nil)
 			if tc.expectedError == "" {
 				assert.Nil(t, err, "check api get error")
 			} else {

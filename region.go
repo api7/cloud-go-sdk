@@ -54,15 +54,17 @@ type RegionListIterator interface {
 
 type regionImpl struct {
 	client httpClient
+	store  StoreInterface
 }
 
 type regionListIterator struct {
 	iter listIterator
 }
 
-func newRegion(client httpClient) RegionInterface {
+func newRegion(client httpClient, store StoreInterface) RegionInterface {
 	return &regionImpl{
 		client: client,
+		store:  store,
 	}
 }
 
@@ -98,6 +100,7 @@ func (impl *regionImpl) ListRegions(ctx context.Context, opts *ResourceListOptio
 		path:     path.Join(_apiPathPrefix, "regions"),
 		paging:   mergePagination(paging),
 		filter:   filter,
+		headers:  appendHeader(mapClusterIdFromStore(impl.store), mapClusterIdFromOpts(opts)),
 	}
 
 	return &regionListIterator{iter: iter}, nil

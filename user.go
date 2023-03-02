@@ -47,11 +47,13 @@ type UserInterface interface {
 
 type userImpl struct {
 	client httpClient
+	store  StoreInterface
 }
 
-func newUser(cli httpClient) UserInterface {
+func newUser(cli httpClient, store StoreInterface) UserInterface {
 	return &userImpl{
 		client: cli,
+		store:  store,
 	}
 }
 
@@ -59,7 +61,7 @@ func (impl *userImpl) Me(ctx context.Context) (*User, error) {
 	var user User
 
 	apiPath := path.Join(_apiPathPrefix, "/user/me")
-	if err := impl.client.sendGetRequest(ctx, apiPath, "", jsonPayloadDecodeFactory(&user)); err != nil {
+	if err := impl.client.sendGetRequest(ctx, apiPath, "", jsonPayloadDecodeFactory(&user), map[string]string{}); err != nil {
 		return nil, errors.Wrap(err, apiPath)
 	}
 	return &user, nil

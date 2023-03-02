@@ -108,6 +108,7 @@ type CertificateListIterator interface {
 
 type certificateImpl struct {
 	client httpClient
+	store  StoreInterface
 }
 type certificatesListIterator struct {
 	iter listIterator
@@ -125,9 +126,10 @@ func (iter *certificatesListIterator) Next() (*Certificate, error) {
 	return &cert, nil
 }
 
-func newCertificate(cli httpClient) CertificateInterface {
+func newCertificate(cli httpClient, store StoreInterface) CertificateInterface {
 	return &certificateImpl{
 		client: cli,
+		store:  store,
 	}
 }
 
@@ -136,7 +138,7 @@ func (impl *certificateImpl) CreateCertificate(ctx context.Context, cert *Certif
 
 	clusterID := opts.Cluster.ID
 	uri := path.Join(_apiPathPrefix, "clusters", clusterID.String(), "certificates")
-	err := impl.client.sendPostRequest(ctx, uri, "", cert, jsonPayloadDecodeFactory(&createdCert))
+	err := impl.client.sendPostRequest(ctx, uri, "", cert, jsonPayloadDecodeFactory(&createdCert), appendHeader(mapClusterIdFromStore(impl.store), mapClusterIdFromOpts(opts)))
 	if err != nil {
 		return nil, err
 	}
@@ -148,7 +150,7 @@ func (impl *certificateImpl) UpdateCertificate(ctx context.Context, cert *Certif
 
 	clusterID := opts.Cluster.ID
 	uri := path.Join(_apiPathPrefix, "clusters", clusterID.String(), "certificates", cert.ID.String())
-	err := impl.client.sendPutRequest(ctx, uri, "", cert, jsonPayloadDecodeFactory(&updatedCert))
+	err := impl.client.sendPutRequest(ctx, uri, "", cert, jsonPayloadDecodeFactory(&updatedCert), appendHeader(mapClusterIdFromStore(impl.store), mapClusterIdFromOpts(opts)))
 	if err != nil {
 		return nil, err
 	}
@@ -158,7 +160,7 @@ func (impl *certificateImpl) UpdateCertificate(ctx context.Context, cert *Certif
 func (impl *certificateImpl) DeleteCertificate(ctx context.Context, certID ID, opts *ResourceDeleteOptions) error {
 	clusterID := opts.Cluster.ID
 	uri := path.Join(_apiPathPrefix, "clusters", clusterID.String(), "certificates", certID.String())
-	return impl.client.sendDeleteRequest(ctx, uri, "", nil)
+	return impl.client.sendDeleteRequest(ctx, uri, "", nil, appendHeader(mapClusterIdFromStore(impl.store), mapClusterIdFromOpts(opts)))
 }
 
 func (impl *certificateImpl) GetCertificate(ctx context.Context, certID ID, opts *ResourceGetOptions) (*Certificate, error) {
@@ -166,7 +168,7 @@ func (impl *certificateImpl) GetCertificate(ctx context.Context, certID ID, opts
 
 	clusterID := opts.Cluster.ID
 	uri := path.Join(_apiPathPrefix, "clusters", clusterID.String(), "certificates", certID.String())
-	err := impl.client.sendGetRequest(ctx, uri, "", jsonPayloadDecodeFactory(&cert))
+	err := impl.client.sendGetRequest(ctx, uri, "", jsonPayloadDecodeFactory(&cert), appendHeader(mapClusterIdFromStore(impl.store), mapClusterIdFromOpts(opts)))
 	if err != nil {
 		return nil, err
 	}
@@ -181,6 +183,7 @@ func (impl *certificateImpl) ListCertificates(ctx context.Context, opts *Resourc
 		path:     path.Join(_apiPathPrefix, "clusters", opts.Cluster.ID.String(), "certificates"),
 		paging:   mergePagination(opts.Pagination),
 		filter:   opts.Filter,
+		headers:  appendHeader(mapClusterIdFromStore(impl.store), mapClusterIdFromOpts(opts)),
 	}
 
 	return &certificatesListIterator{iter: iter}, nil
@@ -189,7 +192,7 @@ func (impl *certificateImpl) ListCertificates(ctx context.Context, opts *Resourc
 func (impl *certificateImpl) DebugCertificateResources(ctx context.Context, certID ID, opts *ResourceGetOptions) (string, error) {
 	var rawData json.RawMessage
 	uri := path.Join(_apiPathPrefix, "debug", "config", "clusters", opts.Cluster.ID.String(), "certificate", certID.String())
-	err := impl.client.sendGetRequest(ctx, uri, "", jsonPayloadDecodeFactory(&rawData))
+	err := impl.client.sendGetRequest(ctx, uri, "", jsonPayloadDecodeFactory(&rawData), appendHeader(mapClusterIdFromStore(impl.store), mapClusterIdFromOpts(opts)))
 	if err != nil {
 		return "", err
 	}

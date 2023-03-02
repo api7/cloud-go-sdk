@@ -122,6 +122,7 @@ type ApplicationListIterator interface {
 
 type applicationImpl struct {
 	client httpClient
+	store  StoreInterface
 }
 
 type applicationListIterator struct {
@@ -143,9 +144,10 @@ func (iter *applicationListIterator) Next() (*Application, error) {
 	return &app, nil
 }
 
-func newApplication(cli httpClient) ApplicationInterface {
+func newApplication(cli httpClient, store StoreInterface) ApplicationInterface {
 	return &applicationImpl{
 		client: cli,
+		store:  store,
 	}
 }
 
@@ -154,7 +156,7 @@ func (impl *applicationImpl) CreateApplication(ctx context.Context, app *Applica
 
 	clusterID := opts.Cluster.ID
 	uri := path.Join(_apiPathPrefix, "clusters", clusterID.String(), "apps")
-	err := impl.client.sendPostRequest(ctx, uri, "", app, jsonPayloadDecodeFactory(&createdApp))
+	err := impl.client.sendPostRequest(ctx, uri, "", app, jsonPayloadDecodeFactory(&createdApp), appendHeader(mapClusterIdFromStore(impl.store), mapClusterIdFromOpts(opts)))
 	if err != nil {
 		return nil, err
 	}
@@ -166,7 +168,7 @@ func (impl *applicationImpl) UpdateApplication(ctx context.Context, app *Applica
 
 	clusterID := opts.Cluster.ID
 	uri := path.Join(_apiPathPrefix, "clusters", clusterID.String(), "apps", app.ID.String())
-	err := impl.client.sendPutRequest(ctx, uri, "", app, jsonPayloadDecodeFactory(&updatedApp))
+	err := impl.client.sendPutRequest(ctx, uri, "", app, jsonPayloadDecodeFactory(&updatedApp), appendHeader(mapClusterIdFromStore(impl.store), mapClusterIdFromOpts(opts)))
 	if err != nil {
 		return nil, err
 	}
@@ -176,7 +178,7 @@ func (impl *applicationImpl) UpdateApplication(ctx context.Context, app *Applica
 func (impl *applicationImpl) DeleteApplication(ctx context.Context, appID ID, opts *ResourceDeleteOptions) error {
 	clusterID := opts.Cluster.ID
 	uri := path.Join(_apiPathPrefix, "clusters", clusterID.String(), "apps", appID.String())
-	return impl.client.sendDeleteRequest(ctx, uri, "", nil)
+	return impl.client.sendDeleteRequest(ctx, uri, "", nil, appendHeader(mapClusterIdFromStore(impl.store), mapClusterIdFromOpts(opts)))
 }
 
 func (impl *applicationImpl) GetApplication(ctx context.Context, appID ID, opts *ResourceGetOptions) (*Application, error) {
@@ -184,7 +186,7 @@ func (impl *applicationImpl) GetApplication(ctx context.Context, appID ID, opts 
 
 	clusterID := opts.Cluster.ID
 	uri := path.Join(_apiPathPrefix, "clusters", clusterID.String(), "apps", appID.String())
-	err := impl.client.sendGetRequest(ctx, uri, "", jsonPayloadDecodeFactory(&app))
+	err := impl.client.sendGetRequest(ctx, uri, "", jsonPayloadDecodeFactory(&app), appendHeader(mapClusterIdFromStore(impl.store), mapClusterIdFromOpts(opts)))
 	if err != nil {
 		return nil, err
 	}
@@ -197,7 +199,7 @@ func (impl *applicationImpl) PublishApplication(ctx context.Context, appID ID, o
 	clusterID := opts.Cluster.ID
 	uri := path.Join(_apiPathPrefix, "clusters", clusterID.String(), "apps", appID.String())
 	body := []byte(`{"active":0}`)
-	err := impl.client.sendPatchRequest(ctx, uri, "", body, jsonPayloadDecodeFactory(&app))
+	err := impl.client.sendPatchRequest(ctx, uri, "", body, jsonPayloadDecodeFactory(&app), appendHeader(mapClusterIdFromStore(impl.store), mapClusterIdFromOpts(opts)))
 	if err != nil {
 		return nil, err
 	}
@@ -210,7 +212,7 @@ func (impl *applicationImpl) UnpublishApplication(ctx context.Context, appID ID,
 	clusterID := opts.Cluster.ID
 	uri := path.Join(_apiPathPrefix, "clusters", clusterID.String(), "apps", appID.String())
 	body := []byte(`{"active":1}`)
-	err := impl.client.sendPatchRequest(ctx, uri, "", body, jsonPayloadDecodeFactory(&app))
+	err := impl.client.sendPatchRequest(ctx, uri, "", body, jsonPayloadDecodeFactory(&app), appendHeader(mapClusterIdFromStore(impl.store), mapClusterIdFromOpts(opts)))
 	if err != nil {
 		return nil, err
 	}
@@ -225,6 +227,7 @@ func (impl *applicationImpl) ListApplications(ctx context.Context, opts *Resourc
 		path:     path.Join(_apiPathPrefix, "clusters", opts.Cluster.ID.String(), "apps"),
 		paging:   mergePagination(opts.Pagination),
 		filter:   opts.Filter,
+		headers:  appendHeader(mapClusterIdFromStore(impl.store), mapClusterIdFromOpts(opts)),
 	}
 
 	return &applicationListIterator{iter: iter}, nil
@@ -233,7 +236,7 @@ func (impl *applicationImpl) ListApplications(ctx context.Context, opts *Resourc
 func (impl *applicationImpl) DebugApplicationResources(ctx context.Context, appID ID, opts *ResourceGetOptions) (string, error) {
 	var rawData json.RawMessage
 	uri := path.Join(_apiPathPrefix, "debug", "config", "clusters", opts.Cluster.ID.String(), "application", appID.String())
-	err := impl.client.sendGetRequest(ctx, uri, "", jsonPayloadDecodeFactory(&rawData))
+	err := impl.client.sendGetRequest(ctx, uri, "", jsonPayloadDecodeFactory(&rawData), appendHeader(mapClusterIdFromStore(impl.store), mapClusterIdFromOpts(opts)))
 	if err != nil {
 		return "", err
 	}

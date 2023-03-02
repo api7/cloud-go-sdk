@@ -460,6 +460,20 @@ func (mr *MockInterfaceMockRecorder) GetGatewayInstanceStartupConfigTemplate(ctx
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetGatewayInstanceStartupConfigTemplate", reflect.TypeOf((*MockInterface)(nil).GetGatewayInstanceStartupConfigTemplate), ctx, clusterID, configType, opts)
 }
 
+// GetGlobalClusterID mocks base method.
+func (m *MockInterface) GetGlobalClusterID() ID {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetGlobalClusterID")
+	ret0, _ := ret[0].(ID)
+	return ret0
+}
+
+// GetGlobalClusterID indicates an expected call of GetGlobalClusterID.
+func (mr *MockInterfaceMockRecorder) GetGlobalClusterID() *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetGlobalClusterID", reflect.TypeOf((*MockInterface)(nil).GetGlobalClusterID))
+}
+
 // GetLogCollection mocks base method.
 func (m *MockInterface) GetLogCollection(ctx context.Context, lcID ID, opts *ResourceGetOptions) (*LogCollection, error) {
 	m.ctrl.T.Helper()
@@ -862,6 +876,18 @@ func (m *MockInterface) RemoveMember(ctx context.Context, memberID ID, opts *Res
 func (mr *MockInterfaceMockRecorder) RemoveMember(ctx, memberID, opts interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RemoveMember", reflect.TypeOf((*MockInterface)(nil).RemoveMember), ctx, memberID, opts)
+}
+
+// SetGlobalClusterID mocks base method.
+func (m *MockInterface) SetGlobalClusterID(id ID) {
+	m.ctrl.T.Helper()
+	m.ctrl.Call(m, "SetGlobalClusterID", id)
+}
+
+// SetGlobalClusterID indicates an expected call of SetGlobalClusterID.
+func (mr *MockInterfaceMockRecorder) SetGlobalClusterID(id interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SetGlobalClusterID", reflect.TypeOf((*MockInterface)(nil).SetGlobalClusterID), id)
 }
 
 // StartCanaryRelease mocks base method.

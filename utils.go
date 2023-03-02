@@ -9,6 +9,7 @@ import (
 	"github.com/bitly/go-simplejson"
 	"github.com/pkg/errors"
 	"gopkg.in/yaml.v3"
+	"strings"
 )
 
 func configureTokenFromFile(tokenPath string) (*AccessToken, error) {
@@ -104,4 +105,40 @@ func formatJSONData(raw []byte) (string, error) {
 		return "", err
 	}
 	return string(newData), nil
+}
+
+func FormatTraceSeries(data *TraceSeries) string {
+	req := data.Request
+	output := strings.Builder{}
+	output.WriteString(fmt.Sprintf("[%v] Send a %v request to %v \n", data.ID, req.Method, req.URL.String()))
+	output.WriteString(fmt.Sprintf("[%v] With request header:  %v \n", data.ID, req.Header))
+
+	if len(data.RequestBody) != 0 {
+		output.WriteString(fmt.Sprintf("[%v] Send a request body: %s\n", data.ID, string(data.RequestBody)))
+	}
+
+	output.WriteString(fmt.Sprintf("[%v] Receive a response with status: %v\n", data.ID, data.Response.StatusCode))
+	if len(data.ResponseBody) != 0 {
+		output.WriteString(fmt.Sprintf("[%v] Receive a response body: %s\n", data.ID, string(data.ResponseBody)))
+	}
+
+	evts := data.Events
+	output.WriteString(fmt.Sprintf("[%v] Dump %d events:\n", data.ID, len(evts)))
+	for i, evt := range evts {
+		output.WriteString(fmt.Sprintf("[%v] Event#%d %s : %s\n", data.ID, i, evt.HappenedAt.Format("2006-01-02 15:04:05"), evt.Message))
+	}
+
+	return output.String()
+}
+
+func ensureClusterID(s StoreInterface, opts ResourceCommonOpts) bool {
+	if s != nil && s.GetGlobalClusterID() > 0 {
+		return true
+	}
+
+	if opts == nil || opts.GetCluster() == nil || opts.GetCluster().ID <= 0 {
+		return false
+	}
+
+	return true
 }

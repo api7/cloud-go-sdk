@@ -38,7 +38,7 @@ func TestUserMe(t *testing.T) {
 			mockFunc: func(t *testing.T) httpClient {
 				ctrl := gomock.NewController(t)
 				cli := NewMockhttpClient(ctrl)
-				cli.EXPECT().sendGetRequest(gomock.Any(), path.Join(_apiPathPrefix, "/user/me"), "", gomock.Any()).Return(errors.New("mock error"))
+				cli.EXPECT().sendGetRequest(gomock.Any(), path.Join(_apiPathPrefix, "/user/me"), "", gomock.Any(), gomock.Any()).Return(errors.New("mock error"))
 				return cli
 			},
 			expectedUser:  nil,
@@ -49,7 +49,7 @@ func TestUserMe(t *testing.T) {
 			mockFunc: func(t *testing.T) httpClient {
 				ctrl := gomock.NewController(t)
 				cli := NewMockhttpClient(ctrl)
-				cli.EXPECT().sendGetRequest(gomock.Any(), path.Join(_apiPathPrefix, "/user/me"), "", gomock.Any()).Return(nil)
+				cli.EXPECT().sendGetRequest(gomock.Any(), path.Join(_apiPathPrefix, "/user/me"), "", gomock.Any(), gomock.Any()).Return(nil)
 				return cli
 			},
 			expectedUser:  &User{},
@@ -62,7 +62,7 @@ func TestUserMe(t *testing.T) {
 		t.Run(tc.name, func(t *testing.T) {
 			t.Parallel()
 
-			user, err := newUser(tc.mockFunc(t)).Me(context.Background())
+			user, err := newUser(tc.mockFunc(t), &store{}).Me(context.Background())
 			if tc.expectedError != "" {
 				assert.EqualError(t, err, tc.expectedError, "check error")
 			} else {

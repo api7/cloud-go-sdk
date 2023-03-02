@@ -46,7 +46,7 @@ func TestCreateServiceRegistry(t *testing.T) {
 			mockFunc: func(t *testing.T) httpClient {
 				ctrl := gomock.NewController(t)
 				cli := NewMockhttpClient(ctrl)
-				cli.EXPECT().sendPostRequest(gomock.Any(), path.Join(_apiPathPrefix, "/clusters/1/service_registries"), "", gomock.Any(), gomock.Any()).Return(nil)
+				cli.EXPECT().sendPostRequest(gomock.Any(), path.Join(_apiPathPrefix, "/clusters/1/service_registries"), "", gomock.Any(), gomock.Any(), gomock.Any()).Return(nil)
 				return cli
 
 			},
@@ -65,7 +65,7 @@ func TestCreateServiceRegistry(t *testing.T) {
 			mockFunc: func(t *testing.T) httpClient {
 				ctrl := gomock.NewController(t)
 				cli := NewMockhttpClient(ctrl)
-				cli.EXPECT().sendPostRequest(gomock.Any(), path.Join(_apiPathPrefix, "/clusters/1/service_registries"), "", gomock.Any(), gomock.Any()).Return(errors.New("mock error"))
+				cli.EXPECT().sendPostRequest(gomock.Any(), path.Join(_apiPathPrefix, "/clusters/1/service_registries"), "", gomock.Any(), gomock.Any(), gomock.Any()).Return(errors.New("mock error"))
 				return cli
 
 			},
@@ -77,7 +77,7 @@ func TestCreateServiceRegistry(t *testing.T) {
 		tc := tc
 		t.Run(tc.name, func(t *testing.T) {
 			cli := tc.mockFunc(t)
-			_, err := newServiceDiscovery(cli).CreateServiceRegistry(context.Background(), tc.pendingRegistry, &ResourceCreateOptions{
+			_, err := newServiceDiscovery(cli, &store{}).CreateServiceRegistry(context.Background(), tc.pendingRegistry, &ResourceCreateOptions{
 				Cluster: &Cluster{
 					ID: 1,
 				},
@@ -114,7 +114,7 @@ func TestUpdateServiceRegistry(t *testing.T) {
 			mockFunc: func(t *testing.T) httpClient {
 				ctrl := gomock.NewController(t)
 				cli := NewMockhttpClient(ctrl)
-				cli.EXPECT().sendPutRequest(gomock.Any(), path.Join(_apiPathPrefix, "/clusters/1/service_registries/12"), "", gomock.Any(), gomock.Any()).Return(nil)
+				cli.EXPECT().sendPutRequest(gomock.Any(), path.Join(_apiPathPrefix, "/clusters/1/service_registries/12"), "", gomock.Any(), gomock.Any(), gomock.Any()).Return(nil)
 				return cli
 
 			},
@@ -134,7 +134,7 @@ func TestUpdateServiceRegistry(t *testing.T) {
 			mockFunc: func(t *testing.T) httpClient {
 				ctrl := gomock.NewController(t)
 				cli := NewMockhttpClient(ctrl)
-				cli.EXPECT().sendPutRequest(gomock.Any(), path.Join(_apiPathPrefix, "/clusters/1/service_registries/12"), "", gomock.Any(), gomock.Any()).Return(errors.New("mock error"))
+				cli.EXPECT().sendPutRequest(gomock.Any(), path.Join(_apiPathPrefix, "/clusters/1/service_registries/12"), "", gomock.Any(), gomock.Any(), gomock.Any()).Return(errors.New("mock error"))
 				return cli
 
 			},
@@ -146,7 +146,7 @@ func TestUpdateServiceRegistry(t *testing.T) {
 		tc := tc
 		t.Run(tc.name, func(t *testing.T) {
 			cli := tc.mockFunc(t)
-			_, err := newServiceDiscovery(cli).UpdateServiceRegistry(context.Background(), tc.pendingRegistry, &ResourceUpdateOptions{
+			_, err := newServiceDiscovery(cli, &store{}).UpdateServiceRegistry(context.Background(), tc.pendingRegistry, &ResourceUpdateOptions{
 				Cluster: &Cluster{
 					ID: 1,
 				},
@@ -173,7 +173,7 @@ func TestDeleteServiceRegistry(t *testing.T) {
 			mockFunc: func(t *testing.T) httpClient {
 				ctrl := gomock.NewController(t)
 				cli := NewMockhttpClient(ctrl)
-				cli.EXPECT().sendDeleteRequest(gomock.Any(), path.Join(_apiPathPrefix, "/clusters/1/service_registries/12"), "", nil).Return(nil)
+				cli.EXPECT().sendDeleteRequest(gomock.Any(), path.Join(_apiPathPrefix, "/clusters/1/service_registries/12"), "", nil, gomock.Any()).Return(nil)
 				return cli
 
 			},
@@ -184,7 +184,7 @@ func TestDeleteServiceRegistry(t *testing.T) {
 			mockFunc: func(t *testing.T) httpClient {
 				ctrl := gomock.NewController(t)
 				cli := NewMockhttpClient(ctrl)
-				cli.EXPECT().sendDeleteRequest(gomock.Any(), path.Join(_apiPathPrefix, "/clusters/1/service_registries/12"), "", nil).Return(errors.New("mock error"))
+				cli.EXPECT().sendDeleteRequest(gomock.Any(), path.Join(_apiPathPrefix, "/clusters/1/service_registries/12"), "", nil, gomock.Any()).Return(errors.New("mock error"))
 				return cli
 
 			},
@@ -196,7 +196,7 @@ func TestDeleteServiceRegistry(t *testing.T) {
 		tc := tc
 		t.Run(tc.name, func(t *testing.T) {
 			cli := tc.mockFunc(t)
-			err := newServiceDiscovery(cli).DeleteServiceRegistry(context.Background(), 12, &ResourceDeleteOptions{
+			err := newServiceDiscovery(cli, &store{}).DeleteServiceRegistry(context.Background(), 12, &ResourceDeleteOptions{
 				Cluster: &Cluster{
 					ID: 1,
 				},
@@ -223,7 +223,7 @@ func TestGetServiceRegistry(t *testing.T) {
 			mockFunc: func(t *testing.T) httpClient {
 				ctrl := gomock.NewController(t)
 				cli := NewMockhttpClient(ctrl)
-				cli.EXPECT().sendGetRequest(gomock.Any(), path.Join(_apiPathPrefix, "/clusters/1/service_registries/12"), "", gomock.Any()).Return(nil)
+				cli.EXPECT().sendGetRequest(gomock.Any(), path.Join(_apiPathPrefix, "/clusters/1/service_registries/12"), "", gomock.Any(), gomock.Any()).Return(nil)
 				return cli
 
 			},
@@ -234,7 +234,7 @@ func TestGetServiceRegistry(t *testing.T) {
 			mockFunc: func(t *testing.T) httpClient {
 				ctrl := gomock.NewController(t)
 				cli := NewMockhttpClient(ctrl)
-				cli.EXPECT().sendGetRequest(gomock.Any(), path.Join(_apiPathPrefix, "/clusters/1/service_registries/12"), "", gomock.Any()).Return(errors.New("mock error"))
+				cli.EXPECT().sendGetRequest(gomock.Any(), path.Join(_apiPathPrefix, "/clusters/1/service_registries/12"), "", gomock.Any(), gomock.Any()).Return(errors.New("mock error"))
 				return cli
 			},
 			expectedError: "mock error",
@@ -246,7 +246,7 @@ func TestGetServiceRegistry(t *testing.T) {
 		t.Run(tc.name, func(t *testing.T) {
 			cli := tc.mockFunc(t)
 			// ignore the application check since currently we don't mock it, and the app is always a zero value.
-			_, err := newServiceDiscovery(cli).GetServiceRegistry(context.Background(), 12, &ResourceGetOptions{
+			_, err := newServiceDiscovery(cli, &store{}).GetServiceRegistry(context.Background(), 12, &ResourceGetOptions{
 				Cluster: &Cluster{
 					ID: 1,
 				},
@@ -287,7 +287,7 @@ func TestListServiceRegistries(t *testing.T) {
 		tc := tc
 		t.Run(tc.name, func(t *testing.T) {
 			// ignore the service registry check since currently we don't mock it, and the app is always a zero value.
-			raw, err := newServiceDiscovery(nil).ListServiceRegistries(context.Background(), &ResourceListOptions{
+			raw, err := newServiceDiscovery(nil, &store{}).ListServiceRegistries(context.Background(), &ResourceListOptions{
 				Cluster: &Cluster{
 					ID: 123,
 				},

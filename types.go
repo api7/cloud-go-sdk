@@ -22,6 +22,7 @@ import (
 
 // Interface is the entrypoint of the Cloud Go SDK.
 type Interface interface {
+	StoreInterface
 	TraceInterface
 	UserInterface
 	AuthInterface
@@ -47,6 +48,7 @@ type AccessToken struct {
 }
 
 type impl struct {
+	StoreInterface
 	TraceInterface
 	UserInterface
 	AuthInterface
@@ -63,7 +65,9 @@ type impl struct {
 }
 
 var (
-	_apiPathPrefix = "/api/v1"
+	_apiPathPrefix       = "/api/v1"
+	ClusterHeaderName    = "X-API7-Cloud-Gateway-Cluster-ID"
+	ErrClusterIDNotExist = errors.New("cluster id not exist")
 )
 
 // NewInterface creates an Interface object.
@@ -103,19 +107,21 @@ func NewInterface(opts *Options) (Interface, error) {
 		return nil, errors.Wrap(err, "new interface")
 	}
 
+	globalStore := newStore()
 	return &impl{
+		StoreInterface:            globalStore,
 		TraceInterface:            trace,
-		UserInterface:             newUser(cli),
-		AuthInterface:             newAuth(cli),
-		ApplicationInterface:      newApplication(cli),
-		APIInterface:              newAPI(cli),
-		ClusterInterface:          newCluster(cli),
-		OrganizationInterface:     newOrganization(cli),
-		RegionInterface:           newRegion(cli),
-		CanaryReleaseInterface:    newCanaryRelease(cli),
-		CertificateInterface:      newCertificate(cli),
-		ConsumerInterface:         newConsumer(cli),
-		LogCollectionInterface:    newLogCollection(cli),
-		ServiceDiscoveryInterface: newServiceDiscovery(cli),
+		UserInterface:             newUser(cli, globalStore),
+		AuthInterface:             newAuth(cli, globalStore),
+		ApplicationInterface:      newApplication(cli, globalStore),
+		APIInterface:              newAPI(cli, globalStore),
+		ClusterInterface:          newCluster(cli, globalStore),
+		OrganizationInterface:     newOrganization(cli, globalStore),
+		RegionInterface:           newRegion(cli, globalStore),
+		CanaryReleaseInterface:    newCanaryRelease(cli, globalStore),
+		CertificateInterface:      newCertificate(cli, globalStore),
+		ConsumerInterface:         newConsumer(cli, globalStore),
+		LogCollectionInterface:    newLogCollection(cli, globalStore),
+		ServiceDiscoveryInterface: newServiceDiscovery(cli, globalStore),
 	}, err
 }

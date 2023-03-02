@@ -56,7 +56,7 @@ func TestCreateCertificate(t *testing.T) {
 			mockFunc: func(t *testing.T) httpClient {
 				ctrl := gomock.NewController(t)
 				cli := NewMockhttpClient(ctrl)
-				cli.EXPECT().sendPostRequest(gomock.Any(), path.Join(_apiPathPrefix, "/clusters/1/certificates"), "", gomock.Any(), gomock.Any()).Return(nil)
+				cli.EXPECT().sendPostRequest(gomock.Any(), path.Join(_apiPathPrefix, "/clusters/1/certificates"), "", gomock.Any(), gomock.Any(), gomock.Any()).Return(nil)
 				return cli
 
 			},
@@ -75,7 +75,7 @@ func TestCreateCertificate(t *testing.T) {
 			mockFunc: func(t *testing.T) httpClient {
 				ctrl := gomock.NewController(t)
 				cli := NewMockhttpClient(ctrl)
-				cli.EXPECT().sendPostRequest(gomock.Any(), path.Join(_apiPathPrefix, "/clusters/1/certificates"), "", gomock.Any(), gomock.Any()).Return(errors.New("mock error"))
+				cli.EXPECT().sendPostRequest(gomock.Any(), path.Join(_apiPathPrefix, "/clusters/1/certificates"), "", gomock.Any(), gomock.Any(), gomock.Any()).Return(errors.New("mock error"))
 				return cli
 
 			},
@@ -87,7 +87,7 @@ func TestCreateCertificate(t *testing.T) {
 		tc := tc
 		t.Run(tc.name, func(t *testing.T) {
 			cli := tc.mockFunc(t)
-			_, err := newCertificate(cli).CreateCertificate(context.Background(), tc.pendingCert, &ResourceCreateOptions{
+			_, err := newCertificate(cli, &store{}).CreateCertificate(context.Background(), tc.pendingCert, &ResourceCreateOptions{
 				Cluster: &Cluster{
 					ID: 1,
 				},
@@ -133,7 +133,7 @@ func TestUpdateCertificate(t *testing.T) {
 			mockFunc: func(t *testing.T) httpClient {
 				ctrl := gomock.NewController(t)
 				cli := NewMockhttpClient(ctrl)
-				cli.EXPECT().sendPutRequest(gomock.Any(), path.Join(_apiPathPrefix, "/clusters/1/certificates/12"), "", gomock.Any(), gomock.Any()).Return(nil)
+				cli.EXPECT().sendPutRequest(gomock.Any(), path.Join(_apiPathPrefix, "/clusters/1/certificates/12"), "", gomock.Any(), gomock.Any(), gomock.Any()).Return(nil)
 				return cli
 
 			},
@@ -153,7 +153,7 @@ func TestUpdateCertificate(t *testing.T) {
 			mockFunc: func(t *testing.T) httpClient {
 				ctrl := gomock.NewController(t)
 				cli := NewMockhttpClient(ctrl)
-				cli.EXPECT().sendPutRequest(gomock.Any(), path.Join(_apiPathPrefix, "/clusters/1/certificates/12"), "", gomock.Any(), gomock.Any()).Return(errors.New("mock error"))
+				cli.EXPECT().sendPutRequest(gomock.Any(), path.Join(_apiPathPrefix, "/clusters/1/certificates/12"), "", gomock.Any(), gomock.Any(), gomock.Any()).Return(errors.New("mock error"))
 				return cli
 
 			},
@@ -165,7 +165,7 @@ func TestUpdateCertificate(t *testing.T) {
 		tc := tc
 		t.Run(tc.name, func(t *testing.T) {
 			cli := tc.mockFunc(t)
-			_, err := newCertificate(cli).UpdateCertificate(context.Background(), tc.pendingCert, &ResourceUpdateOptions{
+			_, err := newCertificate(cli, &store{}).UpdateCertificate(context.Background(), tc.pendingCert, &ResourceUpdateOptions{
 				Cluster: &Cluster{
 					ID: 1,
 				},
@@ -192,7 +192,7 @@ func TestDeleteCertificate(t *testing.T) {
 			mockFunc: func(t *testing.T) httpClient {
 				ctrl := gomock.NewController(t)
 				cli := NewMockhttpClient(ctrl)
-				cli.EXPECT().sendDeleteRequest(gomock.Any(), path.Join(_apiPathPrefix, "/clusters/1/certificates/12"), "", nil).Return(nil)
+				cli.EXPECT().sendDeleteRequest(gomock.Any(), path.Join(_apiPathPrefix, "/clusters/1/certificates/12"), "", nil, gomock.Any()).Return(nil)
 				return cli
 
 			},
@@ -203,7 +203,7 @@ func TestDeleteCertificate(t *testing.T) {
 			mockFunc: func(t *testing.T) httpClient {
 				ctrl := gomock.NewController(t)
 				cli := NewMockhttpClient(ctrl)
-				cli.EXPECT().sendDeleteRequest(gomock.Any(), path.Join(_apiPathPrefix, "/clusters/1/certificates/12"), "", nil).Return(errors.New("mock error"))
+				cli.EXPECT().sendDeleteRequest(gomock.Any(), path.Join(_apiPathPrefix, "/clusters/1/certificates/12"), "", nil, gomock.Any()).Return(errors.New("mock error"))
 				return cli
 
 			},
@@ -215,7 +215,7 @@ func TestDeleteCertificate(t *testing.T) {
 		tc := tc
 		t.Run(tc.name, func(t *testing.T) {
 			cli := tc.mockFunc(t)
-			err := newCertificate(cli).DeleteCertificate(context.Background(), 12, &ResourceDeleteOptions{
+			err := newCertificate(cli, &store{}).DeleteCertificate(context.Background(), 12, &ResourceDeleteOptions{
 				Cluster: &Cluster{
 					ID: 1,
 				},
@@ -242,7 +242,7 @@ func TestGetCertificate(t *testing.T) {
 			mockFunc: func(t *testing.T) httpClient {
 				ctrl := gomock.NewController(t)
 				cli := NewMockhttpClient(ctrl)
-				cli.EXPECT().sendGetRequest(gomock.Any(), path.Join(_apiPathPrefix, "/clusters/1/certificates/12"), "", gomock.Any()).Return(nil)
+				cli.EXPECT().sendGetRequest(gomock.Any(), path.Join(_apiPathPrefix, "/clusters/1/certificates/12"), "", gomock.Any(), gomock.Any()).Return(nil)
 				return cli
 
 			},
@@ -253,7 +253,7 @@ func TestGetCertificate(t *testing.T) {
 			mockFunc: func(t *testing.T) httpClient {
 				ctrl := gomock.NewController(t)
 				cli := NewMockhttpClient(ctrl)
-				cli.EXPECT().sendGetRequest(gomock.Any(), path.Join(_apiPathPrefix, "/clusters/1/certificates/12"), "", gomock.Any()).Return(errors.New("mock error"))
+				cli.EXPECT().sendGetRequest(gomock.Any(), path.Join(_apiPathPrefix, "/clusters/1/certificates/12"), "", gomock.Any(), gomock.Any()).Return(errors.New("mock error"))
 				return cli
 			},
 			expectedError: "mock error",
@@ -265,7 +265,7 @@ func TestGetCertificate(t *testing.T) {
 		t.Run(tc.name, func(t *testing.T) {
 			cli := tc.mockFunc(t)
 			// ignore the certificates check since currently we don't mock it, and the certificate is always a zero value.
-			_, err := newCertificate(cli).GetCertificate(context.Background(), 12, &ResourceGetOptions{
+			_, err := newCertificate(cli, &store{}).GetCertificate(context.Background(), 12, &ResourceGetOptions{
 				Cluster: &Cluster{
 					ID: 1,
 				},
@@ -306,7 +306,7 @@ func TestListCertificates(t *testing.T) {
 		tc := tc
 		t.Run(tc.name, func(t *testing.T) {
 			// ignore the certificates check since currently we don't mock it, and the certificate is always a zero value.
-			raw, err := newCertificate(nil).ListCertificates(context.Background(), &ResourceListOptions{
+			raw, err := newCertificate(nil, &store{}).ListCertificates(context.Background(), &ResourceListOptions{
 				Cluster: &Cluster{
 					ID: 123,
 				},
