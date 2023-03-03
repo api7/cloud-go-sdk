@@ -181,8 +181,7 @@ func (impl *httpClientImpl) sendGetRequest(ctx context.Context, path, query stri
 	var series *TraceSeries
 	if impl.enableHTTPTrace {
 		series = &TraceSeries{
-			ID:      impl.idGenerator.NextID(),
-			Request: req.Clone(context.TODO()),
+			ID: impl.idGenerator.NextID(),
 		}
 		req = req.WithContext(httptrace.WithClientTrace(req.Context(), newClientTrace(series)))
 		defer func() {
@@ -212,7 +211,6 @@ func (impl *httpClientImpl) sendPostRequest(ctx context.Context, path, query str
 	if impl.enableHTTPTrace {
 		series = &TraceSeries{
 			ID:          impl.idGenerator.NextID(),
-			Request:     req.Clone(context.TODO()),
 			RequestBody: data,
 		}
 		req = req.WithContext(httptrace.WithClientTrace(req.Context(), newClientTrace(series)))
@@ -255,7 +253,6 @@ func (impl *httpClientImpl) sendPutRequest(ctx context.Context, path, query stri
 	if impl.enableHTTPTrace {
 		series = &TraceSeries{
 			ID:          impl.idGenerator.NextID(),
-			Request:     req.Clone(context.TODO()),
 			RequestBody: data,
 		}
 		req = req.WithContext(httptrace.WithClientTrace(req.Context(), newClientTrace(series)))
@@ -289,7 +286,6 @@ func (impl *httpClientImpl) sendPatchRequest(ctx context.Context, path, query st
 	if impl.enableHTTPTrace {
 		series = &TraceSeries{
 			ID:          impl.idGenerator.NextID(),
-			Request:     req.Clone(context.TODO()),
 			RequestBody: data,
 		}
 		req = req.WithContext(httptrace.WithClientTrace(req.Context(), newClientTrace(series)))
@@ -317,8 +313,7 @@ func (impl *httpClientImpl) sendDeleteRequest(ctx context.Context, path, query s
 	var series *TraceSeries
 	if impl.enableHTTPTrace {
 		series = &TraceSeries{
-			ID:      impl.idGenerator.NextID(),
-			Request: req.Clone(context.TODO()),
+			ID: impl.idGenerator.NextID(),
 		}
 		req = req.WithContext(httptrace.WithClientTrace(req.Context(), newClientTrace(series)))
 		defer func() {
@@ -344,7 +339,13 @@ func (impl *httpClientImpl) sendRequest(req *http.Request, payloadDecodeFunc pay
 		req.Header.Set("X-Request-ID", impl.idGenerator.NextID().String())
 	}
 
+	// If the header is not set but the global cluster ID exists, add the global cluster ID to the request.
+	if impl.clusterID > 0 && req.Header.Get(ClusterHeaderName) == "" {
+		req.Header.Set(ClusterHeaderName, impl.clusterID.String())
+	}
+
 	if impl.enableHTTPTrace && series != nil {
+		series.Request = req.Clone(context.TODO())
 		deferFunc := func() {
 			series.Response = resp
 			series.ResponseBody = body
@@ -357,12 +358,6 @@ func (impl *httpClientImpl) sendRequest(req *http.Request, payloadDecodeFunc pay
 		}
 		defer deferFunc()
 
-	}
-
-	// add global cluster ID to request if header is not set but global cluster ID exist
-	if impl.clusterID > 0 && req.Header.Get(ClusterHeaderName) == "" {
-		req.Header.Set(ClusterHeaderName, impl.clusterID.String())
-		series.Request.Header.Set(ClusterHeaderName, impl.clusterID.String())
 	}
 
 	resp, err := impl.client.Do(req)
