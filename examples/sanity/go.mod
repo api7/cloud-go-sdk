@@ -2,7 +2,7 @@ module sanity
 
 go 1.19
 
-replace github.com/api7/cloud-go-sdk => /Users/chenbeng/Documents/api7/cloud-go-sdk
+replace github.com/api7/cloud-go-sdk => /Users/alex/Workstation/tokers/api7/cloud-go-sdk
 
 require github.com/api7/cloud-go-sdk v0.0.0-00010101000000-000000000000
 
