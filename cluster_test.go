@@ -83,7 +83,7 @@ func TestListAllGatewayInstances(t *testing.T) {
 			mockFunc: func(t *testing.T) httpClient {
 				ctrl := gomock.NewController(t)
 				cli := NewMockhttpClient(ctrl)
-				cli.EXPECT().sendGetRequest(gomock.Any(), path.Join(_apiPathPrefix, "/clusters/12/instances"), "", gomock.Any()).Return(nil)
+				cli.EXPECT().sendGetRequest(gomock.Any(), path.Join(_apiPathPrefix, "/clusters/12/instances"), "", gomock.Any(), gomock.Any()).Return(nil)
 				return cli
 			},
 		},
@@ -92,7 +92,7 @@ func TestListAllGatewayInstances(t *testing.T) {
 			mockFunc: func(t *testing.T) httpClient {
 				ctrl := gomock.NewController(t)
 				cli := NewMockhttpClient(ctrl)
-				cli.EXPECT().sendGetRequest(gomock.Any(), path.Join(_apiPathPrefix, "/clusters/12/instances"), "", gomock.Any()).Return(errors.New("mock error"))
+				cli.EXPECT().sendGetRequest(gomock.Any(), path.Join(_apiPathPrefix, "/clusters/12/instances"), "", gomock.Any(), gomock.Any()).Return(errors.New("mock error"))
 				return cli
 			},
 			expectedError: "mock error",
@@ -126,7 +126,7 @@ func TestGenerateGatewaySideCertificate(t *testing.T) {
 			mockFunc: func(t *testing.T) httpClient {
 				ctrl := gomock.NewController(t)
 				cli := NewMockhttpClient(ctrl)
-				cli.EXPECT().sendGetRequest(gomock.Any(), path.Join(_apiPathPrefix, "/clusters/1/gateway_certificate"), "", gomock.Any()).Return(nil)
+				cli.EXPECT().sendGetRequest(gomock.Any(), path.Join(_apiPathPrefix, "/clusters/1/gateway_certificate"), "", gomock.Any(), gomock.Any()).Return(nil)
 				return cli
 
 			},
@@ -137,7 +137,7 @@ func TestGenerateGatewaySideCertificate(t *testing.T) {
 			mockFunc: func(t *testing.T) httpClient {
 				ctrl := gomock.NewController(t)
 				cli := NewMockhttpClient(ctrl)
-				cli.EXPECT().sendGetRequest(gomock.Any(), path.Join(_apiPathPrefix, "/clusters/1/gateway_certificate"), "", gomock.Any()).Return(errors.New("mock error"))
+				cli.EXPECT().sendGetRequest(gomock.Any(), path.Join(_apiPathPrefix, "/clusters/1/gateway_certificate"), "", gomock.Any(), gomock.Any()).Return(errors.New("mock error"))
 				return cli
 			},
 			expectedError: "mock error",
@@ -172,7 +172,7 @@ func TestListAllLabels(t *testing.T) {
 			mockFunc: func(t *testing.T) httpClient {
 				ctrl := gomock.NewController(t)
 				cli := NewMockhttpClient(ctrl)
-				cli.EXPECT().sendGetRequest(gomock.Any(), path.Join(_apiPathPrefix, "/clusters/1/labels/api"), "", gomock.Any()).Return(nil)
+				cli.EXPECT().sendGetRequest(gomock.Any(), path.Join(_apiPathPrefix, "/clusters/1/labels/api"), "", gomock.Any(), gomock.Any()).Return(nil)
 				return cli
 
 			},
@@ -183,7 +183,7 @@ func TestListAllLabels(t *testing.T) {
 			mockFunc: func(t *testing.T) httpClient {
 				ctrl := gomock.NewController(t)
 				cli := NewMockhttpClient(ctrl)
-				cli.EXPECT().sendGetRequest(gomock.Any(), path.Join(_apiPathPrefix, "/clusters/1/labels/api"), "", gomock.Any()).Return(errors.New("mock error"))
+				cli.EXPECT().sendGetRequest(gomock.Any(), path.Join(_apiPathPrefix, "/clusters/1/labels/api"), "", gomock.Any(), gomock.Any()).Return(errors.New("mock error"))
 				return cli
 			},
 			expectedError: "mock error",
@@ -218,7 +218,7 @@ func TestGetCluster(t *testing.T) {
 			mockFunc: func(t *testing.T) httpClient {
 				ctrl := gomock.NewController(t)
 				cli := NewMockhttpClient(ctrl)
-				cli.EXPECT().sendGetRequest(gomock.Any(), path.Join(_apiPathPrefix, "/clusters/12"), "", gomock.Any()).Return(nil)
+				cli.EXPECT().sendGetRequest(gomock.Any(), path.Join(_apiPathPrefix, "/clusters/12"), "", gomock.Any(), gomock.Any()).Return(nil)
 				return cli
 
 			},
@@ -229,7 +229,7 @@ func TestGetCluster(t *testing.T) {
 			mockFunc: func(t *testing.T) httpClient {
 				ctrl := gomock.NewController(t)
 				cli := NewMockhttpClient(ctrl)
-				cli.EXPECT().sendGetRequest(gomock.Any(), path.Join(_apiPathPrefix, "/clusters/12"), "", gomock.Any()).Return(errors.New("mock error"))
+				cli.EXPECT().sendGetRequest(gomock.Any(), path.Join(_apiPathPrefix, "/clusters/12"), "", gomock.Any(), gomock.Any()).Return(errors.New("mock error"))
 				return cli
 			},
 			expectedError: "mock error",
@@ -264,7 +264,7 @@ func TestUpdateClusterSettings(t *testing.T) {
 			mockFunc: func(t *testing.T) httpClient {
 				ctrl := gomock.NewController(t)
 				cli := NewMockhttpClient(ctrl)
-				cli.EXPECT().sendPatchRequest(gomock.Any(), path.Join(_apiPathPrefix, "/clusters/12/config"), "", gomock.Any(), gomock.Any()).Return(nil)
+				cli.EXPECT().sendPatchRequest(gomock.Any(), path.Join(_apiPathPrefix, "/clusters/12/config"), "", gomock.Any(), gomock.Any(), gomock.Any()).Return(nil)
 				return cli
 
 			},
@@ -275,7 +275,7 @@ func TestUpdateClusterSettings(t *testing.T) {
 			mockFunc: func(t *testing.T) httpClient {
 				ctrl := gomock.NewController(t)
 				cli := NewMockhttpClient(ctrl)
-				cli.EXPECT().sendPatchRequest(gomock.Any(), path.Join(_apiPathPrefix, "/clusters/12/config"), "", gomock.Any(), gomock.Any()).Return(errors.New("mock error"))
+				cli.EXPECT().sendPatchRequest(gomock.Any(), path.Join(_apiPathPrefix, "/clusters/12/config"), "", gomock.Any(), gomock.Any(), gomock.Any()).Return(errors.New("mock error"))
 				return cli
 			},
 			expectedError: "mock error",
@@ -315,7 +315,7 @@ func TestUpdateClusterPlugins(t *testing.T) {
 			mockFunc: func(t *testing.T) httpClient {
 				ctrl := gomock.NewController(t)
 				cli := NewMockhttpClient(ctrl)
-				cli.EXPECT().sendPatchRequest(gomock.Any(), path.Join(_apiPathPrefix, "/clusters/12/plugins"), "", gomock.Any(), gomock.Any()).Return(nil)
+				cli.EXPECT().sendPatchRequest(gomock.Any(), path.Join(_apiPathPrefix, "/clusters/12/plugins"), "", gomock.Any(), gomock.Any(), gomock.Any()).Return(nil)
 				return cli
 			},
 			expectedError: "",
@@ -325,7 +325,7 @@ func TestUpdateClusterPlugins(t *testing.T) {
 			mockFunc: func(t *testing.T) httpClient {
 				ctrl := gomock.NewController(t)
 				cli := NewMockhttpClient(ctrl)
-				cli.EXPECT().sendPatchRequest(gomock.Any(), path.Join(_apiPathPrefix, "/clusters/12/plugins"), "", gomock.Any(), gomock.Any()).Return(errors.New("mock error"))
+				cli.EXPECT().sendPatchRequest(gomock.Any(), path.Join(_apiPathPrefix, "/clusters/12/plugins"), "", gomock.Any(), gomock.Any(), gomock.Any()).Return(errors.New("mock error"))
 				return cli
 			},
 			expectedError: "mock error",
@@ -360,7 +360,7 @@ func TestGetGatewayInstanceStartupConfigTemplate(t *testing.T) {
 			mockFunc: func(t *testing.T) httpClient {
 				ctrl := gomock.NewController(t)
 				cli := NewMockhttpClient(ctrl)
-				cli.EXPECT().sendGetRequest(gomock.Any(), path.Join(_apiPathPrefix, "/clusters/1/startup_config_tpl/helm"), "", gomock.Any()).Return(nil)
+				cli.EXPECT().sendGetRequest(gomock.Any(), path.Join(_apiPathPrefix, "/clusters/1/startup_config_tpl/helm"), "", gomock.Any(), gomock.Any()).Return(nil)
 				return cli
 
 			},
@@ -371,7 +371,7 @@ func TestGetGatewayInstanceStartupConfigTemplate(t *testing.T) {
 			mockFunc: func(t *testing.T) httpClient {
 				ctrl := gomock.NewController(t)
 				cli := NewMockhttpClient(ctrl)
-				cli.EXPECT().sendGetRequest(gomock.Any(), path.Join(_apiPathPrefix, "/clusters/1/startup_config_tpl/helm"), "", gomock.Any()).Return(errors.New("mock error"))
+				cli.EXPECT().sendGetRequest(gomock.Any(), path.Join(_apiPathPrefix, "/clusters/1/startup_config_tpl/helm"), "", gomock.Any(), gomock.Any()).Return(errors.New("mock error"))
 				return cli
 			},
 			expectedError: "mock error",

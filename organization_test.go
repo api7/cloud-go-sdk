@@ -36,7 +36,7 @@ func TestGetOrganization(t *testing.T) {
 			mockFunc: func(t *testing.T) httpClient {
 				ctrl := gomock.NewController(t)
 				cli := NewMockhttpClient(ctrl)
-				cli.EXPECT().sendGetRequest(gomock.Any(), path.Join(_apiPathPrefix, "/orgs/12"), "", gomock.Any()).Return(nil)
+				cli.EXPECT().sendGetRequest(gomock.Any(), path.Join(_apiPathPrefix, "/orgs/12"), "", gomock.Any(), gomock.Any()).Return(nil)
 				return cli
 
 			},
@@ -47,7 +47,7 @@ func TestGetOrganization(t *testing.T) {
 			mockFunc: func(t *testing.T) httpClient {
 				ctrl := gomock.NewController(t)
 				cli := NewMockhttpClient(ctrl)
-				cli.EXPECT().sendGetRequest(gomock.Any(), path.Join(_apiPathPrefix, "/orgs/12"), "", gomock.Any()).Return(errors.New("mock error"))
+				cli.EXPECT().sendGetRequest(gomock.Any(), path.Join(_apiPathPrefix, "/orgs/12"), "", gomock.Any(), gomock.Any()).Return(errors.New("mock error"))
 				return cli
 			},
 			expectedError: "mock error",
@@ -174,7 +174,7 @@ func TestInviteMember(t *testing.T) {
 			mockFunc: func(t *testing.T) httpClient {
 				ctrl := gomock.NewController(t)
 				cli := NewMockhttpClient(ctrl)
-				cli.EXPECT().sendPostRequest(gomock.Any(), path.Join(_apiPathPrefix, "/orgs/1/members"), "", gomock.Any(), gomock.Any()).Return(nil)
+				cli.EXPECT().sendPostRequest(gomock.Any(), path.Join(_apiPathPrefix, "/orgs/1/members"), "", gomock.Any(), gomock.Any(), gomock.Any()).Return(nil)
 				return cli
 
 			},
@@ -185,7 +185,7 @@ func TestInviteMember(t *testing.T) {
 			mockFunc: func(t *testing.T) httpClient {
 				ctrl := gomock.NewController(t)
 				cli := NewMockhttpClient(ctrl)
-				cli.EXPECT().sendPostRequest(gomock.Any(), path.Join(_apiPathPrefix, "/orgs/1/members"), "", gomock.Any(), gomock.Any()).Return(errors.New("mock error"))
+				cli.EXPECT().sendPostRequest(gomock.Any(), path.Join(_apiPathPrefix, "/orgs/1/members"), "", gomock.Any(), gomock.Any(), gomock.Any()).Return(errors.New("mock error"))
 				return cli
 
 			},
@@ -224,7 +224,7 @@ func TestReInviteMember(t *testing.T) {
 			mockFunc: func(t *testing.T) httpClient {
 				ctrl := gomock.NewController(t)
 				cli := NewMockhttpClient(ctrl)
-				cli.EXPECT().sendPutRequest(gomock.Any(), path.Join(_apiPathPrefix, "/orgs/1/members/1/re_invite"), "", gomock.Any(), gomock.Any()).Return(nil)
+				cli.EXPECT().sendPutRequest(gomock.Any(), path.Join(_apiPathPrefix, "/orgs/1/members/1/re_invite"), "", gomock.Any(), gomock.Any(), gomock.Any()).Return(nil)
 				return cli
 
 			},
@@ -235,7 +235,7 @@ func TestReInviteMember(t *testing.T) {
 			mockFunc: func(t *testing.T) httpClient {
 				ctrl := gomock.NewController(t)
 				cli := NewMockhttpClient(ctrl)
-				cli.EXPECT().sendPutRequest(gomock.Any(), path.Join(_apiPathPrefix, "/orgs/1/members/1/re_invite"), "", gomock.Any(), gomock.Any()).Return(errors.New("mock error"))
+				cli.EXPECT().sendPutRequest(gomock.Any(), path.Join(_apiPathPrefix, "/orgs/1/members/1/re_invite"), "", gomock.Any(), gomock.Any(), gomock.Any()).Return(errors.New("mock error"))
 				return cli
 
 			},
@@ -274,7 +274,7 @@ func TestGetMember(t *testing.T) {
 			mockFunc: func(t *testing.T) httpClient {
 				ctrl := gomock.NewController(t)
 				cli := NewMockhttpClient(ctrl)
-				cli.EXPECT().sendGetRequest(gomock.Any(), path.Join(_apiPathPrefix, "/orgs/1/members/12"), "", gomock.Any()).Return(nil)
+				cli.EXPECT().sendGetRequest(gomock.Any(), path.Join(_apiPathPrefix, "/orgs/1/members/12"), "", gomock.Any(), gomock.Any()).Return(nil)
 				return cli
 
 			},
@@ -285,7 +285,7 @@ func TestGetMember(t *testing.T) {
 			mockFunc: func(t *testing.T) httpClient {
 				ctrl := gomock.NewController(t)
 				cli := NewMockhttpClient(ctrl)
-				cli.EXPECT().sendGetRequest(gomock.Any(), path.Join(_apiPathPrefix, "/orgs/1/members/12"), "", gomock.Any()).Return(errors.New("mock error"))
+				cli.EXPECT().sendGetRequest(gomock.Any(), path.Join(_apiPathPrefix, "/orgs/1/members/12"), "", gomock.Any(), gomock.Any()).Return(errors.New("mock error"))
 				return cli
 			},
 			expectedError: "mock error",
@@ -324,7 +324,7 @@ func TestUpdateMemberRoles(t *testing.T) {
 			mockFunc: func(t *testing.T) httpClient {
 				ctrl := gomock.NewController(t)
 				cli := NewMockhttpClient(ctrl)
-				cli.EXPECT().sendPutRequest(gomock.Any(), path.Join(_apiPathPrefix, "/orgs/1/members/12"), "", gomock.Any(), gomock.Any()).Return(nil)
+				cli.EXPECT().sendPutRequest(gomock.Any(), path.Join(_apiPathPrefix, "/orgs/1/members/12"), "", gomock.Any(), gomock.Any(), gomock.Any()).Return(nil)
 				return cli
 
 			},
@@ -335,7 +335,7 @@ func TestUpdateMemberRoles(t *testing.T) {
 			mockFunc: func(t *testing.T) httpClient {
 				ctrl := gomock.NewController(t)
 				cli := NewMockhttpClient(ctrl)
-				cli.EXPECT().sendPutRequest(gomock.Any(), path.Join(_apiPathPrefix, "/orgs/1/members/12"), "", gomock.Any(), gomock.Any()).Return(errors.New("mock error"))
+				cli.EXPECT().sendPutRequest(gomock.Any(), path.Join(_apiPathPrefix, "/orgs/1/members/12"), "", gomock.Any(), gomock.Any(), gomock.Any()).Return(errors.New("mock error"))
 				return cli
 
 			},
@@ -379,7 +379,7 @@ func TestDeleteMember(t *testing.T) {
 			mockFunc: func(t *testing.T) httpClient {
 				ctrl := gomock.NewController(t)
 				cli := NewMockhttpClient(ctrl)
-				cli.EXPECT().sendDeleteRequest(gomock.Any(), path.Join(_apiPathPrefix, "/orgs/1/members/12"), "", nil).Return(nil)
+				cli.EXPECT().sendDeleteRequest(gomock.Any(), path.Join(_apiPathPrefix, "/orgs/1/members/12"), "", nil, gomock.Any()).Return(nil)
 				return cli
 
 			},
@@ -390,7 +390,7 @@ func TestDeleteMember(t *testing.T) {
 			mockFunc: func(t *testing.T) httpClient {
 				ctrl := gomock.NewController(t)
 				cli := NewMockhttpClient(ctrl)
-				cli.EXPECT().sendDeleteRequest(gomock.Any(), path.Join(_apiPathPrefix, "/orgs/1/members/12"), "", nil).Return(errors.New("mock error"))
+				cli.EXPECT().sendDeleteRequest(gomock.Any(), path.Join(_apiPathPrefix, "/orgs/1/members/12"), "", nil, gomock.Any()).Return(errors.New("mock error"))
 				return cli
 
 			},
@@ -429,7 +429,7 @@ func TestTransferOwnership(t *testing.T) {
 			mockFunc: func(t *testing.T) httpClient {
 				ctrl := gomock.NewController(t)
 				cli := NewMockhttpClient(ctrl)
-				cli.EXPECT().sendPostRequest(gomock.Any(), path.Join(_apiPathPrefix, "/orgs/1/members/12/transfer_ownership"), "", nil, gomock.Any()).Return(nil)
+				cli.EXPECT().sendPostRequest(gomock.Any(), path.Join(_apiPathPrefix, "/orgs/1/members/12/transfer_ownership"), "", nil, gomock.Any(), gomock.Any()).Return(nil)
 				return cli
 
 			},
@@ -440,7 +440,7 @@ func TestTransferOwnership(t *testing.T) {
 			mockFunc: func(t *testing.T) httpClient {
 				ctrl := gomock.NewController(t)
 				cli := NewMockhttpClient(ctrl)
-				cli.EXPECT().sendPostRequest(gomock.Any(), path.Join(_apiPathPrefix, "/orgs/1/members/12/transfer_ownership"), "", nil, gomock.Any()).Return(errors.New("mock error"))
+				cli.EXPECT().sendPostRequest(gomock.Any(), path.Join(_apiPathPrefix, "/orgs/1/members/12/transfer_ownership"), "", nil, gomock.Any(), gomock.Any()).Return(errors.New("mock error"))
 				return cli
 
 			},

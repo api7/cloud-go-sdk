@@ -56,7 +56,7 @@ func TestCreateCertificate(t *testing.T) {
 			mockFunc: func(t *testing.T) httpClient {
 				ctrl := gomock.NewController(t)
 				cli := NewMockhttpClient(ctrl)
-				cli.EXPECT().sendPostRequest(gomock.Any(), path.Join(_apiPathPrefix, "/clusters/1/certificates"), "", gomock.Any(), gomock.Any()).Return(nil)
+				cli.EXPECT().sendPostRequest(gomock.Any(), path.Join(_apiPathPrefix, "/clusters/1/certificates"), "", gomock.Any(), gomock.Any(), gomock.Any()).Return(nil)
 				return cli
 
 			},
@@ -75,7 +75,7 @@ func TestCreateCertificate(t *testing.T) {
 			mockFunc: func(t *testing.T) httpClient {
 				ctrl := gomock.NewController(t)
 				cli := NewMockhttpClient(ctrl)
-				cli.EXPECT().sendPostRequest(gomock.Any(), path.Join(_apiPathPrefix, "/clusters/1/certificates"), "", gomock.Any(), gomock.Any()).Return(errors.New("mock error"))
+				cli.EXPECT().sendPostRequest(gomock.Any(), path.Join(_apiPathPrefix, "/clusters/1/certificates"), "", gomock.Any(), gomock.Any(), gomock.Any()).Return(errors.New("mock error"))
 				return cli
 
 			},
@@ -133,7 +133,7 @@ func TestUpdateCertificate(t *testing.T) {
 			mockFunc: func(t *testing.T) httpClient {
 				ctrl := gomock.NewController(t)
 				cli := NewMockhttpClient(ctrl)
-				cli.EXPECT().sendPutRequest(gomock.Any(), path.Join(_apiPathPrefix, "/clusters/1/certificates/12"), "", gomock.Any(), gomock.Any()).Return(nil)
+				cli.EXPECT().sendPutRequest(gomock.Any(), path.Join(_apiPathPrefix, "/clusters/1/certificates/12"), "", gomock.Any(), gomock.Any(), gomock.Any()).Return(nil)
 				return cli
 
 			},
@@ -153,7 +153,7 @@ func TestUpdateCertificate(t *testing.T) {
 			mockFunc: func(t *testing.T) httpClient {
 				ctrl := gomock.NewController(t)
 				cli := NewMockhttpClient(ctrl)
-				cli.EXPECT().sendPutRequest(gomock.Any(), path.Join(_apiPathPrefix, "/clusters/1/certificates/12"), "", gomock.Any(), gomock.Any()).Return(errors.New("mock error"))
+				cli.EXPECT().sendPutRequest(gomock.Any(), path.Join(_apiPathPrefix, "/clusters/1/certificates/12"), "", gomock.Any(), gomock.Any(), gomock.Any()).Return(errors.New("mock error"))
 				return cli
 
 			},
@@ -192,7 +192,7 @@ func TestDeleteCertificate(t *testing.T) {
 			mockFunc: func(t *testing.T) httpClient {
 				ctrl := gomock.NewController(t)
 				cli := NewMockhttpClient(ctrl)
-				cli.EXPECT().sendDeleteRequest(gomock.Any(), path.Join(_apiPathPrefix, "/clusters/1/certificates/12"), "", nil).Return(nil)
+				cli.EXPECT().sendDeleteRequest(gomock.Any(), path.Join(_apiPathPrefix, "/clusters/1/certificates/12"), "", nil, gomock.Any()).Return(nil)
 				return cli
 
 			},
@@ -203,7 +203,7 @@ func TestDeleteCertificate(t *testing.T) {
 			mockFunc: func(t *testing.T) httpClient {
 				ctrl := gomock.NewController(t)
 				cli := NewMockhttpClient(ctrl)
-				cli.EXPECT().sendDeleteRequest(gomock.Any(), path.Join(_apiPathPrefix, "/clusters/1/certificates/12"), "", nil).Return(errors.New("mock error"))
+				cli.EXPECT().sendDeleteRequest(gomock.Any(), path.Join(_apiPathPrefix, "/clusters/1/certificates/12"), "", nil, gomock.Any()).Return(errors.New("mock error"))
 				return cli
 
 			},
@@ -242,7 +242,7 @@ func TestGetCertificate(t *testing.T) {
 			mockFunc: func(t *testing.T) httpClient {
 				ctrl := gomock.NewController(t)
 				cli := NewMockhttpClient(ctrl)
-				cli.EXPECT().sendGetRequest(gomock.Any(), path.Join(_apiPathPrefix, "/clusters/1/certificates/12"), "", gomock.Any()).Return(nil)
+				cli.EXPECT().sendGetRequest(gomock.Any(), path.Join(_apiPathPrefix, "/clusters/1/certificates/12"), "", gomock.Any(), gomock.Any()).Return(nil)
 				return cli
 
 			},
@@ -253,7 +253,7 @@ func TestGetCertificate(t *testing.T) {
 			mockFunc: func(t *testing.T) httpClient {
 				ctrl := gomock.NewController(t)
 				cli := NewMockhttpClient(ctrl)
-				cli.EXPECT().sendGetRequest(gomock.Any(), path.Join(_apiPathPrefix, "/clusters/1/certificates/12"), "", gomock.Any()).Return(errors.New("mock error"))
+				cli.EXPECT().sendGetRequest(gomock.Any(), path.Join(_apiPathPrefix, "/clusters/1/certificates/12"), "", gomock.Any(), gomock.Any()).Return(errors.New("mock error"))
 				return cli
 			},
 			expectedError: "mock error",

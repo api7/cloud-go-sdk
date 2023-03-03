@@ -108,7 +108,7 @@ func (impl *consumerImpl) CreateConsumer(ctx context.Context, consumer *Consumer
 
 	clusterID := opts.Cluster.ID
 	uri := path.Join(_apiPathPrefix, "clusters", clusterID.String(), "consumers")
-	err := impl.client.sendPostRequest(ctx, uri, "", consumer, jsonPayloadDecodeFactory(&createdConsumer))
+	err := impl.client.sendPostRequest(ctx, uri, "", consumer, jsonPayloadDecodeFactory(&createdConsumer), appendHeader(mapClusterIdFromOpts(opts)))
 	if err != nil {
 		return nil, err
 	}
@@ -120,7 +120,7 @@ func (impl *consumerImpl) UpdateConsumer(ctx context.Context, consumer *Consumer
 
 	clusterID := opts.Cluster.ID
 	uri := path.Join(_apiPathPrefix, "clusters", clusterID.String(), "consumers", consumer.ID.String())
-	err := impl.client.sendPutRequest(ctx, uri, "", consumer, jsonPayloadDecodeFactory(&updatedConsumer))
+	err := impl.client.sendPutRequest(ctx, uri, "", consumer, jsonPayloadDecodeFactory(&updatedConsumer), appendHeader(mapClusterIdFromOpts(opts)))
 	if err != nil {
 		return nil, err
 	}
@@ -130,7 +130,7 @@ func (impl *consumerImpl) UpdateConsumer(ctx context.Context, consumer *Consumer
 func (impl *consumerImpl) DeleteConsumer(ctx context.Context, consumerID ID, opts *ResourceDeleteOptions) error {
 	clusterID := opts.Cluster.ID
 	uri := path.Join(_apiPathPrefix, "clusters", clusterID.String(), "consumers", consumerID.String())
-	return impl.client.sendDeleteRequest(ctx, uri, "", nil)
+	return impl.client.sendDeleteRequest(ctx, uri, "", nil, appendHeader(mapClusterIdFromOpts(opts)))
 }
 
 func (impl *consumerImpl) GetConsumer(ctx context.Context, consumerID ID, opts *ResourceGetOptions) (*Consumer, error) {
@@ -138,7 +138,7 @@ func (impl *consumerImpl) GetConsumer(ctx context.Context, consumerID ID, opts *
 
 	clusterID := opts.Cluster.ID
 	uri := path.Join(_apiPathPrefix, "clusters", clusterID.String(), "consumers", consumerID.String())
-	err := impl.client.sendGetRequest(ctx, uri, "", jsonPayloadDecodeFactory(&consumer))
+	err := impl.client.sendGetRequest(ctx, uri, "", jsonPayloadDecodeFactory(&consumer), appendHeader(mapClusterIdFromOpts(opts)))
 	if err != nil {
 		return nil, err
 	}
@@ -152,6 +152,7 @@ func (impl *consumerImpl) ListConsumers(ctx context.Context, opts *ResourceListO
 		client:   impl.client,
 		path:     path.Join(_apiPathPrefix, "clusters", opts.Cluster.ID.String(), "consumers"),
 		paging:   mergePagination(opts.Pagination),
+		headers:  appendHeader(mapClusterIdFromOpts(opts)),
 	}
 
 	return &consumerListIterator{iter: iter}, nil
@@ -160,7 +161,7 @@ func (impl *consumerImpl) ListConsumers(ctx context.Context, opts *ResourceListO
 func (impl *consumerImpl) DebugConsumerResources(ctx context.Context, consumerID ID, opts *ResourceGetOptions) (string, error) {
 	var rawData json.RawMessage
 	uri := path.Join(_apiPathPrefix, "debug", "config", "clusters", opts.Cluster.ID.String(), "consumer", consumerID.String())
-	err := impl.client.sendGetRequest(ctx, uri, "", jsonPayloadDecodeFactory(&rawData))
+	err := impl.client.sendGetRequest(ctx, uri, "", jsonPayloadDecodeFactory(&rawData), appendHeader(mapClusterIdFromOpts(opts)))
 	if err != nil {
 		return "", err
 	}

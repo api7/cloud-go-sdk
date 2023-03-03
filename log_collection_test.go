@@ -41,7 +41,7 @@ func TestCreateLogCollection(t *testing.T) {
 			mockFunc: func(t *testing.T) httpClient {
 				ctrl := gomock.NewController(t)
 				cli := NewMockhttpClient(ctrl)
-				cli.EXPECT().sendPostRequest(gomock.Any(), path.Join(_apiPathPrefix, "/clusters/1/log_collections"), "", gomock.Any(), gomock.Any()).Return(nil)
+				cli.EXPECT().sendPostRequest(gomock.Any(), path.Join(_apiPathPrefix, "/clusters/1/log_collections"), "", gomock.Any(), gomock.Any(), gomock.Any()).Return(nil)
 				return cli
 			},
 			expectedError: "",
@@ -54,7 +54,7 @@ func TestCreateLogCollection(t *testing.T) {
 			mockFunc: func(t *testing.T) httpClient {
 				ctrl := gomock.NewController(t)
 				cli := NewMockhttpClient(ctrl)
-				cli.EXPECT().sendPostRequest(gomock.Any(), path.Join(_apiPathPrefix, "/clusters/1/log_collections"), "", gomock.Any(), gomock.Any()).Return(errors.New("mock error"))
+				cli.EXPECT().sendPostRequest(gomock.Any(), path.Join(_apiPathPrefix, "/clusters/1/log_collections"), "", gomock.Any(), gomock.Any(), gomock.Any()).Return(errors.New("mock error"))
 				return cli
 			},
 			expectedError: "mock error",
@@ -92,7 +92,7 @@ func TestDeleteLogCollection(t *testing.T) {
 			mockFunc: func(t *testing.T) httpClient {
 				ctrl := gomock.NewController(t)
 				cli := NewMockhttpClient(ctrl)
-				cli.EXPECT().sendDeleteRequest(gomock.Any(), path.Join(_apiPathPrefix, "/clusters/1/log_collections/2"), "", nil).Return(nil)
+				cli.EXPECT().sendDeleteRequest(gomock.Any(), path.Join(_apiPathPrefix, "/clusters/1/log_collections/2"), "", nil, gomock.Any()).Return(nil)
 				return cli
 			},
 			expectedError: "",
@@ -102,7 +102,7 @@ func TestDeleteLogCollection(t *testing.T) {
 			mockFunc: func(t *testing.T) httpClient {
 				ctrl := gomock.NewController(t)
 				cli := NewMockhttpClient(ctrl)
-				cli.EXPECT().sendDeleteRequest(gomock.Any(), path.Join(_apiPathPrefix, "/clusters/1/log_collections/2"), "", nil).Return(errors.New("mock error"))
+				cli.EXPECT().sendDeleteRequest(gomock.Any(), path.Join(_apiPathPrefix, "/clusters/1/log_collections/2"), "", nil, gomock.Any()).Return(errors.New("mock error"))
 				return cli
 			},
 			expectedError: "mock error",
@@ -140,7 +140,7 @@ func TestGetLogCollection(t *testing.T) {
 			mockFunc: func(t *testing.T) httpClient {
 				ctrl := gomock.NewController(t)
 				cli := NewMockhttpClient(ctrl)
-				cli.EXPECT().sendGetRequest(gomock.Any(), path.Join(_apiPathPrefix, "/clusters/1/log_collections/2"), "", gomock.Any()).Return(nil)
+				cli.EXPECT().sendGetRequest(gomock.Any(), path.Join(_apiPathPrefix, "/clusters/1/log_collections/2"), "", gomock.Any(), gomock.Any()).Return(nil)
 				return cli
 
 			},
@@ -151,7 +151,7 @@ func TestGetLogCollection(t *testing.T) {
 			mockFunc: func(t *testing.T) httpClient {
 				ctrl := gomock.NewController(t)
 				cli := NewMockhttpClient(ctrl)
-				cli.EXPECT().sendGetRequest(gomock.Any(), path.Join(_apiPathPrefix, "/clusters/1/log_collections/2"), "", gomock.Any()).Return(errors.New("mock error"))
+				cli.EXPECT().sendGetRequest(gomock.Any(), path.Join(_apiPathPrefix, "/clusters/1/log_collections/2"), "", gomock.Any(), gomock.Any()).Return(errors.New("mock error"))
 				return cli
 			},
 			expectedError: "mock error",
@@ -240,7 +240,7 @@ func TestUpdateLogCollection(t *testing.T) {
 			mockFunc: func(t *testing.T) httpClient {
 				ctrl := gomock.NewController(t)
 				cli := NewMockhttpClient(ctrl)
-				cli.EXPECT().sendPutRequest(gomock.Any(), path.Join(_apiPathPrefix, "/clusters/1/log_collections/2"), "", gomock.Any(), gomock.Any()).Return(nil)
+				cli.EXPECT().sendPutRequest(gomock.Any(), path.Join(_apiPathPrefix, "/clusters/1/log_collections/2"), "", gomock.Any(), gomock.Any(), gomock.Any()).Return(nil)
 				return cli
 			},
 			expectedError: "",
@@ -254,7 +254,7 @@ func TestUpdateLogCollection(t *testing.T) {
 			mockFunc: func(t *testing.T) httpClient {
 				ctrl := gomock.NewController(t)
 				cli := NewMockhttpClient(ctrl)
-				cli.EXPECT().sendPutRequest(gomock.Any(), path.Join(_apiPathPrefix, "/clusters/1/log_collections/2"), "", gomock.Any(), gomock.Any()).Return(errors.New("mock error"))
+				cli.EXPECT().sendPutRequest(gomock.Any(), path.Join(_apiPathPrefix, "/clusters/1/log_collections/2"), "", gomock.Any(), gomock.Any(), gomock.Any()).Return(errors.New("mock error"))
 				return cli
 			},
 			expectedError: "mock error",

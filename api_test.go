@@ -43,7 +43,8 @@ func TestCreateAPI(t *testing.T) {
 			mockFunc: func(t *testing.T) httpClient {
 				ctrl := gomock.NewController(t)
 				cli := NewMockhttpClient(ctrl)
-				cli.EXPECT().sendPostRequest(gomock.Any(), path.Join(_apiPathPrefix, "/apps/1/apis"), "", gomock.Any(), gomock.Any()).Return(nil)
+				cli.EXPECT().getClusterID().Return(ID(0))
+				cli.EXPECT().sendPostRequest(gomock.Any(), path.Join(_apiPathPrefix, "/apps/1/apis"), "", gomock.Any(), gomock.Any(), gomock.Any()).Return(nil)
 				return cli
 
 			},
@@ -59,7 +60,8 @@ func TestCreateAPI(t *testing.T) {
 			mockFunc: func(t *testing.T) httpClient {
 				ctrl := gomock.NewController(t)
 				cli := NewMockhttpClient(ctrl)
-				cli.EXPECT().sendPostRequest(gomock.Any(), path.Join(_apiPathPrefix, "/apps/1/apis"), "", gomock.Any(), gomock.Any()).Return(errors.New("mock error"))
+				cli.EXPECT().getClusterID().Return(ID(0))
+				cli.EXPECT().sendPostRequest(gomock.Any(), path.Join(_apiPathPrefix, "/apps/1/apis"), "", gomock.Any(), gomock.Any(), gomock.Any()).Return(errors.New("mock error"))
 				return cli
 
 			},
@@ -72,6 +74,7 @@ func TestCreateAPI(t *testing.T) {
 		t.Run(tc.name, func(t *testing.T) {
 			cli := tc.mockFunc(t)
 			_, err := newAPI(cli).CreateAPI(context.Background(), tc.pendingAPI, &ResourceCreateOptions{
+				Cluster: &Cluster{ID: 123},
 				Application: &Application{
 					ID: 1,
 				},
@@ -105,7 +108,8 @@ func TestUpdateAPI(t *testing.T) {
 			mockFunc: func(t *testing.T) httpClient {
 				ctrl := gomock.NewController(t)
 				cli := NewMockhttpClient(ctrl)
-				cli.EXPECT().sendPutRequest(gomock.Any(), path.Join(_apiPathPrefix, "/apps/1/apis/12"), "", gomock.Any(), gomock.Any()).Return(nil)
+				cli.EXPECT().getClusterID().Return(ID(0))
+				cli.EXPECT().sendPutRequest(gomock.Any(), path.Join(_apiPathPrefix, "/apps/1/apis/12"), "", gomock.Any(), gomock.Any(), gomock.Any()).Return(nil)
 				return cli
 
 			},
@@ -122,7 +126,8 @@ func TestUpdateAPI(t *testing.T) {
 			mockFunc: func(t *testing.T) httpClient {
 				ctrl := gomock.NewController(t)
 				cli := NewMockhttpClient(ctrl)
-				cli.EXPECT().sendPutRequest(gomock.Any(), path.Join(_apiPathPrefix, "/apps/1/apis/12"), "", gomock.Any(), gomock.Any()).Return(errors.New("mock error"))
+				cli.EXPECT().getClusterID().Return(ID(0))
+				cli.EXPECT().sendPutRequest(gomock.Any(), path.Join(_apiPathPrefix, "/apps/1/apis/12"), "", gomock.Any(), gomock.Any(), gomock.Any()).Return(errors.New("mock error"))
 				return cli
 
 			},
@@ -135,6 +140,7 @@ func TestUpdateAPI(t *testing.T) {
 		t.Run(tc.name, func(t *testing.T) {
 			cli := tc.mockFunc(t)
 			_, err := newAPI(cli).UpdateAPI(context.Background(), tc.pendingAPI, &ResourceUpdateOptions{
+				Cluster: &Cluster{ID: 123},
 				Application: &Application{
 					ID: 1,
 				},
@@ -161,7 +167,8 @@ func TestDeleteAPI(t *testing.T) {
 			mockFunc: func(t *testing.T) httpClient {
 				ctrl := gomock.NewController(t)
 				cli := NewMockhttpClient(ctrl)
-				cli.EXPECT().sendDeleteRequest(gomock.Any(), path.Join(_apiPathPrefix, "/apps/1/apis/12"), "", nil).Return(nil)
+				cli.EXPECT().getClusterID().Return(ID(0))
+				cli.EXPECT().sendDeleteRequest(gomock.Any(), path.Join(_apiPathPrefix, "/apps/1/apis/12"), "", nil, gomock.Any()).Return(nil)
 				return cli
 
 			},
@@ -172,7 +179,8 @@ func TestDeleteAPI(t *testing.T) {
 			mockFunc: func(t *testing.T) httpClient {
 				ctrl := gomock.NewController(t)
 				cli := NewMockhttpClient(ctrl)
-				cli.EXPECT().sendDeleteRequest(gomock.Any(), path.Join(_apiPathPrefix, "/apps/1/apis/12"), "", nil).Return(errors.New("mock error"))
+				cli.EXPECT().getClusterID().Return(ID(0))
+				cli.EXPECT().sendDeleteRequest(gomock.Any(), path.Join(_apiPathPrefix, "/apps/1/apis/12"), "", nil, gomock.Any()).Return(errors.New("mock error"))
 				return cli
 
 			},
@@ -185,6 +193,7 @@ func TestDeleteAPI(t *testing.T) {
 		t.Run(tc.name, func(t *testing.T) {
 			cli := tc.mockFunc(t)
 			err := newAPI(cli).DeleteAPI(context.Background(), 12, &ResourceDeleteOptions{
+				Cluster: &Cluster{ID: 123},
 				Application: &Application{
 					ID: 1,
 				},
@@ -211,7 +220,8 @@ func TestGetAPI(t *testing.T) {
 			mockFunc: func(t *testing.T) httpClient {
 				ctrl := gomock.NewController(t)
 				cli := NewMockhttpClient(ctrl)
-				cli.EXPECT().sendGetRequest(gomock.Any(), path.Join(_apiPathPrefix, "/apps/1/apis/12"), "", gomock.Any()).Return(nil)
+				cli.EXPECT().getClusterID().Return(ID(0))
+				cli.EXPECT().sendGetRequest(gomock.Any(), path.Join(_apiPathPrefix, "/apps/1/apis/12"), "", gomock.Any(), gomock.Any()).Return(nil)
 				return cli
 
 			},
@@ -222,7 +232,8 @@ func TestGetAPI(t *testing.T) {
 			mockFunc: func(t *testing.T) httpClient {
 				ctrl := gomock.NewController(t)
 				cli := NewMockhttpClient(ctrl)
-				cli.EXPECT().sendGetRequest(gomock.Any(), path.Join(_apiPathPrefix, "/apps/1/apis/12"), "", gomock.Any()).Return(errors.New("mock error"))
+				cli.EXPECT().getClusterID().Return(ID(0))
+				cli.EXPECT().sendGetRequest(gomock.Any(), path.Join(_apiPathPrefix, "/apps/1/apis/12"), "", gomock.Any(), gomock.Any()).Return(errors.New("mock error"))
 				return cli
 			},
 			expectedError: "mock error",
@@ -235,6 +246,7 @@ func TestGetAPI(t *testing.T) {
 			cli := tc.mockFunc(t)
 			// ignore the API check since currently we don't mock it, and the app is always a zero value.
 			_, err := newAPI(cli).GetAPI(context.Background(), 12, &ResourceGetOptions{
+				Cluster: &Cluster{ID: 123},
 				Application: &Application{
 					ID: 1,
 				},
@@ -261,7 +273,8 @@ func TestPublishAPI(t *testing.T) {
 			mockFunc: func(t *testing.T) httpClient {
 				ctrl := gomock.NewController(t)
 				cli := NewMockhttpClient(ctrl)
-				cli.EXPECT().sendPatchRequest(gomock.Any(), path.Join(_apiPathPrefix, "/apps/1/apis/12"), "", []byte(`{"active":0}`), gomock.Any()).Return(nil)
+				cli.EXPECT().getClusterID().Return(ID(0))
+				cli.EXPECT().sendPatchRequest(gomock.Any(), path.Join(_apiPathPrefix, "/apps/1/apis/12"), "", []byte(`{"active":0}`), gomock.Any(), gomock.Any()).Return(nil)
 				return cli
 
 			},
@@ -272,7 +285,8 @@ func TestPublishAPI(t *testing.T) {
 			mockFunc: func(t *testing.T) httpClient {
 				ctrl := gomock.NewController(t)
 				cli := NewMockhttpClient(ctrl)
-				cli.EXPECT().sendPatchRequest(gomock.Any(), path.Join(_apiPathPrefix, "/apps/1/apis/12"), "", []byte(`{"active":0}`), gomock.Any()).Return(errors.New("mock error"))
+				cli.EXPECT().getClusterID().Return(ID(0))
+				cli.EXPECT().sendPatchRequest(gomock.Any(), path.Join(_apiPathPrefix, "/apps/1/apis/12"), "", []byte(`{"active":0}`), gomock.Any(), gomock.Any()).Return(errors.New("mock error"))
 				return cli
 			},
 			expectedError: "mock error",
@@ -285,6 +299,7 @@ func TestPublishAPI(t *testing.T) {
 			cli := tc.mockFunc(t)
 			// ignore the api check since currently we don't mock it, and the app is always a zero value.
 			_, err := newAPI(cli).PublishAPI(context.Background(), 12, &ResourceUpdateOptions{
+				Cluster: &Cluster{ID: 123},
 				Application: &Application{
 					ID: 1,
 				},
@@ -311,7 +326,8 @@ func TestUnpublishAPI(t *testing.T) {
 			mockFunc: func(t *testing.T) httpClient {
 				ctrl := gomock.NewController(t)
 				cli := NewMockhttpClient(ctrl)
-				cli.EXPECT().sendPatchRequest(gomock.Any(), path.Join(_apiPathPrefix, "/apps/1/apis/12"), "", []byte(`{"active":1}`), gomock.Any()).Return(nil)
+				cli.EXPECT().getClusterID().Return(ID(0))
+				cli.EXPECT().sendPatchRequest(gomock.Any(), path.Join(_apiPathPrefix, "/apps/1/apis/12"), "", []byte(`{"active":1}`), gomock.Any(), gomock.Any()).Return(nil)
 				return cli
 
 			},
@@ -322,7 +338,8 @@ func TestUnpublishAPI(t *testing.T) {
 			mockFunc: func(t *testing.T) httpClient {
 				ctrl := gomock.NewController(t)
 				cli := NewMockhttpClient(ctrl)
-				cli.EXPECT().sendPatchRequest(gomock.Any(), path.Join(_apiPathPrefix, "/apps/1/apis/12"), "", []byte(`{"active":1}`), gomock.Any()).Return(errors.New("mock error"))
+				cli.EXPECT().getClusterID().Return(ID(0))
+				cli.EXPECT().sendPatchRequest(gomock.Any(), path.Join(_apiPathPrefix, "/apps/1/apis/12"), "", []byte(`{"active":1}`), gomock.Any(), gomock.Any()).Return(errors.New("mock error"))
 				return cli
 			},
 			expectedError: "mock error",
@@ -335,6 +352,7 @@ func TestUnpublishAPI(t *testing.T) {
 			cli := tc.mockFunc(t)
 			// ignore the api check since currently we don't mock it, and the app is always a zero value.
 			_, err := newAPI(cli).UnpublishAPI(context.Background(), 12, &ResourceUpdateOptions{
+				Cluster: &Cluster{ID: 123},
 				Application: &Application{
 					ID: 1,
 				},
@@ -376,6 +394,7 @@ func TestListAPIs(t *testing.T) {
 		t.Run(tc.name, func(t *testing.T) {
 			// ignore the application check since currently we don't mock it, and the api is always a zero value.
 			raw, err := newAPI(nil).ListAPIs(context.Background(), &ResourceListOptions{
+				Cluster: &Cluster{ID: 123},
 				Application: &Application{
 					ID: 123,
 				},

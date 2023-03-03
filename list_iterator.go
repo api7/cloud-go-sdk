@@ -21,6 +21,7 @@ import (
 	"strconv"
 
 	"github.com/pkg/errors"
+	"net/http"
 )
 
 var (
@@ -63,6 +64,7 @@ type listIterator struct {
 	filter   *Filter
 	eof      bool
 	items    []json.RawMessage
+	headers  http.Header
 }
 
 func (iter *listIterator) Next() (json.RawMessage, error) {
@@ -83,7 +85,7 @@ func (iter *listIterator) Next() (json.RawMessage, error) {
 			}
 		}
 
-		err := iter.client.sendGetRequest(iter.ctx, iter.path, query.Encode(), jsonPayloadDecodeFactory(&lr))
+		err := iter.client.sendGetRequest(iter.ctx, iter.path, query.Encode(), jsonPayloadDecodeFactory(&lr), iter.headers)
 		if err != nil {
 			return nil, errors.Wrap(err, "list resources")
 		}

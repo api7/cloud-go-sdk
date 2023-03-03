@@ -98,6 +98,7 @@ func (impl *regionImpl) ListRegions(ctx context.Context, opts *ResourceListOptio
 		path:     path.Join(_apiPathPrefix, "regions"),
 		paging:   mergePagination(paging),
 		filter:   filter,
+		headers:  appendHeader(mapClusterIdFromOpts(opts)),
 	}
 
 	return &regionListIterator{iter: iter}, nil

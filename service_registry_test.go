@@ -46,7 +46,7 @@ func TestCreateServiceRegistry(t *testing.T) {
 			mockFunc: func(t *testing.T) httpClient {
 				ctrl := gomock.NewController(t)
 				cli := NewMockhttpClient(ctrl)
-				cli.EXPECT().sendPostRequest(gomock.Any(), path.Join(_apiPathPrefix, "/clusters/1/service_registries"), "", gomock.Any(), gomock.Any()).Return(nil)
+				cli.EXPECT().sendPostRequest(gomock.Any(), path.Join(_apiPathPrefix, "/clusters/1/service_registries"), "", gomock.Any(), gomock.Any(), gomock.Any()).Return(nil)
 				return cli
 
 			},
@@ -65,7 +65,7 @@ func TestCreateServiceRegistry(t *testing.T) {
 			mockFunc: func(t *testing.T) httpClient {
 				ctrl := gomock.NewController(t)
 				cli := NewMockhttpClient(ctrl)
-				cli.EXPECT().sendPostRequest(gomock.Any(), path.Join(_apiPathPrefix, "/clusters/1/service_registries"), "", gomock.Any(), gomock.Any()).Return(errors.New("mock error"))
+				cli.EXPECT().sendPostRequest(gomock.Any(), path.Join(_apiPathPrefix, "/clusters/1/service_registries"), "", gomock.Any(), gomock.Any(), gomock.Any()).Return(errors.New("mock error"))
 				return cli
 
 			},
@@ -114,7 +114,7 @@ func TestUpdateServiceRegistry(t *testing.T) {
 			mockFunc: func(t *testing.T) httpClient {
 				ctrl := gomock.NewController(t)
 				cli := NewMockhttpClient(ctrl)
-				cli.EXPECT().sendPutRequest(gomock.Any(), path.Join(_apiPathPrefix, "/clusters/1/service_registries/12"), "", gomock.Any(), gomock.Any()).Return(nil)
+				cli.EXPECT().sendPutRequest(gomock.Any(), path.Join(_apiPathPrefix, "/clusters/1/service_registries/12"), "", gomock.Any(), gomock.Any(), gomock.Any()).Return(nil)
 				return cli
 
 			},
@@ -134,7 +134,7 @@ func TestUpdateServiceRegistry(t *testing.T) {
 			mockFunc: func(t *testing.T) httpClient {
 				ctrl := gomock.NewController(t)
 				cli := NewMockhttpClient(ctrl)
-				cli.EXPECT().sendPutRequest(gomock.Any(), path.Join(_apiPathPrefix, "/clusters/1/service_registries/12"), "", gomock.Any(), gomock.Any()).Return(errors.New("mock error"))
+				cli.EXPECT().sendPutRequest(gomock.Any(), path.Join(_apiPathPrefix, "/clusters/1/service_registries/12"), "", gomock.Any(), gomock.Any(), gomock.Any()).Return(errors.New("mock error"))
 				return cli
 
 			},
@@ -173,7 +173,7 @@ func TestDeleteServiceRegistry(t *testing.T) {
 			mockFunc: func(t *testing.T) httpClient {
 				ctrl := gomock.NewController(t)
 				cli := NewMockhttpClient(ctrl)
-				cli.EXPECT().sendDeleteRequest(gomock.Any(), path.Join(_apiPathPrefix, "/clusters/1/service_registries/12"), "", nil).Return(nil)
+				cli.EXPECT().sendDeleteRequest(gomock.Any(), path.Join(_apiPathPrefix, "/clusters/1/service_registries/12"), "", nil, gomock.Any()).Return(nil)
 				return cli
 
 			},
@@ -184,7 +184,7 @@ func TestDeleteServiceRegistry(t *testing.T) {
 			mockFunc: func(t *testing.T) httpClient {
 				ctrl := gomock.NewController(t)
 				cli := NewMockhttpClient(ctrl)
-				cli.EXPECT().sendDeleteRequest(gomock.Any(), path.Join(_apiPathPrefix, "/clusters/1/service_registries/12"), "", nil).Return(errors.New("mock error"))
+				cli.EXPECT().sendDeleteRequest(gomock.Any(), path.Join(_apiPathPrefix, "/clusters/1/service_registries/12"), "", nil, gomock.Any()).Return(errors.New("mock error"))
 				return cli
 
 			},
@@ -223,7 +223,7 @@ func TestGetServiceRegistry(t *testing.T) {
 			mockFunc: func(t *testing.T) httpClient {
 				ctrl := gomock.NewController(t)
 				cli := NewMockhttpClient(ctrl)
-				cli.EXPECT().sendGetRequest(gomock.Any(), path.Join(_apiPathPrefix, "/clusters/1/service_registries/12"), "", gomock.Any()).Return(nil)
+				cli.EXPECT().sendGetRequest(gomock.Any(), path.Join(_apiPathPrefix, "/clusters/1/service_registries/12"), "", gomock.Any(), gomock.Any()).Return(nil)
 				return cli
 
 			},
@@ -234,7 +234,7 @@ func TestGetServiceRegistry(t *testing.T) {
 			mockFunc: func(t *testing.T) httpClient {
 				ctrl := gomock.NewController(t)
 				cli := NewMockhttpClient(ctrl)
-				cli.EXPECT().sendGetRequest(gomock.Any(), path.Join(_apiPathPrefix, "/clusters/1/service_registries/12"), "", gomock.Any()).Return(errors.New("mock error"))
+				cli.EXPECT().sendGetRequest(gomock.Any(), path.Join(_apiPathPrefix, "/clusters/1/service_registries/12"), "", gomock.Any(), gomock.Any()).Return(errors.New("mock error"))
 				return cli
 			},
 			expectedError: "mock error",

@@ -46,7 +46,8 @@ func TestCreateCanaryRelease(t *testing.T) {
 			mockFunc: func(t *testing.T) httpClient {
 				ctrl := gomock.NewController(t)
 				cli := NewMockhttpClient(ctrl)
-				cli.EXPECT().sendPostRequest(gomock.Any(), path.Join(_apiPathPrefix, "/apps/1/canary_releases"), "", gomock.Any(), gomock.Any()).Return(nil)
+				cli.EXPECT().getClusterID().Return(ID(0))
+				cli.EXPECT().sendPostRequest(gomock.Any(), path.Join(_apiPathPrefix, "/apps/1/canary_releases"), "", gomock.Any(), gomock.Any(), gomock.Any()).Return(nil)
 				return cli
 			},
 			expectedError: "",
@@ -65,7 +66,8 @@ func TestCreateCanaryRelease(t *testing.T) {
 			mockFunc: func(t *testing.T) httpClient {
 				ctrl := gomock.NewController(t)
 				cli := NewMockhttpClient(ctrl)
-				cli.EXPECT().sendPostRequest(gomock.Any(), path.Join(_apiPathPrefix, "/apps/1/canary_releases"), "", gomock.Any(), gomock.Any()).Return(errors.New("mock error"))
+				cli.EXPECT().getClusterID().Return(ID(0))
+				cli.EXPECT().sendPostRequest(gomock.Any(), path.Join(_apiPathPrefix, "/apps/1/canary_releases"), "", gomock.Any(), gomock.Any(), gomock.Any()).Return(errors.New("mock error"))
 				return cli
 			},
 			expectedError: "mock error",
@@ -77,6 +79,7 @@ func TestCreateCanaryRelease(t *testing.T) {
 		t.Run(tc.name, func(t *testing.T) {
 			cli := tc.mockFunc(t)
 			_, err := newCanaryRelease(cli).CreateCanaryRelease(context.Background(), tc.pendingCr, &ResourceCreateOptions{
+				Cluster: &Cluster{ID: 123},
 				Application: &Application{
 					ID: 1,
 				},
@@ -110,7 +113,8 @@ func TestUpdateCanaryRelease(t *testing.T) {
 			mockFunc: func(t *testing.T) httpClient {
 				ctrl := gomock.NewController(t)
 				cli := NewMockhttpClient(ctrl)
-				cli.EXPECT().sendPutRequest(gomock.Any(), path.Join(_apiPathPrefix, "/apps/1/canary_releases/12"), "", gomock.Any(), gomock.Any()).Return(nil)
+				cli.EXPECT().getClusterID().Return(ID(0))
+				cli.EXPECT().sendPutRequest(gomock.Any(), path.Join(_apiPathPrefix, "/apps/1/canary_releases/12"), "", gomock.Any(), gomock.Any(), gomock.Any()).Return(nil)
 				return cli
 
 			},
@@ -127,7 +131,8 @@ func TestUpdateCanaryRelease(t *testing.T) {
 			mockFunc: func(t *testing.T) httpClient {
 				ctrl := gomock.NewController(t)
 				cli := NewMockhttpClient(ctrl)
-				cli.EXPECT().sendPutRequest(gomock.Any(), path.Join(_apiPathPrefix, "/apps/1/canary_releases/12"), "", gomock.Any(), gomock.Any()).Return(errors.New("mock error"))
+				cli.EXPECT().getClusterID().Return(ID(0))
+				cli.EXPECT().sendPutRequest(gomock.Any(), path.Join(_apiPathPrefix, "/apps/1/canary_releases/12"), "", gomock.Any(), gomock.Any(), gomock.Any()).Return(errors.New("mock error"))
 				return cli
 
 			},
@@ -140,6 +145,7 @@ func TestUpdateCanaryRelease(t *testing.T) {
 		t.Run(tc.name, func(t *testing.T) {
 			cli := tc.mockFunc(t)
 			_, err := newCanaryRelease(cli).UpdateCanaryRelease(context.Background(), tc.pendingCr, &ResourceUpdateOptions{
+				Cluster: &Cluster{ID: 123},
 				Application: &Application{
 					ID: 1,
 				},
@@ -166,12 +172,13 @@ func TestStartCanaryRelease(t *testing.T) {
 			mockFunc: func(t *testing.T) httpClient {
 				ctrl := gomock.NewController(t)
 				cli := NewMockhttpClient(ctrl)
+				cli.EXPECT().getClusterID().Return(ID(0))
 				cli.EXPECT().sendPutRequest(gomock.Any(), path.Join(_apiPathPrefix, "/apps/1/canary_releases/12"), "", &CanaryRelease{
 					CanaryReleaseSpec: CanaryReleaseSpec{
 						State: CanaryReleaseStateInProgress,
 					},
 					ID: 12,
-				}, gomock.Any()).Return(nil)
+				}, gomock.Any(), gomock.Any()).Return(nil)
 				return cli
 
 			},
@@ -182,12 +189,13 @@ func TestStartCanaryRelease(t *testing.T) {
 			mockFunc: func(t *testing.T) httpClient {
 				ctrl := gomock.NewController(t)
 				cli := NewMockhttpClient(ctrl)
+				cli.EXPECT().getClusterID().Return(ID(0))
 				cli.EXPECT().sendPutRequest(gomock.Any(), path.Join(_apiPathPrefix, "/apps/1/canary_releases/12"), "", &CanaryRelease{
 					CanaryReleaseSpec: CanaryReleaseSpec{
 						State: CanaryReleaseStateInProgress,
 					},
 					ID: 12,
-				}, gomock.Any()).Return(errors.New("mock error"))
+				}, gomock.Any(), gomock.Any()).Return(errors.New("mock error"))
 				return cli
 			},
 			expectedError: "mock error",
@@ -202,6 +210,7 @@ func TestStartCanaryRelease(t *testing.T) {
 			_, err := newCanaryRelease(cli).StartCanaryRelease(context.Background(), &CanaryRelease{
 				ID: 12,
 			}, &ResourceUpdateOptions{
+				Cluster: &Cluster{ID: 123},
 				Application: &Application{
 					ID: 1,
 				},
@@ -228,12 +237,13 @@ func TestPauseCanaryRelease(t *testing.T) {
 			mockFunc: func(t *testing.T) httpClient {
 				ctrl := gomock.NewController(t)
 				cli := NewMockhttpClient(ctrl)
+				cli.EXPECT().getClusterID().Return(ID(0))
 				cli.EXPECT().sendPutRequest(gomock.Any(), path.Join(_apiPathPrefix, "/apps/1/canary_releases/12"), "", &CanaryRelease{
 					CanaryReleaseSpec: CanaryReleaseSpec{
 						State: CanaryReleaseStatePaused,
 					},
 					ID: 12,
-				}, gomock.Any()).Return(nil)
+				}, gomock.Any(), gomock.Any()).Return(nil)
 				return cli
 
 			},
@@ -244,12 +254,13 @@ func TestPauseCanaryRelease(t *testing.T) {
 			mockFunc: func(t *testing.T) httpClient {
 				ctrl := gomock.NewController(t)
 				cli := NewMockhttpClient(ctrl)
+				cli.EXPECT().getClusterID().Return(ID(0))
 				cli.EXPECT().sendPutRequest(gomock.Any(), path.Join(_apiPathPrefix, "/apps/1/canary_releases/12"), "", &CanaryRelease{
 					CanaryReleaseSpec: CanaryReleaseSpec{
 						State: CanaryReleaseStatePaused,
 					},
 					ID: 12,
-				}, gomock.Any()).Return(errors.New("mock error"))
+				}, gomock.Any(), gomock.Any()).Return(errors.New("mock error"))
 				return cli
 			},
 			expectedError: "mock error",
@@ -264,6 +275,7 @@ func TestPauseCanaryRelease(t *testing.T) {
 			_, err := newCanaryRelease(cli).PauseCanaryRelease(context.Background(), &CanaryRelease{
 				ID: 12,
 			}, &ResourceUpdateOptions{
+				Cluster: &Cluster{ID: 123},
 				Application: &Application{
 					ID: 1,
 				},
@@ -290,12 +302,13 @@ func TestFinishCanaryRelease(t *testing.T) {
 			mockFunc: func(t *testing.T) httpClient {
 				ctrl := gomock.NewController(t)
 				cli := NewMockhttpClient(ctrl)
+				cli.EXPECT().getClusterID().Return(ID(0))
 				cli.EXPECT().sendPutRequest(gomock.Any(), path.Join(_apiPathPrefix, "/apps/1/canary_releases/12"), "", &CanaryRelease{
 					CanaryReleaseSpec: CanaryReleaseSpec{
 						State: CanaryReleaseStateFinished,
 					},
 					ID: 12,
-				}, gomock.Any()).Return(nil)
+				}, gomock.Any(), gomock.Any()).Return(nil)
 				return cli
 			},
 			expectedError: "",
@@ -305,12 +318,13 @@ func TestFinishCanaryRelease(t *testing.T) {
 			mockFunc: func(t *testing.T) httpClient {
 				ctrl := gomock.NewController(t)
 				cli := NewMockhttpClient(ctrl)
+				cli.EXPECT().getClusterID().Return(ID(0))
 				cli.EXPECT().sendPutRequest(gomock.Any(), path.Join(_apiPathPrefix, "/apps/1/canary_releases/12"), "", &CanaryRelease{
 					CanaryReleaseSpec: CanaryReleaseSpec{
 						State: CanaryReleaseStateFinished,
 					},
 					ID: 12,
-				}, gomock.Any()).Return(errors.New("mock error"))
+				}, gomock.Any(), gomock.Any()).Return(errors.New("mock error"))
 				return cli
 			},
 			expectedError: "mock error",
@@ -325,6 +339,7 @@ func TestFinishCanaryRelease(t *testing.T) {
 			_, err := newCanaryRelease(cli).FinishCanaryRelease(context.Background(), &CanaryRelease{
 				ID: 12,
 			}, &ResourceUpdateOptions{
+				Cluster: &Cluster{ID: 123},
 				Application: &Application{
 					ID: 1,
 				},
@@ -351,7 +366,8 @@ func TestDeleteCanaryRelease(t *testing.T) {
 			mockFunc: func(t *testing.T) httpClient {
 				ctrl := gomock.NewController(t)
 				cli := NewMockhttpClient(ctrl)
-				cli.EXPECT().sendDeleteRequest(gomock.Any(), path.Join(_apiPathPrefix, "/apps/1/canary_releases/1"), "", nil).Return(nil)
+				cli.EXPECT().getClusterID().Return(ID(0))
+				cli.EXPECT().sendDeleteRequest(gomock.Any(), path.Join(_apiPathPrefix, "/apps/1/canary_releases/1"), "", nil, gomock.Any()).Return(nil)
 				return cli
 			},
 			expectedError: "",
@@ -361,7 +377,8 @@ func TestDeleteCanaryRelease(t *testing.T) {
 			mockFunc: func(t *testing.T) httpClient {
 				ctrl := gomock.NewController(t)
 				cli := NewMockhttpClient(ctrl)
-				cli.EXPECT().sendDeleteRequest(gomock.Any(), path.Join(_apiPathPrefix, "/apps/1/canary_releases/1"), "", nil).Return(errors.New("mock error"))
+				cli.EXPECT().getClusterID().Return(ID(0))
+				cli.EXPECT().sendDeleteRequest(gomock.Any(), path.Join(_apiPathPrefix, "/apps/1/canary_releases/1"), "", nil, gomock.Any()).Return(errors.New("mock error"))
 				return cli
 
 			},
@@ -373,6 +390,7 @@ func TestDeleteCanaryRelease(t *testing.T) {
 		t.Run(tc.name, func(t *testing.T) {
 			cli := tc.mockFunc(t)
 			err := newCanaryRelease(cli).DeleteCanaryRelease(context.Background(), 1, &ResourceDeleteOptions{
+				Cluster: &Cluster{ID: 123},
 				Application: &Application{
 					ID: 1,
 				},
@@ -399,7 +417,8 @@ func TestGetCanaryRelease(t *testing.T) {
 			mockFunc: func(t *testing.T) httpClient {
 				ctrl := gomock.NewController(t)
 				cli := NewMockhttpClient(ctrl)
-				cli.EXPECT().sendGetRequest(gomock.Any(), path.Join(_apiPathPrefix, "/apps/1/canary_releases/1"), "", gomock.Any()).Return(nil)
+				cli.EXPECT().getClusterID().Return(ID(0))
+				cli.EXPECT().sendGetRequest(gomock.Any(), path.Join(_apiPathPrefix, "/apps/1/canary_releases/1"), "", gomock.Any(), gomock.Any()).Return(nil)
 				return cli
 
 			},
@@ -410,7 +429,8 @@ func TestGetCanaryRelease(t *testing.T) {
 			mockFunc: func(t *testing.T) httpClient {
 				ctrl := gomock.NewController(t)
 				cli := NewMockhttpClient(ctrl)
-				cli.EXPECT().sendGetRequest(gomock.Any(), path.Join(_apiPathPrefix, "/apps/1/canary_releases/1"), "", gomock.Any()).Return(errors.New("mock error"))
+				cli.EXPECT().getClusterID().Return(ID(0))
+				cli.EXPECT().sendGetRequest(gomock.Any(), path.Join(_apiPathPrefix, "/apps/1/canary_releases/1"), "", gomock.Any(), gomock.Any()).Return(errors.New("mock error"))
 				return cli
 			},
 			expectedError: "mock error",
@@ -422,6 +442,7 @@ func TestGetCanaryRelease(t *testing.T) {
 		t.Run(tc.name, func(t *testing.T) {
 			cli := tc.mockFunc(t)
 			_, err := newCanaryRelease(cli).GetCanaryRelease(context.Background(), 1, &ResourceGetOptions{
+				Cluster: &Cluster{ID: 123},
 				Application: &Application{
 					ID: 1,
 				},
@@ -462,6 +483,7 @@ func TestListCanaryReleases(t *testing.T) {
 		tc := tc
 		t.Run(tc.name, func(t *testing.T) {
 			raw, err := newCanaryRelease(nil).ListCanaryReleases(context.Background(), &ResourceListOptions{
+				Cluster: &Cluster{ID: 123},
 				Application: &Application{
 					ID: 1,
 				},

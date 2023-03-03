@@ -864,6 +864,18 @@ func (mr *MockInterfaceMockRecorder) RemoveMember(ctx, memberID, opts interface{
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RemoveMember", reflect.TypeOf((*MockInterface)(nil).RemoveMember), ctx, memberID, opts)
 }
 
+// SetGlobalClusterID mocks base method.
+func (m *MockInterface) SetGlobalClusterID(id ID) {
+	m.ctrl.T.Helper()
+	m.ctrl.Call(m, "SetGlobalClusterID", id)
+}
+
+// SetGlobalClusterID indicates an expected call of SetGlobalClusterID.
+func (mr *MockInterfaceMockRecorder) SetGlobalClusterID(id interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SetGlobalClusterID", reflect.TypeOf((*MockInterface)(nil).SetGlobalClusterID), id)
+}
+
 // StartCanaryRelease mocks base method.
 func (m *MockInterface) StartCanaryRelease(ctx context.Context, cr *CanaryRelease, opts *ResourceUpdateOptions) (*CanaryRelease, error) {
 	m.ctrl.T.Helper()

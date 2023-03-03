@@ -376,7 +376,7 @@ func (impl *clusterImpl) GetCluster(ctx context.Context, clusterID ID, opts *Res
 	var cluster Cluster
 
 	uri := path.Join(_apiPathPrefix, "clusters", clusterID.String())
-	if err := impl.client.sendGetRequest(ctx, uri, "", jsonPayloadDecodeFactory(&cluster)); err != nil {
+	if err := impl.client.sendGetRequest(ctx, uri, "", jsonPayloadDecodeFactory(&cluster), appendHeader(mapClusterId(clusterID))); err != nil {
 		return nil, err
 	}
 	return &cluster, nil
@@ -384,7 +384,7 @@ func (impl *clusterImpl) GetCluster(ctx context.Context, clusterID ID, opts *Res
 
 func (impl *clusterImpl) UpdateClusterSettings(ctx context.Context, clusterID ID, settings *ClusterSettings, opts *ResourceUpdateOptions) error {
 	uri := path.Join(_apiPathPrefix, "clusters", clusterID.String(), "config")
-	if err := impl.client.sendPatchRequest(ctx, uri, "", settings, nil); err != nil {
+	if err := impl.client.sendPatchRequest(ctx, uri, "", settings, nil, appendHeader(mapClusterId(clusterID))); err != nil {
 		return err
 	}
 	return nil
@@ -392,7 +392,7 @@ func (impl *clusterImpl) UpdateClusterSettings(ctx context.Context, clusterID ID
 
 func (impl *clusterImpl) UpdateClusterPlugins(ctx context.Context, clusterID ID, plugins Plugins, opts *ResourceUpdateOptions) error {
 	uri := path.Join(_apiPathPrefix, "clusters", clusterID.String(), "plugins")
-	if err := impl.client.sendPatchRequest(ctx, uri, "", plugins, nil); err != nil {
+	if err := impl.client.sendPatchRequest(ctx, uri, "", plugins, nil, appendHeader(mapClusterId(clusterID))); err != nil {
 		return err
 	}
 	return nil
@@ -406,6 +406,7 @@ func (impl *clusterImpl) ListClusters(ctx context.Context, opts *ResourceListOpt
 		path:     path.Join(_apiPathPrefix, "orgs", opts.Organization.ID.String(), "clusters"),
 		paging:   mergePagination(opts.Pagination),
 		filter:   opts.Filter,
+		headers:  appendHeader(mapClusterIdFromOpts(opts)),
 	}
 
 	return &clusterListIterator{iter: iter}, nil
@@ -415,7 +416,7 @@ func (impl *clusterImpl) GenerateGatewaySideCertificate(ctx context.Context, clu
 	var bundle TLSBundle
 
 	uri := path.Join(_apiPathPrefix, "clusters", clusterID.String(), "gateway_certificate")
-	err := impl.client.sendGetRequest(ctx, uri, "", jsonPayloadDecodeFactory(&bundle))
+	err := impl.client.sendGetRequest(ctx, uri, "", jsonPayloadDecodeFactory(&bundle), appendHeader(mapClusterId(clusterID)))
 	if err != nil {
 		return nil, err
 	}
@@ -428,7 +429,7 @@ func (impl *clusterImpl) GetGatewayInstanceStartupConfigTemplate(ctx context.Con
 	}
 
 	uri := path.Join(_apiPathPrefix, "clusters", clusterID.String(), "startup_config_tpl", configType)
-	err := impl.client.sendGetRequest(ctx, uri, "", jsonPayloadDecodeFactory(&configPayload))
+	err := impl.client.sendGetRequest(ctx, uri, "", jsonPayloadDecodeFactory(&configPayload), appendHeader(mapClusterId(clusterID)))
 	if err != nil {
 		return "", err
 	}
@@ -441,7 +442,7 @@ func (impl *clusterImpl) ListAllGatewayInstances(ctx context.Context, clusterID 
 		instances []GatewayInstance
 	)
 	uri := path.Join(_apiPathPrefix, "clusters", clusterID.String(), "instances")
-	err := impl.client.sendGetRequest(ctx, uri, "", jsonPayloadDecodeFactory(&lr))
+	err := impl.client.sendGetRequest(ctx, uri, "", jsonPayloadDecodeFactory(&lr), appendHeader(mapClusterId(clusterID)))
 	if err != nil {
 		return nil, err
 	}
@@ -477,7 +478,7 @@ func (impl *clusterImpl) listAllLabels(ctx context.Context, clusterID ID, resour
 	var labels []string
 
 	uri := path.Join(_apiPathPrefix, "clusters", clusterID.String(), "labels", resource)
-	err := impl.client.sendGetRequest(ctx, uri, "", jsonPayloadDecodeFactory(&labels))
+	err := impl.client.sendGetRequest(ctx, uri, "", jsonPayloadDecodeFactory(&labels), appendHeader(mapClusterId(clusterID)))
 	if err != nil {
 		return nil, err
 	}

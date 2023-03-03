@@ -22,6 +22,7 @@ import (
 
 // Interface is the entrypoint of the Cloud Go SDK.
 type Interface interface {
+	SetGlobalClusterID(id ID)
 	TraceInterface
 	UserInterface
 	AuthInterface
@@ -47,6 +48,7 @@ type AccessToken struct {
 }
 
 type impl struct {
+	httpCli httpClient
 	TraceInterface
 	UserInterface
 	AuthInterface
@@ -62,8 +64,14 @@ type impl struct {
 	ServiceDiscoveryInterface
 }
 
+func (i *impl) SetGlobalClusterID(id ID) {
+	i.httpCli.setClusterID(id)
+}
+
 var (
-	_apiPathPrefix = "/api/v1"
+	_apiPathPrefix       = "/api/v1"
+	ClusterHeaderName    = "X-API7-Cloud-Gateway-Cluster-ID"
+	ErrClusterIDNotExist = errors.New("cluster id not exist")
 )
 
 // NewInterface creates an Interface object.
@@ -104,6 +112,7 @@ func NewInterface(opts *Options) (Interface, error) {
 	}
 
 	return &impl{
+		httpCli:                   cli,
 		TraceInterface:            trace,
 		UserInterface:             newUser(cli),
 		AuthInterface:             newAuth(cli),

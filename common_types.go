@@ -148,6 +148,10 @@ const (
 // * Deleted indicates the entity has been deleted.
 type EntityStatus int
 
+type ResourceCommonOpts interface {
+	GetCluster() *Cluster
+}
+
 // ResourceCreateOptions contains some options for creating an API7 Cloud resource.
 type ResourceCreateOptions struct {
 	// Organization indicates where the resources are.
@@ -165,6 +169,13 @@ type ResourceCreateOptions struct {
 	// in the Application. e.g., when creating API, CanaryRelease, the
 	// Application.ID should be specified.
 	Application *Application
+}
+
+func (r *ResourceCreateOptions) GetCluster() *Cluster {
+	if r == nil {
+		return nil
+	}
+	return r.Cluster
 }
 
 // ResourceUpdateOptions contains some options for updating an API7 Cloud resource.
@@ -186,6 +197,13 @@ type ResourceUpdateOptions struct {
 	Application *Application
 }
 
+func (r *ResourceUpdateOptions) GetCluster() *Cluster {
+	if r == nil {
+		return nil
+	}
+	return r.Cluster
+}
+
 // ResourceDeleteOptions contains some options for deleting an API7 Cloud resource.
 type ResourceDeleteOptions struct {
 	// Organization indicates where the resources are.
@@ -205,6 +223,13 @@ type ResourceDeleteOptions struct {
 	Application *Application
 }
 
+func (r *ResourceDeleteOptions) GetCluster() *Cluster {
+	if r == nil {
+		return nil
+	}
+	return r.Cluster
+}
+
 // ResourceGetOptions contains some options for getting an API7 Cloud resource.
 type ResourceGetOptions struct {
 	// Organization indicates where the resources are.
@@ -222,6 +247,13 @@ type ResourceGetOptions struct {
 	// in the Application. e.g., when fetching API, the
 	// Application.ID should be specified.
 	Application *Application
+}
+
+func (r *ResourceGetOptions) GetCluster() *Cluster {
+	if r == nil {
+		return nil
+	}
+	return r.Cluster
 }
 
 // ResourceListOptions contains some options for listing the same kind of API7 Cloud resources.
@@ -245,6 +277,13 @@ type ResourceListOptions struct {
 	Pagination *Pagination
 	// Filter indicates conditions to filter out resources.
 	Filter *Filter
+}
+
+func (r *ResourceListOptions) GetCluster() *Cluster {
+	if r == nil {
+		return nil
+	}
+	return r.Cluster
 }
 
 // ExpressionLogicalRelationship is the logical relationship between expressions.
