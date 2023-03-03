@@ -49,7 +49,7 @@ func (mr *MockhttpClientMockRecorder) getClusterID() *gomock.Call {
 }
 
 // sendDeleteRequest mocks base method.
-func (m *MockhttpClient) sendDeleteRequest(ctx context.Context, path, query string, payloadDecodeFunc payloadDecodeFunc, headers map[string]string) error {
+func (m *MockhttpClient) sendDeleteRequest(ctx context.Context, path, query string, payloadDecodeFunc payloadDecodeFunc, headers http.Header) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "sendDeleteRequest", ctx, path, query, payloadDecodeFunc, headers)
 	ret0, _ := ret[0].(error)
@@ -63,7 +63,7 @@ func (mr *MockhttpClientMockRecorder) sendDeleteRequest(ctx, path, query, payloa
 }
 
 // sendGetRequest mocks base method.
-func (m *MockhttpClient) sendGetRequest(ctx context.Context, path, query string, payloadDecodeFunc payloadDecodeFunc, headers map[string]string) error {
+func (m *MockhttpClient) sendGetRequest(ctx context.Context, path, query string, payloadDecodeFunc payloadDecodeFunc, headers http.Header) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "sendGetRequest", ctx, path, query, payloadDecodeFunc, headers)
 	ret0, _ := ret[0].(error)
@@ -77,7 +77,7 @@ func (mr *MockhttpClientMockRecorder) sendGetRequest(ctx, path, query, payloadDe
 }
 
 // sendPatchRequest mocks base method.
-func (m *MockhttpClient) sendPatchRequest(ctx context.Context, path, query string, body interface{}, payloadDecodeFunc payloadDecodeFunc, headers map[string]string) error {
+func (m *MockhttpClient) sendPatchRequest(ctx context.Context, path, query string, body interface{}, payloadDecodeFunc payloadDecodeFunc, headers http.Header) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "sendPatchRequest", ctx, path, query, body, payloadDecodeFunc, headers)
 	ret0, _ := ret[0].(error)
@@ -91,7 +91,7 @@ func (mr *MockhttpClientMockRecorder) sendPatchRequest(ctx, path, query, body, p
 }
 
 // sendPostRequest mocks base method.
-func (m *MockhttpClient) sendPostRequest(ctx context.Context, path, query string, body interface{}, payloadDecodeFunc payloadDecodeFunc, headers map[string]string) error {
+func (m *MockhttpClient) sendPostRequest(ctx context.Context, path, query string, body interface{}, payloadDecodeFunc payloadDecodeFunc, headers http.Header) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "sendPostRequest", ctx, path, query, body, payloadDecodeFunc, headers)
 	ret0, _ := ret[0].(error)
@@ -105,7 +105,7 @@ func (mr *MockhttpClientMockRecorder) sendPostRequest(ctx, path, query, body, pa
 }
 
 // sendPutRequest mocks base method.
-func (m *MockhttpClient) sendPutRequest(ctx context.Context, path, query string, body interface{}, payloadDecodeFunc payloadDecodeFunc, headers map[string]string) error {
+func (m *MockhttpClient) sendPutRequest(ctx context.Context, path, query string, body interface{}, payloadDecodeFunc payloadDecodeFunc, headers http.Header) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "sendPutRequest", ctx, path, query, body, payloadDecodeFunc, headers)
 	ret0, _ := ret[0].(error)

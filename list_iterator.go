@@ -21,6 +21,7 @@ import (
 	"strconv"
 
 	"github.com/pkg/errors"
+	"net/http"
 )
 
 var (
@@ -63,7 +64,7 @@ type listIterator struct {
 	filter   *Filter
 	eof      bool
 	items    []json.RawMessage
-	headers  map[string]string
+	headers  http.Header
 }
 
 func (iter *listIterator) Next() (json.RawMessage, error) {

@@ -270,7 +270,7 @@ func (impl *organizationImpl) ListMembers(ctx context.Context, opts *ResourceLis
 		client:   impl.client,
 		path:     path.Join(_apiPathPrefix, "orgs", opts.Organization.ID.String(), "members"),
 		paging:   mergePagination(opts.Pagination),
-		headers:  appendHeader(mapClusterIdFromHttpClient(impl.client), mapClusterIdFromOpts(opts)),
+		headers:  appendHeader(mapClusterIdFromOpts(opts)),
 	}
 
 	return &memberListIterator{
@@ -285,7 +285,7 @@ func (impl *organizationImpl) ListRoles(ctx context.Context, opts *ResourceListO
 		client:   impl.client,
 		path:     path.Join(_apiPathPrefix, "orgs", opts.Organization.ID.String(), "roles"),
 		paging:   mergePagination(opts.Pagination),
-		headers:  appendHeader(mapClusterIdFromHttpClient(impl.client), mapClusterIdFromOpts(opts)),
+		headers:  appendHeader(mapClusterIdFromOpts(opts)),
 	}
 
 	return &roleListIterator{
@@ -305,7 +305,7 @@ func (impl *organizationImpl) InviteMember(ctx context.Context, email string, ro
 	}
 
 	uri := path.Join(_apiPathPrefix, "orgs", opts.Organization.ID.String(), "members")
-	err := impl.client.sendPostRequest(ctx, uri, "", body, jsonPayloadDecodeFactory(&member), appendHeader(mapClusterIdFromHttpClient(impl.client), mapClusterIdFromOpts(opts)))
+	err := impl.client.sendPostRequest(ctx, uri, "", body, jsonPayloadDecodeFactory(&member), appendHeader(mapClusterIdFromOpts(opts)))
 	if err != nil {
 		return nil, err
 	}
@@ -316,7 +316,7 @@ func (impl *organizationImpl) ReInviteMember(ctx context.Context, memberID ID, o
 	var member Member
 
 	uri := path.Join(_apiPathPrefix, "orgs", opts.Organization.ID.String(), "members", memberID.String(), "re_invite")
-	err := impl.client.sendPutRequest(ctx, uri, "", nil, jsonPayloadDecodeFactory(&member), appendHeader(mapClusterIdFromHttpClient(impl.client), mapClusterIdFromOpts(opts)))
+	err := impl.client.sendPutRequest(ctx, uri, "", nil, jsonPayloadDecodeFactory(&member), appendHeader(mapClusterIdFromOpts(opts)))
 	if err != nil {
 		return nil, err
 	}
@@ -325,7 +325,7 @@ func (impl *organizationImpl) ReInviteMember(ctx context.Context, memberID ID, o
 
 func (impl *organizationImpl) RemoveMember(ctx context.Context, memberID ID, opts *ResourceDeleteOptions) error {
 	uri := path.Join(_apiPathPrefix, "orgs", opts.Organization.ID.String(), "members", memberID.String())
-	err := impl.client.sendDeleteRequest(ctx, uri, "", nil, appendHeader(mapClusterIdFromHttpClient(impl.client), mapClusterIdFromOpts(opts)))
+	err := impl.client.sendDeleteRequest(ctx, uri, "", nil, appendHeader(mapClusterIdFromOpts(opts)))
 	if err != nil {
 		return err
 	}
@@ -336,7 +336,7 @@ func (impl *organizationImpl) GetMember(ctx context.Context, memberID ID, opts *
 	var member Member
 
 	uri := path.Join(_apiPathPrefix, "orgs", opts.Organization.ID.String(), "members", memberID.String())
-	err := impl.client.sendGetRequest(ctx, uri, "", jsonPayloadDecodeFactory(&member), appendHeader(mapClusterIdFromHttpClient(impl.client), mapClusterIdFromOpts(opts)))
+	err := impl.client.sendGetRequest(ctx, uri, "", jsonPayloadDecodeFactory(&member), appendHeader(mapClusterIdFromOpts(opts)))
 	if err != nil {
 		return nil, err
 	}
@@ -345,7 +345,7 @@ func (impl *organizationImpl) GetMember(ctx context.Context, memberID ID, opts *
 
 func (impl *organizationImpl) TransferOwnership(ctx context.Context, targetMemberID ID, opts *ResourceUpdateOptions) error {
 	uri := path.Join(_apiPathPrefix, "orgs", opts.Organization.ID.String(), "members", targetMemberID.String(), "transfer_ownership")
-	err := impl.client.sendPostRequest(ctx, uri, "", nil, nil, appendHeader(mapClusterIdFromHttpClient(impl.client), mapClusterIdFromOpts(opts)))
+	err := impl.client.sendPostRequest(ctx, uri, "", nil, nil, appendHeader(mapClusterIdFromOpts(opts)))
 	if err != nil {
 		return err
 	}
@@ -354,7 +354,7 @@ func (impl *organizationImpl) TransferOwnership(ctx context.Context, targetMembe
 
 func (impl *organizationImpl) UpdateMemberRoles(ctx context.Context, memberID ID, roleBindings []RoleBinding, opts *ResourceUpdateOptions) error {
 	uri := path.Join(_apiPathPrefix, "orgs", opts.Organization.ID.String(), "members", memberID.String())
-	err := impl.client.sendPutRequest(ctx, uri, "", roleBindings, nil, appendHeader(mapClusterIdFromHttpClient(impl.client), mapClusterIdFromOpts(opts)))
+	err := impl.client.sendPutRequest(ctx, uri, "", roleBindings, nil, appendHeader(mapClusterIdFromOpts(opts)))
 	if err != nil {
 		return err
 	}

@@ -161,7 +161,7 @@ func (impl *canaryReleaseImpl) CreateCanaryRelease(ctx context.Context, cr *Cana
 	}
 	appID := opts.Application.ID
 	uri := path.Join(_apiPathPrefix, "apps", appID.String(), "canary_releases")
-	err := impl.client.sendPostRequest(ctx, uri, "", cr, jsonPayloadDecodeFactory(&createdCr), appendHeader(mapClusterIdFromHttpClient(impl.client), mapClusterIdFromOpts(opts)))
+	err := impl.client.sendPostRequest(ctx, uri, "", cr, jsonPayloadDecodeFactory(&createdCr), appendHeader(mapClusterIdFromOpts(opts)))
 	if err != nil {
 		return nil, err
 	}
@@ -175,7 +175,7 @@ func (impl *canaryReleaseImpl) UpdateCanaryRelease(ctx context.Context, cr *Cana
 	}
 	appID := opts.Application.ID
 	uri := path.Join(_apiPathPrefix, "apps", appID.String(), "canary_releases", cr.ID.String())
-	err := impl.client.sendPutRequest(ctx, uri, "", cr, jsonPayloadDecodeFactory(&updatedCr), appendHeader(mapClusterIdFromHttpClient(impl.client), mapClusterIdFromOpts(opts)))
+	err := impl.client.sendPutRequest(ctx, uri, "", cr, jsonPayloadDecodeFactory(&updatedCr), appendHeader(mapClusterIdFromOpts(opts)))
 	if err != nil {
 		return nil, err
 	}
@@ -190,7 +190,7 @@ func (impl *canaryReleaseImpl) StartCanaryRelease(ctx context.Context, cr *Canar
 	appID := opts.Application.ID
 	uri := path.Join(_apiPathPrefix, "apps", appID.String(), "canary_releases", cr.ID.String())
 	cr.State = CanaryReleaseStateInProgress
-	err := impl.client.sendPutRequest(ctx, uri, "", cr, jsonPayloadDecodeFactory(&updatedCr), appendHeader(mapClusterIdFromHttpClient(impl.client), mapClusterIdFromOpts(opts)))
+	err := impl.client.sendPutRequest(ctx, uri, "", cr, jsonPayloadDecodeFactory(&updatedCr), appendHeader(mapClusterIdFromOpts(opts)))
 	if err != nil {
 		return nil, err
 	}
@@ -205,7 +205,7 @@ func (impl *canaryReleaseImpl) PauseCanaryRelease(ctx context.Context, cr *Canar
 	appID := opts.Application.ID
 	uri := path.Join(_apiPathPrefix, "apps", appID.String(), "canary_releases", cr.ID.String())
 	cr.State = CanaryReleaseStatePaused
-	err := impl.client.sendPutRequest(ctx, uri, "", cr, jsonPayloadDecodeFactory(&updatedCr), appendHeader(mapClusterIdFromHttpClient(impl.client), mapClusterIdFromOpts(opts)))
+	err := impl.client.sendPutRequest(ctx, uri, "", cr, jsonPayloadDecodeFactory(&updatedCr), appendHeader(mapClusterIdFromOpts(opts)))
 	if err != nil {
 		return nil, err
 	}
@@ -220,7 +220,7 @@ func (impl *canaryReleaseImpl) FinishCanaryRelease(ctx context.Context, cr *Cana
 	appID := opts.Application.ID
 	uri := path.Join(_apiPathPrefix, "apps", appID.String(), "canary_releases", cr.ID.String())
 	cr.State = CanaryReleaseStateFinished
-	err := impl.client.sendPutRequest(ctx, uri, "", cr, jsonPayloadDecodeFactory(&cr), appendHeader(mapClusterIdFromHttpClient(impl.client), mapClusterIdFromOpts(opts)))
+	err := impl.client.sendPutRequest(ctx, uri, "", cr, jsonPayloadDecodeFactory(&cr), appendHeader(mapClusterIdFromOpts(opts)))
 	if err != nil {
 		return nil, err
 	}
@@ -233,7 +233,7 @@ func (impl *canaryReleaseImpl) DeleteCanaryRelease(ctx context.Context, crID ID,
 		return ErrClusterIDNotExist
 	}
 	uri := path.Join(_apiPathPrefix, "apps", appID.String(), "canary_releases", crID.String())
-	return impl.client.sendDeleteRequest(ctx, uri, "", nil, appendHeader(mapClusterIdFromHttpClient(impl.client), mapClusterIdFromOpts(opts)))
+	return impl.client.sendDeleteRequest(ctx, uri, "", nil, appendHeader(mapClusterIdFromOpts(opts)))
 }
 
 func (impl *canaryReleaseImpl) GetCanaryRelease(ctx context.Context, crID ID, opts *ResourceGetOptions) (*CanaryRelease, error) {
@@ -243,7 +243,7 @@ func (impl *canaryReleaseImpl) GetCanaryRelease(ctx context.Context, crID ID, op
 	}
 	appID := opts.Application.ID
 	uri := path.Join(_apiPathPrefix, "apps", appID.String(), "canary_releases", crID.String())
-	err := impl.client.sendGetRequest(ctx, uri, "", jsonPayloadDecodeFactory(&cr), appendHeader(mapClusterIdFromHttpClient(impl.client), mapClusterIdFromOpts(opts)))
+	err := impl.client.sendGetRequest(ctx, uri, "", jsonPayloadDecodeFactory(&cr), appendHeader(mapClusterIdFromOpts(opts)))
 	if err != nil {
 		return nil, err
 	}
@@ -261,7 +261,7 @@ func (impl *canaryReleaseImpl) ListCanaryReleases(ctx context.Context, opts *Res
 		path:     path.Join(_apiPathPrefix, "apps", opts.Application.ID.String(), "canary_releases"),
 		paging:   mergePagination(opts.Pagination),
 		filter:   opts.Filter,
-		headers:  appendHeader(mapClusterIdFromHttpClient(impl.client), mapClusterIdFromOpts(opts)),
+		headers:  appendHeader(mapClusterIdFromOpts(opts)),
 	}
 
 	return &canaryReleaseListIterator{iter: iter}, nil

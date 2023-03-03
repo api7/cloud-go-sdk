@@ -70,11 +70,11 @@ func jsonPayloadDecodeFactory(container interface{}) payloadDecodeFunc {
 // httpClient is an interface which abstracts behaviors that the Cloud Go SDK
 // will perform.
 type httpClient interface {
-	sendGetRequest(ctx context.Context, path, query string, payloadDecodeFunc payloadDecodeFunc, headers map[string]string) error
-	sendPostRequest(ctx context.Context, path, query string, body interface{}, payloadDecodeFunc payloadDecodeFunc, headers map[string]string) error
-	sendPutRequest(ctx context.Context, path, query string, body interface{}, payloadDecodeFunc payloadDecodeFunc, headers map[string]string) error
-	sendPatchRequest(ctx context.Context, path, query string, body interface{}, payloadDecodeFunc payloadDecodeFunc, headers map[string]string) error
-	sendDeleteRequest(ctx context.Context, path, query string, payloadDecodeFunc payloadDecodeFunc, headers map[string]string) error
+	sendGetRequest(ctx context.Context, path, query string, payloadDecodeFunc payloadDecodeFunc, headers http.Header) error
+	sendPostRequest(ctx context.Context, path, query string, body interface{}, payloadDecodeFunc payloadDecodeFunc, headers http.Header) error
+	sendPutRequest(ctx context.Context, path, query string, body interface{}, payloadDecodeFunc payloadDecodeFunc, headers http.Header) error
+	sendPatchRequest(ctx context.Context, path, query string, body interface{}, payloadDecodeFunc payloadDecodeFunc, headers http.Header) error
+	sendDeleteRequest(ctx context.Context, path, query string, payloadDecodeFunc payloadDecodeFunc, headers http.Header) error
 	sendRequest(req *http.Request, payloadDecodeFunc payloadDecodeFunc, series *TraceSeries) error
 	getClusterID() ID
 	setClusterID(id ID)
@@ -168,7 +168,7 @@ func newClientTrace(series *TraceSeries) *httptrace.ClientTrace {
 	}
 }
 
-func (impl *httpClientImpl) sendGetRequest(ctx context.Context, path, query string, payloadDecodeFunc payloadDecodeFunc, headers map[string]string) error {
+func (impl *httpClientImpl) sendGetRequest(ctx context.Context, path, query string, payloadDecodeFunc payloadDecodeFunc, headers http.Header) error {
 	url := *impl.url
 	url.Path = path
 	url.RawQuery = query
@@ -177,9 +177,7 @@ func (impl *httpClientImpl) sendGetRequest(ctx context.Context, path, query stri
 	if err != nil {
 		return errors.Wrap(err, "construct http request")
 	}
-	for k, v := range headers {
-		req.Header.Set(k, v)
-	}
+	combineHeaderToReq(req, headers)
 	var series *TraceSeries
 	if impl.enableHTTPTrace {
 		series = &TraceSeries{
@@ -195,7 +193,7 @@ func (impl *httpClientImpl) sendGetRequest(ctx context.Context, path, query stri
 	return impl.sendRequest(req, payloadDecodeFunc, series)
 }
 
-func (impl *httpClientImpl) sendPostRequest(ctx context.Context, path, query string, body interface{}, payloadDecodeFunc payloadDecodeFunc, headers map[string]string) error {
+func (impl *httpClientImpl) sendPostRequest(ctx context.Context, path, query string, body interface{}, payloadDecodeFunc payloadDecodeFunc, headers http.Header) error {
 	url := *impl.url
 	url.Path = path
 	url.RawQuery = query
@@ -209,9 +207,7 @@ func (impl *httpClientImpl) sendPostRequest(ctx context.Context, path, query str
 	if err != nil {
 		return errors.Wrap(err, "construct http request")
 	}
-	for k, v := range headers {
-		req.Header.Set(k, v)
-	}
+	combineHeaderToReq(req, headers)
 	var series *TraceSeries
 	if impl.enableHTTPTrace {
 		series = &TraceSeries{
@@ -229,7 +225,7 @@ func (impl *httpClientImpl) sendPostRequest(ctx context.Context, path, query str
 	return impl.sendRequest(req, payloadDecodeFunc, series)
 }
 
-func (impl *httpClientImpl) sendPutRequest(ctx context.Context, path, query string, body interface{}, payloadDecodeFunc payloadDecodeFunc, headers map[string]string) error {
+func (impl *httpClientImpl) sendPutRequest(ctx context.Context, path, query string, body interface{}, payloadDecodeFunc payloadDecodeFunc, headers http.Header) error {
 	var (
 		reader io.Reader
 		data   []byte
@@ -253,9 +249,7 @@ func (impl *httpClientImpl) sendPutRequest(ctx context.Context, path, query stri
 		return errors.Wrap(err, "construct http request")
 	}
 
-	for k, v := range headers {
-		req.Header.Set(k, v)
-	}
+	combineHeaderToReq(req, headers)
 
 	var series *TraceSeries
 	if impl.enableHTTPTrace {
@@ -274,7 +268,7 @@ func (impl *httpClientImpl) sendPutRequest(ctx context.Context, path, query stri
 	return impl.sendRequest(req, payloadDecodeFunc, series)
 }
 
-func (impl *httpClientImpl) sendPatchRequest(ctx context.Context, path, query string, body interface{}, payloadDecodeFunc payloadDecodeFunc, headers map[string]string) error {
+func (impl *httpClientImpl) sendPatchRequest(ctx context.Context, path, query string, body interface{}, payloadDecodeFunc payloadDecodeFunc, headers http.Header) error {
 	url := *impl.url
 	url.Path = path
 	url.RawQuery = query
@@ -289,9 +283,7 @@ func (impl *httpClientImpl) sendPatchRequest(ctx context.Context, path, query st
 		return errors.Wrap(err, "construct http request")
 	}
 
-	for k, v := range headers {
-		req.Header.Set(k, v)
-	}
+	combineHeaderToReq(req, headers)
 
 	var series *TraceSeries
 	if impl.enableHTTPTrace {
@@ -310,7 +302,7 @@ func (impl *httpClientImpl) sendPatchRequest(ctx context.Context, path, query st
 	return impl.sendRequest(req, payloadDecodeFunc, series)
 }
 
-func (impl *httpClientImpl) sendDeleteRequest(ctx context.Context, path, query string, payloadDecodeFunc payloadDecodeFunc, headers map[string]string) error {
+func (impl *httpClientImpl) sendDeleteRequest(ctx context.Context, path, query string, payloadDecodeFunc payloadDecodeFunc, headers http.Header) error {
 	url := *impl.url
 	url.Path = path
 	url.RawQuery = query
@@ -320,9 +312,7 @@ func (impl *httpClientImpl) sendDeleteRequest(ctx context.Context, path, query s
 		return errors.Wrap(err, "construct http request")
 	}
 
-	for k, v := range headers {
-		req.Header.Set(k, v)
-	}
+	combineHeaderToReq(req, headers)
 
 	var series *TraceSeries
 	if impl.enableHTTPTrace {
@@ -367,6 +357,12 @@ func (impl *httpClientImpl) sendRequest(req *http.Request, payloadDecodeFunc pay
 		}
 		defer deferFunc()
 
+	}
+
+	// add global cluster ID to request if header is not set but global cluster ID exist
+	if impl.clusterID > 0 && req.Header.Get(ClusterHeaderName) == "" {
+		req.Header.Set(ClusterHeaderName, impl.clusterID.String())
+		series.Request.Header.Set(ClusterHeaderName, impl.clusterID.String())
 	}
 
 	resp, err := impl.client.Do(req)

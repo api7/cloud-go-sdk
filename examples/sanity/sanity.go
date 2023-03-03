@@ -79,6 +79,7 @@ func main() {
 		panic(err)
 	}
 
+	lastAppID := cloud.ID(0)
 	var i int
 	for {
 		app, err := appIter.Next()
@@ -90,6 +91,7 @@ func main() {
 		}
 		i++
 		fmt.Printf("got application #%d:\n%+v\n", i, app)
+		lastAppID = app.ID
 	}
 
 	gatewayInstances, err := sdk.ListAllGatewayInstances(context.Background(), cluster.ID, nil)
@@ -98,6 +100,18 @@ func main() {
 	}
 	for _, gw := range gatewayInstances {
 		fmt.Printf("id:%s, version:%s, ip:%s\n", gw.ID, gw.Version, gw.IP)
+	}
+
+	if lastAppID != cloud.ID(0) {
+		sdk.SetGlobalClusterID(cluster.ID)
+		apis, _ := sdk.ListAPIs(context.Background(), &cloud.ResourceListOptions{
+			Application: &cloud.Application{ID: lastAppID},
+			Pagination: &cloud.Pagination{
+				Page:     1,
+				PageSize: 100,
+			}})
+		api, _ := apis.Next()
+		fmt.Println(api)
 	}
 
 	waitingForLog <- struct{}{}

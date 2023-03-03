@@ -9,6 +9,7 @@ import (
 	"github.com/bitly/go-simplejson"
 	"github.com/pkg/errors"
 	"gopkg.in/yaml.v3"
+	"net/http"
 	"strings"
 )
 
@@ -141,4 +142,12 @@ func ensureClusterID(h httpClient, opts ResourceCommonOpts) bool {
 	}
 
 	return true
+}
+
+func combineHeaderToReq(r *http.Request, headers http.Header) {
+	for k, v := range headers {
+		for _, value := range v {
+			r.Header.Add(k, value)
+		}
+	}
 }

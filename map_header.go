@@ -1,32 +1,21 @@
 package cloud
 
+import "net/http"
+
 type mapHeader struct {
 	Name  string
 	Value string
 }
 
-func appendHeader(fs ...*mapHeader) map[string]string {
-	header := make(map[string]string)
+func appendHeader(fs ...*mapHeader) http.Header {
+	h := http.Header{}
 	for _, f := range fs {
 		if f == nil {
 			continue
 		}
-		header[f.Name] = f.Value
+		h.Add(f.Name, f.Value)
 	}
-	return header
-}
-
-func mapClusterIdFromHttpClient(h httpClient) (ret *mapHeader) {
-	if h == nil || h.getClusterID() <= 0 {
-		return
-	}
-
-	ret = &mapHeader{
-		Name:  ClusterHeaderName,
-		Value: h.getClusterID().String(),
-	}
-
-	return
+	return h
 }
 
 func mapClusterIdFromOpts(opts ResourceCommonOpts) (ret *mapHeader) {
