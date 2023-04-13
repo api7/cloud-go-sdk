@@ -392,3 +392,55 @@ func TestGetGatewayInstanceStartupConfigTemplate(t *testing.T) {
 		})
 	}
 }
+
+func TestDebugClusterSettings(t *testing.T) {
+	t.Parallel()
+
+	testCases := []struct {
+		name          string
+		expectedError string
+		mockFunc      func(t *testing.T) httpClient
+	}{
+		{
+			name: "debug successfully",
+			mockFunc: func(t *testing.T) httpClient {
+				ctrl := gomock.NewController(t)
+				cli := NewMockhttpClient(ctrl)
+				cli.EXPECT().sendGetRequest(gomock.Any(), path.Join(_apiPathPrefix, "/debug/config/clusters/1/cluster_settings/1"), "", gomock.Any(), gomock.Any()).Return(nil)
+				return cli
+
+			},
+			// Since the rawData will be nil, so we still get an error.
+			expectedError: "invalid json: EOF",
+		},
+		{
+			name: "mock error",
+			mockFunc: func(t *testing.T) httpClient {
+				ctrl := gomock.NewController(t)
+				cli := NewMockhttpClient(ctrl)
+				cli.EXPECT().sendGetRequest(gomock.Any(), path.Join(_apiPathPrefix, "/debug/config/clusters/1/cluster_settings/1"), "", gomock.Any(), gomock.Any()).Return(errors.New("mock error"))
+				return cli
+			},
+			expectedError: "mock error",
+		},
+	}
+
+	for _, tc := range testCases {
+		tc := tc
+		t.Run(tc.name, func(t *testing.T) {
+			cli := tc.mockFunc(t)
+			// ignore the application check since currently we don't mock it, and the app is always a zero value.
+			_, err := newCluster(cli).DebugClusterSettings(context.Background(), &ResourceGetOptions{
+				Cluster: &Cluster{
+					ID: 1,
+				},
+			})
+			if tc.expectedError == "" {
+				assert.Nil(t, err, "check cluster_settings get error")
+			} else {
+				assert.Contains(t, err.Error(), tc.expectedError, "check the error details")
+			}
+		})
+	}
+
+}
