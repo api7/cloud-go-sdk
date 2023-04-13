@@ -335,6 +335,8 @@ type ClusterInterface interface {
 	// Note currently users don't need to pass the `opts` parameter. Just pass `nil` is OK.
 	// The returned label slice will be `nil` if there is no any labels for Consumer.
 	ListAllConsumerLabels(ctx context.Context, clusterID ID, opts *ResourceListOptions) ([]string, error)
+	// DebugClusterSettings returns the corresponding translated APISIX global rules for this Cluster.
+	DebugClusterSettings(ctx context.Context, opts *ResourceGetOptions) (string, error)
 }
 
 // ClusterListIterator is an iterator for listing clusters.
@@ -483,4 +485,16 @@ func (impl *clusterImpl) listAllLabels(ctx context.Context, clusterID ID, resour
 		return nil, err
 	}
 	return labels, nil
+}
+
+func (impl *clusterImpl) DebugClusterSettings(ctx context.Context, opts *ResourceGetOptions) (string, error) {
+	var rawData json.RawMessage
+
+	clusterID := opts.Cluster.ID.String()
+	uri := path.Join(_apiPathPrefix, "debug", "config", "clusters", clusterID, "cluster_settings", clusterID)
+	err := impl.client.sendGetRequest(ctx, uri, "", jsonPayloadDecodeFactory(&rawData), appendHeader(mapClusterIdFromOpts(opts)))
+	if err != nil {
+		return "", err
+	}
+	return formatJSONData(rawData)
 }

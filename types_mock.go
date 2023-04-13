@@ -198,6 +198,21 @@ func (mr *MockInterfaceMockRecorder) DebugCertificateResources(ctx, appID, opts 
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DebugCertificateResources", reflect.TypeOf((*MockInterface)(nil).DebugCertificateResources), ctx, appID, opts)
 }
 
+// DebugClusterSettings mocks base method.
+func (m *MockInterface) DebugClusterSettings(ctx context.Context, opts *ResourceGetOptions) (string, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "DebugClusterSettings", ctx, opts)
+	ret0, _ := ret[0].(string)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// DebugClusterSettings indicates an expected call of DebugClusterSettings.
+func (mr *MockInterfaceMockRecorder) DebugClusterSettings(ctx, opts interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DebugClusterSettings", reflect.TypeOf((*MockInterface)(nil).DebugClusterSettings), ctx, opts)
+}
+
 // DebugConsumerResources mocks base method.
 func (m *MockInterface) DebugConsumerResources(ctx context.Context, consumerID ID, opts *ResourceGetOptions) (string, error) {
 	m.ctrl.T.Helper()
