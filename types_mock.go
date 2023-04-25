@@ -94,10 +94,10 @@ func (mr *MockInterfaceMockRecorder) CreateCanaryRelease(ctx, cr, opts interface
 }
 
 // CreateCertificate mocks base method.
-func (m *MockInterface) CreateCertificate(ctx context.Context, cert *Certificate, opts *ResourceCreateOptions) (*Certificate, error) {
+func (m *MockInterface) CreateCertificate(ctx context.Context, cert *Certificate, opts *ResourceCreateOptions) (*CertificateDetails, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "CreateCertificate", ctx, cert, opts)
-	ret0, _ := ret[0].(*Certificate)
+	ret0, _ := ret[0].(*CertificateDetails)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
@@ -416,10 +416,10 @@ func (mr *MockInterfaceMockRecorder) GetCanaryRelease(ctx, crID, opts interface{
 }
 
 // GetCertificate mocks base method.
-func (m *MockInterface) GetCertificate(ctx context.Context, certID ID, opts *ResourceGetOptions) (*Certificate, error) {
+func (m *MockInterface) GetCertificate(ctx context.Context, certID ID, opts *ResourceGetOptions) (*CertificateDetails, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetCertificate", ctx, certID, opts)
-	ret0, _ := ret[0].(*Certificate)
+	ret0, _ := ret[0].(*CertificateDetails)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
@@ -1010,10 +1010,10 @@ func (mr *MockInterfaceMockRecorder) UpdateCanaryRelease(ctx, cr, opts interface
 }
 
 // UpdateCertificate mocks base method.
-func (m *MockInterface) UpdateCertificate(ctx context.Context, cert *Certificate, opts *ResourceUpdateOptions) (*Certificate, error) {
+func (m *MockInterface) UpdateCertificate(ctx context.Context, cert *Certificate, opts *ResourceUpdateOptions) (*CertificateDetails, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "UpdateCertificate", ctx, cert, opts)
-	ret0, _ := ret[0].(*Certificate)
+	ret0, _ := ret[0].(*CertificateDetails)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
