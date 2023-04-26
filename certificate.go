@@ -178,6 +178,9 @@ func (iter *certificatesListIterator) Next() (*CertificateDetails, error) {
 	if rawData == nil {
 		return nil, nil
 	}
+	if err = json.Unmarshal(rawData, &cert); err != nil {
+		return nil, err
+	}
 	return &cert, nil
 }
 
