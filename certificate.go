@@ -43,9 +43,9 @@ type CertificateType string
 
 const (
 	// ServerCertificate means server-type certificate
-	ServerCertificate CertificateType = "server"
+	ServerCertificate CertificateType = "Server"
 	// ClientCertificate means client-type certificate
-	ClientCertificate CertificateType = "client"
+	ClientCertificate CertificateType = "Client"
 )
 
 // CertificateMetadata contains the metadata of an user uploaded certificate.
