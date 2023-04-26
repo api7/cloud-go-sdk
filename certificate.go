@@ -203,7 +203,25 @@ func (impl *certificateImpl) CreateCertificate(ctx context.Context, cert *Certif
 }
 
 func (impl *certificateImpl) UpdateCertificate(ctx context.Context, cert *Certificate, opts *ResourceUpdateOptions) (*CertificateDetails, error) {
-	var updatedCert CertificateDetails
+	type fixedCertificateModel struct {
+		Metadata  CertificateMetadata `json:"Metadata"`
+		ClusterID ID                  `json:"cluster_id"`
+		// CreatedAt is the object creation time.
+		CreatedAt time.Time `json:"created_at"`
+		// ID is the unique identify to mark an object.
+		ID ID `json:"id"`
+		// CACertificate is CA certificate to verify client certificate
+		CACertificate *CertificateMetadata `json:"ca_certificate,omitempty"`
+		// Status is status of certificate
+		Status EntityStatus `json:"status"`
+		// UpdatedAt is the last modified time of this object.
+		UpdatedAt time.Time `json:"updated_at"`
+		// Labels are used for resource classification and indexing
+		Labels []string `json:"labels,omitempty"`
+		// Type is certificate type
+		Type string `json:"type"`
+	}
+	var updatedCert fixedCertificateModel
 
 	clusterID := opts.Cluster.ID
 	uri := path.Join(_apiPathPrefix, "clusters", clusterID.String(), "certificates", cert.ID.String())
@@ -211,7 +229,24 @@ func (impl *certificateImpl) UpdateCertificate(ctx context.Context, cert *Certif
 	if err != nil {
 		return nil, err
 	}
-	return &updatedCert, nil
+	return &CertificateDetails{
+		Extensions:         updatedCert.Metadata.Extensions,
+		Issuer:             updatedCert.Metadata.Issuer,
+		NotBefore:          updatedCert.Metadata.NotBefore,
+		NotAfter:           updatedCert.Metadata.NotAfter,
+		SNIs:               updatedCert.Metadata.SNIs,
+		SerialNumber:       updatedCert.Metadata.SerialNumber,
+		Subject:            updatedCert.Metadata.Subject,
+		SignatureAlgorithm: updatedCert.Metadata.SignatureAlgorithm,
+		ClusterID:          updatedCert.ClusterID,
+		CreatedAt:          updatedCert.CreatedAt,
+		ID:                 updatedCert.ID,
+		CACertificate:      updatedCert.CACertificate,
+		Status:             updatedCert.Status,
+		UpdatedAt:          updatedCert.UpdatedAt,
+		Labels:             updatedCert.Labels,
+		Type:               updatedCert.Type,
+	}, nil
 }
 
 func (impl *certificateImpl) DeleteCertificate(ctx context.Context, certID ID, opts *ResourceDeleteOptions) error {
